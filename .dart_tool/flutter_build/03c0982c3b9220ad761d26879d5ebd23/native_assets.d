@@ -1,0 +1,1 @@
+ /Users/julianwernz/Developer/Eventure/.dart_tool/flutter_build/03c0982c3b9220ad761d26879d5ebd23/native_assets.yaml: 
