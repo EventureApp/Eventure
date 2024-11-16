@@ -1,0 +1,1 @@
+ C:\\Users\\kokom\\StudioProjects\\Eventure\\.dart_tool\\flutter_build\\0f110a4d7bf4a69ea46a9999b1f473d3\\native_assets.yaml: 
