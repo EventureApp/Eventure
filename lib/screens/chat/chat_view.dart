@@ -1,30 +1,26 @@
-// Copyright 2022 The Flutter Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'guest_book_message.dart';
-import 'src/widgets.dart';
+import '../../models/chat_message.dart';
+import '../../widgets/widgets.dart';
 
-class GuestBook extends StatefulWidget {
-  const GuestBook({
+class Chat extends StatefulWidget {
+  const Chat({
     super.key,
     required this.addMessage,
     required this.messages,
   });
 
   final FutureOr<void> Function(String message) addMessage;
-  final List<GuestBookMessage> messages;
+  final List<ChatMessage> messages;
 
   @override
-  State<GuestBook> createState() => _GuestBookState();
+  State<Chat> createState() => _ChatState();
 }
 
-class _GuestBookState extends State<GuestBook> {
-  final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState');
+class _ChatState extends State<Chat> {
+  final _formKey = GlobalKey<FormState>(debugLabel: '_ChatState');
   final _controller = TextEditingController();
 
   @override

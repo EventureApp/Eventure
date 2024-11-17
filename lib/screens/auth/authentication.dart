@@ -1,11 +1,7 @@
-// Copyright 2022 The Flutter Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'widgets.dart';
+import '../../widgets/widgets.dart';
 
 class AuthFunc extends StatelessWidget {
   const AuthFunc({
@@ -29,7 +25,7 @@ class AuthFunc extends StatelessWidget {
               onPressed: () {
                 !loggedIn ? context.push('/sign-in') : signOut();
               },
-              child: !loggedIn ? const Text('RSVP') : const Text('Logout')),
+              child: !loggedIn ? const Text('Login') : const Text('Logout')),
         ),
         Visibility(
             visible: loggedIn,
