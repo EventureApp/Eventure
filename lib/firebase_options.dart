@@ -85,4 +85,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'eventure-1844f.firebasestorage.app',
     measurementId: 'G-NJ75K1Y4TH',
   );
+
 }
