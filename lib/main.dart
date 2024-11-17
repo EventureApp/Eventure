@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
-import './screens/map/map_screen.dart'; // Import your MapScreen file
+import 'package:provider/provider.dart';
+import 'screens/map/map_screen.dart';
+import 'providers/marker_provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => MarkerProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -11,12 +20,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Map Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MapScreen(), // Set MapScreen as the home screen
+      title: 'Flutter Map with Provider',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: const MapScreen(),
     );
   }
 }
