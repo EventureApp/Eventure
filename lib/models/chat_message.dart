@@ -15,6 +15,7 @@ class ChatMessage implements Entity {
   final int timestamp;
   final String userId;
 
+  @override
   Map<String, dynamic> toMap() {
     return {
       'name': name,

@@ -1,6 +1,8 @@
 import 'package:eventure/services/db/models/entity.dart';
 import 'package:latlong2/latlong.dart';
 
+// TODO: adapt fields to final UI
+
 class Event implements Entity {
   final String id;
   final String name;
@@ -32,6 +34,7 @@ class Event implements Entity {
     );
   }
 
+  @override
   Map<String, dynamic> toMap() {
     return {
       'id': id,
