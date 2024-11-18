@@ -1,27 +1,31 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import 'providers/app_state.dart';
-import 'providers/marker_provider.dart';
+import 'firebase_options.dart';
+import 'providers/auth_provider.dart';
+import 'providers/chat_provider.dart';
 import 'screens/home_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-
-  runApp(
-    MultiProvider(
-      // Use MultiProvider to add multiple providers
-      providers: [
-        ChangeNotifierProvider(create: (context) => ApplicationState()),
-        ChangeNotifierProvider(create: (context) => MarkerProvider()),
-        // Add MarkerProvider here
-      ],
-      child: const App(),
-    ),
-  );
+  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
+      .then((_) {
+    FirebaseUIAuth.configureProviders([EmailAuthProvider()]);
+  }).then((_) {
+    runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (context) => AuthenticationProvider()),
+          ChangeNotifierProvider(create: (context) => ChatProvider()),
+        ],
+        child: const App(),
+      ),
+    );
+  });
 }
 
 final _router = GoRouter(
@@ -84,9 +88,9 @@ final _router = GoRouter(
         GoRoute(
           path: 'profile',
           builder: (context, state) {
-            return Consumer<ApplicationState>(
-              builder: (context, appState, _) => ProfileScreen(
-                key: ValueKey(appState.emailVerified),
+            return Consumer<AuthenticationProvider>(
+              builder: (context, authProvider, _) => ProfileScreen(
+                key: ValueKey(authProvider.isEmailVerified),
                 providers: const [],
                 actions: [
                   SignedOutAction(
@@ -97,11 +101,11 @@ final _router = GoRouter(
                 ],
                 children: [
                   Visibility(
-                      visible: !appState.emailVerified,
+                      visible: !authProvider.isEmailVerified,
                       child: OutlinedButton(
                         child: const Text('Recheck Verification State'),
                         onPressed: () {
-                          appState.refreshLoggedInUser();
+                          authProvider.refreshUser();
                         },
                       ))
                 ],

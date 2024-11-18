@@ -1,10 +1,8 @@
-import 'package:eventure/screens/map/map_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart'
-    hide EmailAuthProvider, PhoneAuthProvider;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/app_state.dart';
+import '../providers/auth_provider.dart';
 import '../widgets/widgets.dart';
 import 'auth/authentication.dart';
 import 'chat/chat_view.dart';
@@ -18,13 +16,13 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Eventure'),
       ),
-      body: Consumer<ApplicationState>(
-        builder: (context, appState, _) {
+      body: Consumer<AuthenticationProvider>(
+        builder: (context, authProvider, _) {
           return Column(
             children: <Widget>[
               const SizedBox(height: 8),
               AuthFunc(
-                loggedIn: appState.loggedIn,
+                loggedIn: authProvider.isLoggedIn,
                 signOut: () {
                   FirebaseAuth.instance.signOut();
                 },
@@ -36,17 +34,13 @@ class HomePage extends StatelessWidget {
                 endIndent: 8,
                 color: Colors.grey,
               ),
-              if (appState.loggedIn) ...[
+              if (authProvider.isLoggedIn) ...[
                 const SizedBox(height: 16),
-                const SizedBox(
-                  height: 400,
-                  child: MapScreen(),
-                ),
                 const Header('Chat'),
-                Chat(
-                  addMessage: (message) => appState.addMessageToChat(message),
-                  messages: appState.chatMessages,
-                ),
+                const Chat(),
+              ] else ...[
+                const Center(
+                    child: Text('Please log in to view the map and chat')),
               ],
             ],
           );
