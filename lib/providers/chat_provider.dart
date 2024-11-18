@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../models/chat_message.dart';
-import '../services/firestore_service.dart';
+import '../services/db/chat_service.dart';
 
 class ChatProvider with ChangeNotifier {
-  final FirestoreService _firestoreService = FirestoreService();
+  final ChatService _chatService = ChatService();
 
   List<ChatMessage> _chatMessages = [];
   StreamSubscription<List<ChatMessage>>? _chatMessagesSubscription;
@@ -14,12 +14,12 @@ class ChatProvider with ChangeNotifier {
   List<ChatMessage> get chatMessages => _chatMessages;
 
   Stream<List<ChatMessage>> get chatMessagesStream {
-    return _firestoreService.getChatMessages();
+    return _chatService.getAllByStream();
   }
 
   void startListeningToChatMessages() {
     _chatMessagesSubscription =
-        _firestoreService.getChatMessages().listen((messages) {
+        _chatService.getAllByStream().listen((messages) {
       _chatMessages = messages;
       notifyListeners();
     }, onError: (error) {});
@@ -34,7 +34,7 @@ class ChatProvider with ChangeNotifier {
   Future<void> addMessage(
       String message, String userName, String userId) async {
     try {
-      await _firestoreService.addMessage(message, userName, userId);
+      await _chatService.addMessage(message, userName, userId);
     } catch (error) {
       print('Error adding message: $error');
     }

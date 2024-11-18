@@ -92,7 +92,7 @@ class _ChatState extends State<Chat> {
                       itemCount: messages.length,
                       itemBuilder: (context, index) {
                         final message = messages[index];
-                        return Paragraph('${message.name}: ${message.message}');
+                        return Paragraph('${message.name}: ${message.text}');
                       },
                     ),
             ),
