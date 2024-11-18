@@ -1,6 +1,7 @@
+import 'package:eventure/services/db/models/entity.dart';
 import 'package:latlong2/latlong.dart';
 
-class Event {
+class Event implements Entity {
   final String id;
   final String name;
   final String description;

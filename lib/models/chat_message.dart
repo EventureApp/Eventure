@@ -1,4 +1,6 @@
-class ChatMessage {
+import 'package:eventure/services/db/models/entity.dart';
+
+class ChatMessage implements Entity {
   ChatMessage({
     this.id,
     required this.name,
