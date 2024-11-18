@@ -1,7 +1,9 @@
+import 'package:eventure/screens/map/map_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart'
     hide EmailAuthProvider, PhoneAuthProvider;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/app_state.dart';
 import '../widgets/widgets.dart';
 import 'auth/authentication.dart';
@@ -16,39 +18,39 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Eventure'),
       ),
-      body: ListView(
-        children: <Widget>[
-          const SizedBox(height: 8),
-          Consumer<ApplicationState>(
-            builder: (context, appState, _) => AuthFunc(
-              loggedIn: appState.loggedIn,
-              signOut: () {
-                FirebaseAuth.instance.signOut();
-              },
-            ),
-          ),
-          const Divider(
-            height: 8,
-            thickness: 1,
-            indent: 8,
-            endIndent: 8,
-            color: Colors.grey,
-          ),
-          Consumer<ApplicationState>(
-            builder: (context, appState, _) => Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (appState.loggedIn) ...[
-                  const Header('Chat'),
-                  Chat(
-                    addMessage: (message) => appState.addMessageToChat(message),
-                    messages: appState.chatMessages,
-                  ),
-                ]
+      body: Consumer<ApplicationState>(
+        builder: (context, appState, _) {
+          return Column(
+            children: <Widget>[
+              const SizedBox(height: 8),
+              AuthFunc(
+                loggedIn: appState.loggedIn,
+                signOut: () {
+                  FirebaseAuth.instance.signOut();
+                },
+              ),
+              const Divider(
+                height: 8,
+                thickness: 1,
+                indent: 8,
+                endIndent: 8,
+                color: Colors.grey,
+              ),
+              if (appState.loggedIn) ...[
+                const SizedBox(height: 16),
+                const SizedBox(
+                  height: 400,
+                  child: MapScreen(),
+                ),
+                const Header('Chat'),
+                Chat(
+                  addMessage: (message) => appState.addMessageToChat(message),
+                  messages: appState.chatMessages,
+                ),
               ],
-            ),
-          ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }

@@ -5,15 +5,23 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/app_state.dart';
+import 'providers/marker_provider.dart';
 import 'screens/home_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(ChangeNotifierProvider(
-    create: (context) => ApplicationState(),
-    builder: ((context, child) => const App()),
-  ));
+  runApp(
+    MultiProvider(
+      // Use MultiProvider to add multiple providers
+      providers: [
+        ChangeNotifierProvider(create: (context) => ApplicationState()),
+        ChangeNotifierProvider(create: (context) => MarkerProvider()),
+        // Add MarkerProvider here
+      ],
+      child: const App(),
+    ),
+  );
 }
 
 final _router = GoRouter(
