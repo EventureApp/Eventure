@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
-import 'package:geocoding/geocoding.dart';
 import '../../providers/marker_provider.dart';
 
-class MapScreen extends StatelessWidget {
+class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
+
+  @override
+  _MapScreenState createState() => _MapScreenState();
+}
+
+class _MapScreenState extends State<MapScreen> {
+  LatLng? tappedCoordinates;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +37,11 @@ class MapScreen extends StatelessWidget {
                 options: MapOptions(
                   center: LatLng(49.4699765, 8.4819024),
                   zoom: 13.0,
+                  onTap: (tapPosition, point) {
+                    setState(() {
+                      tappedCoordinates = point;
+                    });
+                  },
                 ),
                 children: [
                   TileLayer(
@@ -42,14 +53,19 @@ class MapScreen extends StatelessWidget {
               );
             },
           ),
-          const Positioned(
-            bottom: 10,
-            right: 10,
-            child: Text(
-              "© OpenStreetMap contributors",
-              style: TextStyle(color: Colors.black54, fontSize: 12),
+          if (tappedCoordinates != null)
+            Positioned(
+              bottom: 100,
+              left: 20,
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                color: Colors.white,
+                child: Text(
+                  'Tapped Location: \nLat: ${tappedCoordinates!.latitude}, Lng: ${tappedCoordinates!.longitude}',
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ),
             ),
-          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -60,10 +76,16 @@ class MapScreen extends StatelessWidget {
   }
 
   void _showAddMarkerForm(BuildContext context) {
-    final TextEditingController streetController = TextEditingController();
-    final TextEditingController cityController = TextEditingController();
-    final TextEditingController postalCodeController = TextEditingController();
     final TextEditingController titleController = TextEditingController();
+
+    // Populate the form with tapped coordinates if any
+    final TextEditingController latController = TextEditingController();
+    final TextEditingController lngController = TextEditingController();
+
+    if (tappedCoordinates != null) {
+      latController.text = tappedCoordinates!.latitude.toString();
+      lngController.text = tappedCoordinates!.longitude.toString();
+    }
 
     showModalBottomSheet(
       context: context,
@@ -77,63 +99,48 @@ class MapScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     TextField(
-                      controller: streetController,
-                      decoration: const InputDecoration(labelText: 'Street'),
-                    ),
-                    const SizedBox(height: 10),
-                    TextField(
-                      controller: cityController,
-                      decoration: const InputDecoration(labelText: 'City'),
-                    ),
-                    const SizedBox(height: 10),
-                    TextField(
-                      controller: postalCodeController,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(labelText: 'Postal Code'),
-                    ),
-                    const SizedBox(height: 10),
-                    TextField(
                       controller: titleController,
                       decoration: const InputDecoration(labelText: 'Title'),
                     ),
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: latController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(labelText: 'Latitude'),
+                    ),
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: lngController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(labelText: 'Longitude'),
+                    ),
                     const SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: () async {
-                        String street = streetController.text;
-                        String city = cityController.text;
-                        String postalCode = postalCodeController.text;
+                      onPressed: () {
                         String title = titleController.text;
+                        String lat = latController.text;
+                        String lng = lngController.text;
 
-                        if (street.isEmpty || city.isEmpty || postalCode.isEmpty || title.isEmpty) {
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Please fill out all fields!')),
-                            );
-                          }
+                        if (title.isEmpty || lat.isEmpty || lng.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Please fill out all fields!')),
+                          );
                           return;
                         }
 
                         try {
-                          // Combine the address parts into a single string
-                          String fullAddress = '$street, $postalCode $city';
+                          // Convert latitude and longitude to LatLng
+                          double latitude = double.parse(lat);
+                          double longitude = double.parse(lng);
 
-                          // Geocode the address
-                          final locations = await locationFromAddress(fullAddress);
-                          if (locations.isNotEmpty) {
-                            final lat = locations.first.latitude;
-                            final lng = locations.first.longitude;
-
-                            if (context.mounted) {
-                              context.read<MarkerProvider>().addMarker(LatLng(lat, lng), title);
-                              Navigator.pop(context); // Close the bottom sheet
-                            }
-                          }
+                          // Add the marker to the map
+                          context.read<MarkerProvider>().addMarker(
+                              LatLng(latitude, longitude), title);
+                          Navigator.pop(context); // Close the bottom sheet
                         } catch (e) {
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Could not find the location for the given address!')),
-                            );
-                          }
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Invalid latitude or longitude!')),
+                          );
                         }
                       },
                       child: const Text('Add Marker'),
