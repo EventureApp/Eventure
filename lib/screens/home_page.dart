@@ -1,50 +1,113 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
-import '../providers/auth_provider.dart';
-import '../widgets/widgets.dart';
-import 'auth/authentication.dart';
-import 'chat/chat_view.dart';
+import '../models/custom_icons_icons.dart';
+import '../widgets/map.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  bool isMapSelected = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text('Eventure'),
-      ),
-      body: Consumer<AuthenticationProvider>(
-        builder: (context, authProvider, _) {
-          return Column(
-            children: <Widget>[
-              const SizedBox(height: 8),
-              AuthFunc(
-                loggedIn: authProvider.isLoggedIn,
-                signOut: () {
-                  FirebaseAuth.instance.signOut();
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        toolbarHeight: 80,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: TextField(
+                    decoration: InputDecoration(
+                        hintText: 'Search...',
+                        prefixIcon: Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide.none,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white),
+                  ),
+                ),
+              ),
+              IconButton(
+                icon: CircleAvatar(
+                  radius: 20,
+                  backgroundImage: NetworkImage(
+                    FirebaseAuth.instance.currentUser?.photoURL ??
+                        'https://i.pravatar.cc/300',
+                  ),
+                ),
+                onPressed: () {
+                  context.push('/profile');
                 },
               ),
-              const Divider(
-                height: 8,
-                thickness: 1,
-                indent: 8,
-                endIndent: 8,
-                color: Colors.grey,
-              ),
-              if (authProvider.isLoggedIn) ...[
-                const SizedBox(height: 16),
-                const Header('Chat'),
-                const Chat(),
-              ] else ...[
-                const Center(
-                    child: Text('Please log in to view the map and chat')),
-              ],
+              const SizedBox(width: 10),
             ],
-          );
-        },
+          ),
+        ),
+      ),
+      body: Stack(
+        children: [
+          MapWidget(),
+        ],
+      ),
+      bottomNavigationBar: SizedBox(
+        height: 60, // Adjust the height to your liking
+        child: BottomAppBar(
+          color: Colors.white,
+          elevation: 4,
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: Icon(
+                    CustomIcons.filteroptions,
+                    size: 24, // Consistent icon size
+                  ),
+                  onPressed: () {},
+                ),
+                ToggleButtons(
+                  isSelected: [isMapSelected, !isMapSelected],
+                  onPressed: (int index) {
+                    setState(() {
+                      isMapSelected = index == 0;
+                    });
+                  },
+                  borderRadius: BorderRadius.circular(20.0),
+                  children: [
+                    Icon(CustomIcons.map, size: 24), // Consistent size
+                    Icon(Icons.list, size: 24), // Consistent size
+                  ],
+                ),
+                IconButton(
+                  icon: Icon(
+                    CustomIcons.plus,
+                    size: 24, // Consistent icon size
+                  ),
+                  onPressed: () {
+                    // Add action for plus button
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

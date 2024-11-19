@@ -1,3 +1,4 @@
+import 'package:eventure/providers/marker_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ void main() {
         providers: [
           ChangeNotifierProvider(create: (context) => AuthenticationProvider()),
           ChangeNotifierProvider(create: (context) => ChatProvider()),
+          ChangeNotifierProvider(create: (context) => MarkerProvider()),
         ],
         child: const App(),
       ),
@@ -30,6 +32,16 @@ void main() {
 }
 
 final _router = GoRouter(
+  redirect: (context, state) {
+    final authProvider =
+        Provider.of<AuthenticationProvider>(context, listen: false);
+    final isLoggingIn = state.uri.toString() == '/sign-in';
+
+    if (!authProvider.isLoggedIn && !isLoggingIn) {
+      return '/sign-in';
+    }
+    return null;
+  },
   routes: [
     GoRoute(
       path: '/',
@@ -68,7 +80,7 @@ final _router = GoRouter(
                             'Please check your email to verify your email address'));
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   }
-                  context.pushReplacement('/');
+                  context.go('/');
                 })),
               ],
             );
@@ -126,6 +138,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Eventure',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         buttonTheme: Theme.of(context).buttonTheme.copyWith(
               highlightColor: Colors.deepPurple,
