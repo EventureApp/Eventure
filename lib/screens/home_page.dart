@@ -1,11 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '../providers/auth_provider.dart';
-import '../widgets/widgets.dart';
-import 'auth/authentication.dart';
-import 'chat/chat_view.dart';
+import 'package:go_router/go_router.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -14,37 +9,54 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Eventure'),
+        title: Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search...',
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                  ),
+                ),
+              ),
+            ),
+            IconButton(
+              icon: CircleAvatar(
+                backgroundImage: NetworkImage(
+                  FirebaseAuth.instance.currentUser?.photoURL ??
+                      'https://www.example.com/default-avatar.png', // Default avatar if no profile photo
+                ),
+              ),
+              onPressed: () {
+                // Navigate to profile page when tapped
+                context.push('/profile');
+              },
+            ),
+            const SizedBox(width: 10), // Optional, adds space between elements
+          ],
+        ),
       ),
-      body: Consumer<AuthenticationProvider>(
-        builder: (context, authProvider, _) {
-          return Column(
-            children: <Widget>[
-              const SizedBox(height: 8),
-              AuthFunc(
-                loggedIn: authProvider.isLoggedIn,
-                signOut: () {
-                  FirebaseAuth.instance.signOut();
-                },
-              ),
-              const Divider(
-                height: 8,
-                thickness: 1,
-                indent: 8,
-                endIndent: 8,
-                color: Colors.grey,
-              ),
-              if (authProvider.isLoggedIn) ...[
-                const SizedBox(height: 16),
-                const Header('Chat'),
-                const Chat(),
-              ] else ...[
-                const Center(
-                    child: Text('Please log in to view the map and chat')),
-              ],
-            ],
-          );
-        },
+      body: Column(
+        children: <Widget>[
+          const SizedBox(height: 8),
+          const Divider(
+            height: 8,
+            thickness: 1,
+            indent: 8,
+            endIndent: 8,
+            color: Colors.grey,
+          ),
+          const SizedBox(height: 16),
+          const Text('Welcome to the Home Page!'),
+        ],
       ),
     );
   }

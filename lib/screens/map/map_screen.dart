@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
+
 import '../../providers/marker_provider.dart';
 
 class MapScreen extends StatefulWidget {
@@ -35,8 +36,8 @@ class _MapScreenState extends State<MapScreen> {
             builder: (context, markerProvider, child) {
               return FlutterMap(
                 options: MapOptions(
-                  center: LatLng(49.4699765, 8.4819024),
-                  zoom: 13.0,
+                  initialCenter: LatLng(49.4699765, 8.4819024),
+                  initialZoom: 13.0,
                   onTap: (tapPosition, point) {
                     setState(() {
                       tappedCoordinates = point;
@@ -45,7 +46,8 @@ class _MapScreenState extends State<MapScreen> {
                 ),
                 children: [
                   TileLayer(
-                    urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    urlTemplate:
+                        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                     subdomains: const ['a', 'b', 'c'],
                   ),
                   MarkerLayer(markers: markerProvider.markers),
@@ -123,7 +125,8 @@ class _MapScreenState extends State<MapScreen> {
 
                         if (title.isEmpty || lat.isEmpty || lng.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Please fill out all fields!')),
+                            const SnackBar(
+                                content: Text('Please fill out all fields!')),
                           );
                           return;
                         }
@@ -134,12 +137,15 @@ class _MapScreenState extends State<MapScreen> {
                           double longitude = double.parse(lng);
 
                           // Add the marker to the map
-                          context.read<MarkerProvider>().addMarker(
-                              LatLng(latitude, longitude), title);
+                          context
+                              .read<MarkerProvider>()
+                              .addMarker(LatLng(latitude, longitude), title);
                           Navigator.pop(context); // Close the bottom sheet
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Invalid latitude or longitude!')),
+                            const SnackBar(
+                                content:
+                                    Text('Invalid latitude or longitude!')),
                           );
                         }
                       },

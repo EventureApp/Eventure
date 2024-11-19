@@ -29,6 +29,17 @@ void main() {
 }
 
 final _router = GoRouter(
+  redirect: (context, state) {
+    final authProvider =
+        Provider.of<AuthenticationProvider>(context, listen: false);
+    final isLoggingIn = state.uri.toString() == '/sign-in';
+
+// Redirect unauthenticated users to the sign-in page
+    if (!authProvider.isLoggedIn && !isLoggingIn) {
+      return '/sign-in';
+    }
+    return null;
+  },
   routes: [
     GoRoute(
       path: '/',
@@ -67,7 +78,7 @@ final _router = GoRouter(
                             'Please check your email to verify your email address'));
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   }
-                  context.pushReplacement('/');
+                  context.go('/');
                 })),
               ],
             );

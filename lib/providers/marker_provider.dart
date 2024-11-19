@@ -8,7 +8,7 @@ class MarkerProvider extends ChangeNotifier {
       point: LatLng(49.4699765, 8.4819024),
       width: 80,
       height: 80,
-      builder: (context) => const Icon(
+      child: Icon(
         Icons.location_pin,
         color: Colors.red,
         size: 40,
@@ -24,7 +24,7 @@ class MarkerProvider extends ChangeNotifier {
         point: position,
         width: 80,
         height: 80,
-        builder: (context) => Tooltip(
+        child: Tooltip(
           message: title,
           child: const Icon(
             Icons.location_pin,
