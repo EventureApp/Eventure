@@ -3,7 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/marker_provider.dart';
+import '../../providers/event_provider.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -32,7 +32,7 @@ class _MapScreenState extends State<MapScreen> {
       ),
       body: Stack(
         children: [
-          Consumer<MarkerProvider>(
+          Consumer<EventProvider>(
             builder: (context, markerProvider, child) {
               return FlutterMap(
                 options: MapOptions(
@@ -138,7 +138,7 @@ class _MapScreenState extends State<MapScreen> {
 
                           // Add the marker to the map
                           context
-                              .read<MarkerProvider>()
+                              .read<EventProvider>()
                               .addMarker(LatLng(latitude, longitude), title);
                           Navigator.pop(context); // Close the bottom sheet
                         } catch (e) {

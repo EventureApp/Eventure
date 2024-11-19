@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                     size: 24, // Consistent icon size
                   ),
                   onPressed: () {
-                    // Add action for plus button
+                    context.push('/addEvent');
                   },
                 ),
               ],

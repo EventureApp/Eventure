@@ -49,7 +49,7 @@ class EventService implements DatabaseService<Event> {
           icon: icon,
           eventType: eventType,
           eventLink: data['eventLink'] as String?,
-          participants: data['participants'] as int?,
+          maxParticipants: data['participants'] as int?,
           organizer: data['organizer'] as String,
         );
       }).toList();

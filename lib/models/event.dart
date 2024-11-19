@@ -15,8 +15,8 @@ class Event implements Entity {
   final IconData icon;
   final EventType eventType;
   final String? eventLink;
-  final int? participants;
-  final String organizer;
+  final int? maxParticipants;
+  final String? organizer;
 
   Event({
     required this.id,
@@ -29,7 +29,7 @@ class Event implements Entity {
     required this.icon,
     required this.eventType,
     this.eventLink,
-    this.participants,
+    this.maxParticipants,
     required this.organizer,
   });
 
@@ -58,7 +58,7 @@ class Event implements Entity {
       icon: icon,
       eventType: eventType,
       eventLink: map['eventLink'] as String?,
-      participants: map['participants'] as int?,
+      maxParticipants: map['maxParticipants'] as int?,
       organizer: map['organizer'] as String,
     );
   }
@@ -79,7 +79,7 @@ class Event implements Entity {
       'icon': icon.codePoint,
       'eventType': eventType.toString().split('.').last,
       'eventLink': eventLink,
-      'participants': participants,
+      'participants': maxParticipants,
       'organizer': organizer,
     };
   }

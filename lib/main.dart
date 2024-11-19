@@ -1,4 +1,5 @@
-import 'package:eventure/providers/marker_provider.dart';
+import 'package:eventure/providers/event_provider.dart';
+import 'package:eventure/screens/events/add_event_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ void main() {
         providers: [
           ChangeNotifierProvider(create: (context) => AuthenticationProvider()),
           ChangeNotifierProvider(create: (context) => ChatProvider()),
-          ChangeNotifierProvider(create: (context) => MarkerProvider()),
+          ChangeNotifierProvider(create: (context) => EventProvider()),
         ],
         child: const App(),
       ),
@@ -126,6 +127,11 @@ final _router = GoRouter(
             );
           },
         ),
+        GoRoute(
+            path: 'addEvent',
+            builder: (context, state) {
+              return AddEventScreen();
+            })
       ],
     ),
   ],

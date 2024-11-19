@@ -3,7 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/marker_provider.dart';
+import '../../providers/event_provider.dart';
 
 class MapWidget extends StatefulWidget {
   const MapWidget({super.key});
@@ -19,8 +19,22 @@ class _MapWidgetState extends State<MapWidget> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Consumer<MarkerProvider>(
-          builder: (context, markerProvider, child) {
+        Consumer<EventProvider>(
+          builder: (context, eventProvider, child) {
+            if (eventProvider.eventLocations.isEmpty) {
+              eventProvider.fetchEventLocations();
+            }
+
+            List<Marker> markers = eventProvider.eventLocations.map((location) {
+              return Marker(
+                point: location,
+                child: Icon(
+                  Icons.location_pin,
+                  color: Colors.red,
+                ),
+              );
+            }).toList();
+
             return FlutterMap(
               options: MapOptions(
                 initialCenter: LatLng(49.4699765, 8.4819024),
@@ -37,7 +51,7 @@ class _MapWidgetState extends State<MapWidget> {
                       "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                   subdomains: const ['a', 'b', 'c'],
                 ),
-                MarkerLayer(markers: markerProvider.markers),
+                MarkerLayer(markers: markers),
               ],
             );
           },
