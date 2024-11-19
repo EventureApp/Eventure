@@ -12,6 +12,7 @@ import 'screens/home_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
   Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
       .then((_) {
     FirebaseUIAuth.configureProviders([EmailAuthProvider()]);

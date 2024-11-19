@@ -1,35 +1,64 @@
 import 'package:eventure/services/db/models/entity.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:latlong2/latlong.dart';
 
-// TODO: adapt fields to final UI
+enum EventType { public, friendsOnly }
 
 class Event implements Entity {
   final String id;
   final String name;
-  final String description;
-  final DateTime date;
+  final String? description;
+  final DateTime startDate;
+  final DateTime endDate;
+  final String adress;
   final LatLng location;
+  final IconData icon;
+  final EventType eventType;
+  final String? eventLink;
+  final int? participants;
   final String organizer;
 
   Event({
     required this.id,
     required this.name,
-    required this.description,
-    required this.date,
+    this.description,
+    required this.startDate,
+    required this.endDate,
+    required this.adress,
     required this.location,
+    required this.icon,
+    required this.eventType,
+    this.eventLink,
+    this.participants,
     required this.organizer,
   });
 
   factory Event.fromMap(Map<String, dynamic> map) {
+    EventType eventType = EventType.values.firstWhere(
+      (e) => e.toString() == 'EventType.' + map['eventType'],
+      orElse: () => EventType.public,
+    );
+
+    IconData icon = IconData(
+      map['icon'] as int,
+      fontFamily: 'CustomIcons',
+    );
+
     return Event(
       id: map['id'] as String,
       name: map['name'] as String,
-      description: map['description'] as String,
-      date: DateTime.parse(map['date'] as String),
+      description: map['description'] as String?,
+      startDate: DateTime.parse(map['startDate'] as String),
+      endDate: DateTime.parse(map['endDate'] as String),
+      adress: map['adress'] as String,
       location: LatLng(
         map['location']['latitude'] as double,
         map['location']['longitude'] as double,
       ),
+      icon: icon,
+      eventType: eventType,
+      eventLink: map['eventLink'] as String?,
+      participants: map['participants'] as int?,
       organizer: map['organizer'] as String,
     );
   }
@@ -40,11 +69,17 @@ class Event implements Entity {
       'id': id,
       'name': name,
       'description': description,
-      'date': date.toIso8601String(),
+      'startDate': startDate.toIso8601String(),
+      'endDate': endDate.toIso8601String(),
+      'adress': adress,
       'location': {
         'latitude': location.latitude,
         'longitude': location.longitude,
       },
+      'icon': icon.codePoint,
+      'eventType': eventType.toString().split('.').last,
+      'eventLink': eventLink,
+      'participants': participants,
       'organizer': organizer,
     };
   }
