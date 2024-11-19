@@ -36,7 +36,6 @@ final _router = GoRouter(
         Provider.of<AuthenticationProvider>(context, listen: false);
     final isLoggingIn = state.uri.toString() == '/sign-in';
 
-// Redirect unauthenticated users to the sign-in page
     if (!authProvider.isLoggedIn && !isLoggingIn) {
       return '/sign-in';
     }
