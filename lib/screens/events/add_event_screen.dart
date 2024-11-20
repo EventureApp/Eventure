@@ -1,6 +1,6 @@
-import 'package:eventure/models/event.dart'; // Your Event model
+import 'package:eventure/models/event.dart';
 import 'package:eventure/providers/auth_provider.dart';
-import 'package:eventure/widgets/map_picker.dart'; // Your custom map picker widget
+import 'package:eventure/widgets/map_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
@@ -197,9 +197,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: Container(
                   height: 300,
-                  child: MapPickerWidget(
-                      onLocationSelected:
-                          onLocationSelected), // Pass onLocationSelected as a callback
+                  child:
+                      MapPickerWidget(onLocationSelected: onLocationSelected),
                 ),
               ),
               if (_location != LatLng(0.0, 0.0))
