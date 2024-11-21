@@ -5,7 +5,7 @@ import 'package:latlong2/latlong.dart';
 enum EventType { public, friendsOnly }
 
 class Event implements Entity {
-  final String id;
+  final String? id;
   final String name;
   final String? description;
   final DateTime startDate;
@@ -19,7 +19,7 @@ class Event implements Entity {
   final String? organizer;
 
   Event({
-    required this.id,
+    this.id,
     required this.name,
     this.description,
     required this.startDate,

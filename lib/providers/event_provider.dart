@@ -1,32 +1,41 @@
-import 'package:flutter/cupertino.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 
 import '../models/event.dart';
 import '../services/db/event_service.dart';
 
 class EventProvider with ChangeNotifier {
   final EventService _eventService = EventService();
-  List<LatLng> _eventLocations = [];
+  List<Event> _events = [];
 
-  List<LatLng> get eventLocations => _eventLocations;
+  List<Event> get events => _events;
 
-  Future<void> fetchEventLocations() async {
-    try {
-      final events = await _eventService.getAll();
-      _eventLocations = events.map((event) => event.location).toList();
-      notifyListeners();
-    } catch (e) {
-      print("Error fetching event locations: $e");
+  EventProvider() {
+    fetchEvents();
+  }
+
+  List<Marker> getLocations() {
+    List<Marker> markers = [];
+    for (var event in _events) {
+      markers.add(Marker(
+        point: event.location,
+        child: const Icon(
+          Icons.location_pin,
+          color: Colors.red,
+        ),
+      ));
     }
+    return markers;
+  }
+
+  Future<void> fetchEvents() async {
+    _events = await _eventService.getAll();
+    notifyListeners();
   }
 
   Future<void> addEvent(Event event) async {
-    try {
-      await _eventService.create(event);
-      await fetchEventLocations();
-      notifyListeners();
-    } catch (e) {
-      print("Error adding event: $e");
-    }
+    await _eventService.create(event);
+    _events.add(event);
+    notifyListeners();
   }
 }

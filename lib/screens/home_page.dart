@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../models/custom_icons_icons.dart';
+import '../models/custom_icons.dart';
 import '../widgets/map.dart';
 
 class HomePage extends StatefulWidget {
@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
                   child: TextField(
                     decoration: InputDecoration(
                         hintText: 'Search...',
-                        prefixIcon: Icon(Icons.search),
+                        prefixIcon: const Icon(Icons.search),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
                           borderSide: BorderSide.none,
@@ -60,13 +60,13 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      body: Stack(
+      body: const Stack(
         children: [
           MapWidget(),
         ],
       ),
       bottomNavigationBar: SizedBox(
-        height: 60, // Adjust the height to your liking
+        height: 60,
         child: BottomAppBar(
           color: Colors.white,
           elevation: 4,
@@ -76,9 +76,9 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     CustomIcons.filteroptions,
-                    size: 24, // Consistent icon size
+                    size: 24,
                   ),
                   onPressed: () {},
                 ),
@@ -90,15 +90,15 @@ class _HomePageState extends State<HomePage> {
                     });
                   },
                   borderRadius: BorderRadius.circular(20.0),
-                  children: [
-                    Icon(CustomIcons.map, size: 24), // Consistent size
-                    Icon(Icons.list, size: 24), // Consistent size
+                  children: const [
+                    Icon(CustomIcons.map, size: 24),
+                    Icon(Icons.list, size: 24),
                   ],
                 ),
                 IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     CustomIcons.plus,
-                    size: 24, // Consistent icon size
+                    size: 24,
                   ),
                   onPressed: () {
                     context.push('/addEvent');

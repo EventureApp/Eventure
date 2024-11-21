@@ -21,23 +21,9 @@ class _MapWidgetState extends State<MapWidget> {
       children: [
         Consumer<EventProvider>(
           builder: (context, eventProvider, child) {
-            if (eventProvider.eventLocations.isEmpty) {
-              eventProvider.fetchEventLocations();
-            }
-
-            List<Marker> markers = eventProvider.eventLocations.map((location) {
-              return Marker(
-                point: location,
-                child: Icon(
-                  Icons.location_pin,
-                  color: Colors.red,
-                ),
-              );
-            }).toList();
-
             return FlutterMap(
               options: MapOptions(
-                initialCenter: LatLng(49.4699765, 8.4819024),
+                initialCenter: const LatLng(49.4699765, 8.4819024),
                 initialZoom: 13.0,
                 onTap: (tapPosition, point) {
                   setState(() {
@@ -51,7 +37,7 @@ class _MapWidgetState extends State<MapWidget> {
                       "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                   subdomains: const ['a', 'b', 'c'],
                 ),
-                MarkerLayer(markers: markers),
+                MarkerLayer(markers: eventProvider.getLocations()),
               ],
             );
           },
@@ -65,7 +51,7 @@ class _MapWidgetState extends State<MapWidget> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(8.0),
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                     color: Colors.black26,
                     blurRadius: 4.0,
