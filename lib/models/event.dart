@@ -5,18 +5,18 @@ import 'package:latlong2/latlong.dart';
 enum EventType { public, friendsOnly }
 
 class Event implements Entity {
-  final String? id;
+  final String? id; //id optional? dann lieber ganz weglassen oder nicht?
   final String name;
   final String? description;
   final DateTime startDate;
   final DateTime endDate;
-  final String adress;
+  final String address;//Rechtschreibfehler, in diesem Branch geändert
   final LatLng location;
   final IconData icon;
   final EventType eventType;
   final String? eventLink;
   final int? maxParticipants;
-  final String? organizer;
+  final String? organizer; //profile sind durch Strings eindeutig gekennzeichnet?
 
   Event({
     this.id,
@@ -24,7 +24,7 @@ class Event implements Entity {
     this.description,
     required this.startDate,
     required this.endDate,
-    required this.adress,
+    required this.address,
     required this.location,
     required this.icon,
     required this.eventType,
@@ -50,7 +50,7 @@ class Event implements Entity {
       description: map['description'] as String?,
       startDate: DateTime.parse(map['startDate'] as String),
       endDate: DateTime.parse(map['endDate'] as String),
-      adress: map['adress'] as String,
+      address: map['address'] as String,
       location: LatLng(
         map['location']['latitude'] as double,
         map['location']['longitude'] as double,
@@ -71,7 +71,7 @@ class Event implements Entity {
       'description': description,
       'startDate': startDate.toIso8601String(),
       'endDate': endDate.toIso8601String(),
-      'adress': adress,
+      'address': address,
       'location': {
         'latitude': location.latitude,
         'longitude': location.longitude,

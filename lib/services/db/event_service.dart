@@ -35,7 +35,7 @@ class EventService implements DatabaseService<Event> {
         description: data['description'] as String?,
         startDate: DateTime.parse(data['startDate'] as String),
         endDate: DateTime.parse(data['endDate'] as String),
-        adress: data['adress'] as String,
+        address: data['addess'] as String,
         location: LatLng(
           data['location']['latitude'] as double,
           data['location']['longitude'] as double,
