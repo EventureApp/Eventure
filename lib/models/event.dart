@@ -5,18 +5,18 @@ import 'package:latlong2/latlong.dart';
 enum EventType { public, friendsOnly }
 
 class Event implements Entity {
-  final String? id; //id optional? dann lieber ganz weglassen oder nicht?
+  final String? id;
   final String name;
   final String? description;
   final DateTime startDate;
   final DateTime endDate;
-  final String address;//Rechtschreibfehler, in diesem Branch geändert
+  final String address;
   final LatLng location;
   final IconData icon;
   final EventType eventType;
   final String? eventLink;
   final int? maxParticipants;
-  final String? organizer; //profile sind durch Strings eindeutig gekennzeichnet?
+  final String? organizer;
 
   Event({
     this.id,
