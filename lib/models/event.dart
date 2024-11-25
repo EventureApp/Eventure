@@ -33,19 +33,14 @@ class Event implements Entity {
     required this.organizer,
   });
 
-  factory Event.fromMap(Map<String, dynamic> map) {
-    EventType eventType = EventType.values.firstWhere(
-      (e) => e.toString() == 'EventType.' + map['eventType'],
-      orElse: () => EventType.public,
-    );
-
+  factory Event.fromMap(Map<String, dynamic> map, String id) {
     IconData icon = IconData(
       map['icon'] as int,
       fontFamily: 'CustomIcons',
     );
 
     return Event(
-      id: map['id'] as String,
+      id: id,
       name: map['name'] as String,
       description: map['description'] as String?,
       startDate: DateTime.parse(map['startDate'] as String),
@@ -56,9 +51,9 @@ class Event implements Entity {
         map['location']['longitude'] as double,
       ),
       icon: icon,
-      eventType: eventType,
+      eventType: EventType.values[map['eventType'] as int],
       eventLink: map['eventLink'] as String?,
-      maxParticipants: map['maxParticipants'] as int?,
+      maxParticipants: map['participants'] as int?,
       organizer: map['organizer'] as String,
     );
   }
@@ -77,10 +72,19 @@ class Event implements Entity {
         'longitude': location.longitude,
       },
       'icon': icon.codePoint,
-      'eventType': eventType.toString().split('.').last,
+      'eventType': eventType.index,
       'eventLink': eventLink,
       'participants': maxParticipants,
       'organizer': organizer,
     };
+  }
+
+  @override
+  String toString() {
+    return "id: $id \n name: $name \n descr: $description \n "
+        "startDate: $startDate \n endDate: $endDate \n address: $address \n "
+        "location: $location \n icon: $icon \n eventType: $eventType \n "
+        "eventLink: $eventLink \n maxParticipants: $maxParticipants \n "
+        "organizer: $organizer \n \n";
   }
 }
