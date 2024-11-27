@@ -38,7 +38,21 @@ class _MapWidgetState extends State<MapWidget> {
                       "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                   subdomains: const ['a', 'b', 'c'],
                 ),
-                MarkerLayer(markers: eventProvider.getLocations()),
+                MarkerLayer(
+                    markers: eventProvider.events.map((event) {
+                  return Marker(
+                    point: event.location,
+                    child: GestureDetector(
+                      onTap: () {
+                        print("Tapped${event.name}");
+                      },
+                      child: const Icon(
+                        Icons.location_pin,
+                        color: Colors.red,
+                      ),
+                    ),
+                  );
+                }).toList()),
               ],
             );
           },

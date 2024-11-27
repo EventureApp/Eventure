@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 
 import '../models/event.dart';
 import '../services/db/event_service.dart';
@@ -12,20 +11,6 @@ class EventProvider with ChangeNotifier {
 
   EventProvider() {
     fetchEvents();
-  }
-
-  List<Marker> getLocations() {
-    List<Marker> markers = [];
-    for (var event in _events) {
-      markers.add(Marker(
-        point: event.location,
-        child: const Icon(
-          Icons.location_pin,
-          color: Colors.red,
-        ),
-      ));
-    }
-    return markers;
   }
 
   Future<void> fetchEvents() async {
