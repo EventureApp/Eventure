@@ -1,11 +1,15 @@
-import 'dart:ffi';
+
 
 class EventFilter {
   String? searchInput;
-  Double range;
+  double range;
+  DateTime? startDate;
+  DateTime? endDate;
 
   EventFilter({
     this.searchInput,
     required this.range,
+    this.startDate,
+    this.endDate,
   });
 }
