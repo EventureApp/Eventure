@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../models/event.dart';
 import '../services/db/event_service.dart';
@@ -7,11 +8,15 @@ import '../services/db/event_service.dart';
 class EventProvider with ChangeNotifier {
   final EventService _eventService = EventService();
   List<Event> _events = [];
+  List<Event> _filteredEvents = [];
 
   List<Event> get events => _events;
 
+  List<Event> get filteredEvents => _filteredEvents;
+
   EventProvider() {
     fetchEvents();
+    _filteredEvents = _events;
   }
 
   List<Marker> getLocations() {
@@ -29,7 +34,8 @@ class EventProvider with ChangeNotifier {
   }
 
   Future<void> fetchEvents() async {
-    _events = await _eventService.getAll();
+    _events = await _eventService.getAllInRange(
+        const LatLng(49.4699765, 8.4819024), 1);
     notifyListeners();
   }
 
