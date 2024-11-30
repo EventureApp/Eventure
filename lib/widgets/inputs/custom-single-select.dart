@@ -39,11 +39,18 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Label mit optionalem Sternchen für Pflichtfelder
         Text(
           widget.label,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          style: TextStyle(
+            fontWeight: FontWeight.w400, // Einheitliche Schriftart wie beim DateTimePicker
+            fontSize: 16,
+            color: Colors.black, // Schwarzer Text für das Label
+          ),
         ),
         SizedBox(height: 8),
+
+        // Dropdown-Eingabefeld
         GestureDetector(
           onTap: () async {
             // Anzeigen eines modalen Dialogs mit den Auswahlmöglichkeiten
@@ -80,23 +87,41 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
               },
             );
           },
-          child: InputDecorator(
-            decoration: InputDecoration(
-              hintText: _selectedValue ?? 'Please select an option', // Textanzeige der Auswahl
-              border: OutlineInputBorder(),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Icon(Icons.arrow_drop_down),
-                  SizedBox(width: 8),
-                  Text(
-                    _selectedValue ?? 'Select option', // Anzeige der ausgewählten Option
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4), // Abgerundete Ecken
+              border: Border.all(
+                color: Colors.black.withOpacity(0.2), // Subtile Ränder
+                width: 1.5,
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1), // Subtiler Schatten
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    _selectedValue ?? 'Select option',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black, // Schwarzer Text für die Anzeige der Auswahl
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_drop_down,
+                  color: Colors.black.withOpacity(0.3), // Subtiles Icon
+                ),
+              ],
             ),
           ),
         ),

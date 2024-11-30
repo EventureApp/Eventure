@@ -43,11 +43,18 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Label mit optionalem Sternchen für Pflichtfelder
         Text(
           widget.label,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          style: TextStyle(
+            fontWeight: FontWeight.w400, // Einheitliche Schriftart wie beim DateTimePicker
+            fontSize: 16,
+            color: Colors.black, // Schwarzer Text für das Label
+          ),
         ),
         SizedBox(height: 8),
+
+        // Eingabefeld für die Auswahl
         GestureDetector(
           onTap: () async {
             // Anzeigen eines modalen Dialogs mit den Auswahlmöglichkeiten
@@ -60,12 +67,22 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: widget.data.keys.map((option) {
-                        return CheckboxListTile(
-                          title: Text(option),
-                          value: selectedValues.contains(option),
-                          onChanged: (bool? value) {
-                            _toggleSelection(option);
-                            Navigator.of(context).pop();
+                        return StatefulBuilder(
+                          builder: (context, setState) {
+                            return CheckboxListTile(
+                              title: Text(option),
+                              value: selectedValues.contains(option), // Überprüfe, ob der Wert ausgewählt ist
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  if (value == true) {
+                                    selectedValues.add(option); // Wert hinzufügen
+                                  } else {
+                                    selectedValues.remove(option); // Wert entfernen
+                                  }
+                                });
+                                widget.onChanged(selectedValues); // Rückgabe der neuen Liste
+                              },
+                            );
                           },
                         );
                       }).toList(),
@@ -83,27 +100,43 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
               },
             );
           },
-          child: InputDecorator(
-            decoration: InputDecoration(
-              hintText: selectedValues.isEmpty
-                  ? 'Please select options'
-                  : selectedValues.join(', '), // Anzeige der ausgewählten Werte
-              border: OutlineInputBorder(),
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4), // Abgerundete Ecken
+              border: Border.all(
+                color: Colors.black.withOpacity(0.2), // Subtile Ränder
+                width: 1.5,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1), // Subtiler Schatten
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                ),
+              ],
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Icon(Icons.arrow_drop_down),
-                  SizedBox(width: 8),
-                  Text(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
                     selectedValues.isEmpty
                         ? 'Select options'
                         : selectedValues.join(', '), // Anzeige der ausgewählten Optionen
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black, // Schwarzer Text für die Anzeige der Auswahl
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ],
-              ),
+                ),
+                Icon(
+                  Icons.arrow_drop_down,
+                  color: Colors.black.withOpacity(0.3), // Subtiles Icon
+                ),
+              ],
             ),
           ),
         ),

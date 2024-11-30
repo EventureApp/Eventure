@@ -33,21 +33,69 @@ class _CustomInputLineState extends State<CustomInputLine> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Label mit optionalem Sternchen für Pflichtfelder
         Text(
-          widget.required ? "${widget.label} *" : widget.label,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          widget.required ? widget.label + " *" : widget.label,
+          style: TextStyle(
+            fontWeight: FontWeight.w400, // Einheitliche Schriftart wie beim DateTimePicker
+            fontSize: 16,
+            color: Colors.black, // Schwarzer Text für das Label
+          ),
         ),
         SizedBox(height: 8),
-        TextFormField(
-          controller: _textController,
-          readOnly: !widget.editable,
-          decoration: InputDecoration(
-            hintText: widget.required ? 'Pflichtfeld' : 'Optional',
-            border: OutlineInputBorder(),
+
+        // Eingabefeld im gleichen Design wie der DateTimePicker
+        GestureDetector(
+          onTap: () {
+            if (widget.editable) {
+              // Hier könnte zusätzliches Verhalten hinzugefügt werden, wenn benötigt
+            }
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4), // Abgerundete Ecken
+              border: Border.all(
+                color: Colors.black.withOpacity(0.2), // Subtile Ränder ohne auffällige Farben
+                width: 1.5,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1), // Subtiler Schatten für Tiefe
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: _textController,
+                    readOnly: !widget.editable,
+                    decoration: InputDecoration(
+                      hintText: widget.required ? 'Pflichtfeld' : 'Optional',
+                      hintStyle: TextStyle(
+                        color: Colors.grey.shade600, // Grauer Hinweistext
+                        fontSize: 14,
+                      ),
+                      border: InputBorder.none, // Kein Border von InputDecoration
+                    ),
+                    onChanged: widget.editable
+                        ? (value) => widget.onChanged(value)
+                        : null, // Callback nur bei Editierbarkeit
+                  ),
+                ),
+                Icon(
+                  Icons.edit, // Optionales Bearbeitungs-Icon
+                  color: widget.editable ? Colors.black : Colors.grey,
+                  size: 20,
+                ),
+              ],
+            ),
           ),
-          onChanged: widget.editable
-              ? (value) => widget.onChanged(value)
-              : null, // Callback nur bei Editierbarkeit
         ),
       ],
     );

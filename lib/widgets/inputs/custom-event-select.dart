@@ -51,11 +51,18 @@ class _EventSelectState extends State<EventSelect> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Label mit optionalem Sternchen für Pflichtfelder
         Text(
           widget.label,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          style: TextStyle(
+            fontWeight: FontWeight.w400, // Einheitliche Schriftart wie beim DateTimePicker
+            fontSize: 16,
+            color: Colors.black, // Schwarzer Text für das Label
+          ),
         ),
         SizedBox(height: 8),
+
+        // Grid-Ansicht für Event-Icons und Namen
         GridView.builder(
           itemCount: widget.events.length,
           shrinkWrap: true,
@@ -72,41 +79,26 @@ class _EventSelectState extends State<EventSelect> {
 
             return GestureDetector(
               onTap: () => _toggleEventSelection(eventKey),
-              child: Container(
-                child: Column(
-                  children: [
-                    Icon(
-                      eventIcon, // Verwendet das Event-Icon aus der Map
-                      size: 50,
-                      color: isSelected ? Colors.blue : Colors.grey, // Farbänderung des Icons
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    eventIcon, // Verwendet das Event-Icon aus der Map
+                    size: 50,
+                    color: isSelected ? Colors.blue : Colors.grey, // Farbänderung des Icons
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    eventKey, // Anzeigen des Event-Namens
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: isSelected ? Colors.blue : Colors.black, // Farbänderung des Texts
                     ),
-                    SizedBox(height: 8),
-                    Text(
-                      eventKey, // Anzeigen des Event-Namens
-                      style: TextStyle(
-                        color: isSelected ? Colors.blue : Colors.black, // Farbänderung des Texts
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             );
           },
-        ),
-        SizedBox(height: 20),
-        // Anzeige der ausgewählten Events unter dem Label
-        Text(
-          'Selected Events:',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        Wrap(
-          spacing: 10,
-          children: _selectedEvents.map((eventKey) {
-            return Chip(
-              label: Text(eventKey),
-              backgroundColor: Colors.blue.withOpacity(0.2),
-            );
-          }).toList(),
         ),
       ],
     );

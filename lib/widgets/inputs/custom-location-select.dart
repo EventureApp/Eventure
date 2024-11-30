@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 class MapWidget extends StatefulWidget {
   final Function(LatLng) onTap;
@@ -21,11 +24,14 @@ class MapWidget extends StatefulWidget {
 
 class _MapWidgetState extends State<MapWidget> {
   late LatLng _currentLocation;
+  late MapController _mapController; // MapController für die Steuerung der Karte
 
   @override
   void initState() {
     super.initState();
+    // Sicherstellen, dass der initiale Standort immer einen gültigen Wert hat
     _currentLocation = widget.initialLocation;
+    _mapController = MapController(); // Initialisiere den MapController
   }
 
   @override
@@ -36,18 +42,23 @@ class _MapWidgetState extends State<MapWidget> {
       setState(() {
         _currentLocation = widget.initialLocation;
       });
+      // Bewege die Karte zum neuen Standort
+      _mapController.move(_currentLocation, 13.0); // Verschiebe die Karte und setze den Zoom-Level
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return FlutterMap(
+      mapController: _mapController, // MapController zur Steuerung der Karte
       options: MapOptions(
         initialCenter: _currentLocation,
         initialZoom: 13.0,
-        minZoom: 1.0,
-        maxZoom: 18.0,
-        interactionOptions: widget.isEditable ? InteractionOptions(flags: InteractiveFlag.all) : InteractionOptions(flags: InteractiveFlag.none),
+        minZoom: 13.0,
+        maxZoom: 100.0,
+        interactionOptions: widget.isEditable
+            ? InteractionOptions(flags: InteractiveFlag.all)
+            : InteractionOptions(flags: InteractiveFlag.none),
         onTap: widget.isEditable
             ? (tapPosition, point) {
           widget.onTap(point); // Den getippten Punkt zurückgeben
@@ -68,7 +79,7 @@ class _MapWidgetState extends State<MapWidget> {
               child: Icon(
                 Icons.location_on, // Marker Icon
                 size: 50,
-                color: widget.isEditable ? Colors.red : Colors.blue,
+                color: Colors.blue, // Markerfarbe anpassen
               ),
             ),
           ],
@@ -77,6 +88,7 @@ class _MapWidgetState extends State<MapWidget> {
     );
   }
 }
+
 
 class LocationSelectPopover extends StatefulWidget {
   final LatLng? initValue;
@@ -104,8 +116,8 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
   }
 
   void _submitLocation() {
-    widget.onChanged(_selectedLocation); // Call the callback to pass the selected location back
-    Navigator.pop(context); // Close the dialog after selecting
+    widget.onChanged(_selectedLocation); // Callback für den ausgewählten Standort
+    Navigator.pop(context); // Schließt das Dialogfenster
   }
 
   @override
@@ -130,9 +142,9 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
               width: double.infinity,
               height: 300,
               child: MapWidget(
-                initialLocation: _selectedLocation!,
+                initialLocation: _selectedLocation ?? LatLng(0.0, 0.0),
                 onTap: _updateLocation,
-                isEditable: true, // Allow editing the location
+                isEditable: true, // Karte editierbar
               ),
             ),
             SizedBox(height: 16),
@@ -214,8 +226,6 @@ class _LocationSelectState extends State<LocationSelect> {
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     setState(() {
       _selectedLocation = LatLng(position.latitude, position.longitude);
-      print(_selectedLocation);
-
       _isLoading = false;
     });
   }
@@ -225,12 +235,12 @@ class _LocationSelectState extends State<LocationSelect> {
       context: context,
       builder: (context) {
         return LocationSelectPopover(
-          initValue: _selectedLocation, // Initialisiert die Karte mit der aktuellen oder ausgewählten Position
+          initValue: _selectedLocation,
           onChanged: (newLocation) {
             setState(() {
-              _selectedLocation = newLocation; // Hier wird der Standort gesetzt
+              _selectedLocation = newLocation; // Aktualisieren der ausgewählten Position
             });
-            widget.onChanged(newLocation); // Neue Position an den Parent weitergeben
+            widget.onChanged(newLocation); // Callback an den übergeordneten Widget
           },
         );
       },
@@ -266,14 +276,14 @@ class _LocationSelectState extends State<LocationSelect> {
         Container(
           width: double.infinity,
           height: 300,
-          color: Colors.grey[300],
+          color: Colors.grey[200], // Hellerer Hintergrund für das Map-Widget
           child: _isLoading
               ? Center(child: CircularProgressIndicator())
               : MapWidget(
-            initialLocation: _selectedLocation!,
-            isEditable: false,
+            initialLocation: _selectedLocation ?? LatLng(0.0, 0.0),
+            isEditable: false, // Nicht bearbeitbar, da es nur zur Anzeige dient
             onTap: (LatLng) {
-              _openLocationPopover(); // Wenn die Karte getippt wird, öffne den Popover
+              _openLocationPopover(); // Öffnet den Popover zur Auswahl der Location
             },
           ),
         ),
@@ -297,7 +307,7 @@ class _LocationSelectState extends State<LocationSelect> {
         else
           Text(
             'No Location Selected',
-            style: TextStyle(color: Colors.grey, fontSize: 16),
+            style: TextStyle(color: Colors.grey),
           ),
       ],
     );

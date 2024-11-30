@@ -1,11 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class CustomDateAndTimePicker extends StatefulWidget {
   final String label;
   final String? initValue;
-  final Function(DateTime) onDateChanged; // Callback für ausgewählte Datum/Uhrzeit
+  final Function(DateTime) onDateChanged; // Callback für ausgewähltes Datum/Uhrzeit
   final bool required;
   final bool editable;
 
@@ -29,7 +28,7 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
   @override
   void initState() {
     super.initState();
-    // Verwende initValue oder aktuelles Datum, falls initValue null ist
+    // Wenn initValue vorhanden ist, verwenden wir es, andernfalls das aktuelle Datum
     _selectedDateTime = widget.initValue != null
         ? DateFormat('yyyy-MM-dd HH:mm').parse(widget.initValue!)
         : DateTime.now();
@@ -38,56 +37,48 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
     );
   }
 
-  // CupertinoDatePicker in einer ModalBottomSheet anzeigen
-  void _showCupertinoPicker(BuildContext context) {
-    showModalBottomSheet(
+  // Funktion, um den PopOver zu öffnen und Datum und Uhrzeit auszuwählen
+  void _showDateTimePicker(BuildContext context) async {
+    // Datumsauswahl
+    DateTime? pickedDate = await showDatePicker(
       context: context,
-      builder: (_) {
-        DateTime tempSelectedDate = _selectedDateTime;
-        return Container(
-          height: 300,
-          child: Column(
-            children: [
-              // Kopfzeile
-              Container(
-                padding: EdgeInsets.all(16),
-                child: Text(
-                  "Select Date and Time",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ),
-              Expanded(
-                child: CupertinoDatePicker(
-                  showDayOfWeek: true,
-                  minimumDate: widget.editable ? DateTime.now() : null,
-                  mode: CupertinoDatePickerMode.dateAndTime,
-                  initialDateTime: _selectedDateTime,
-                  onDateTimeChanged: (dateTime) {
-                    tempSelectedDate = dateTime;
-                  },
-                ),
-              ),
-              // Bestätigungsknopf
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    _selectedDateTime = tempSelectedDate;
-                    _dateController.text = DateFormat('yyyy-MM-dd HH:mm')
-                        .format(_selectedDateTime);
-                  });
-                  widget.onDateChanged(_selectedDateTime);
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  "Fertig",
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-            ],
+      initialDate: _selectedDateTime,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            primaryColor: Colors.black,
+            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.accent),
+            dialogBackgroundColor: Colors.white, // Weißer Hintergrund
           ),
+          child: child!,
         );
       },
     );
+
+    if (pickedDate != null) {
+      // Zeit-Auswahl
+      TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(_selectedDateTime),
+      );
+
+      if (pickedTime != null) {
+        setState(() {
+          // Kombiniere Datum und Uhrzeit
+          _selectedDateTime = DateTime(
+            pickedDate.year,
+            pickedDate.month,
+            pickedDate.day,
+            pickedTime.hour,
+            pickedTime.minute,
+          );
+          _dateController.text = DateFormat('yyyy-MM-dd HH:mm').format(_selectedDateTime);
+        });
+        widget.onDateChanged(_selectedDateTime);
+      }
+    }
   }
 
   @override
@@ -95,27 +86,57 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Label mit optionalem Sternchen für Pflichtfelder
         Text(
-          widget.required ? widget.label + " *" :widget.label,
+          widget.required ? widget.label + " *" : widget.label,
           style: TextStyle(
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w400, // Einfache, klare Schriftart
             fontSize: 16,
+            color: Colors.black, // Schwarzer Text für das Label
           ),
         ),
         SizedBox(height: 8),
-        TextFormField(
-          controller: _dateController,
-          readOnly: true, // Bearbeitung im Textfeld verhindern, da Picker genutzt wird
-          decoration: InputDecoration(
-            hintText: widget.required ? 'Pflichtfeld' : 'Optional',
-            border: OutlineInputBorder(),
-            suffixIcon: Icon(Icons.calendar_today), // Kalender-Icon
-          ),
+
+        // Eingabefeld für Datum und Uhrzeit
+        GestureDetector(
           onTap: () {
             if (widget.editable) {
-              _showCupertinoPicker(context);
+              _showDateTimePicker(context);
             }
           },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(
+                color: Colors.black.withOpacity(0.2), // Subtile Ränder ohne auffällige Farben
+                width: 1.5,
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    _dateController.text.isEmpty
+                        ? (widget.required ? "Pflichtfeld" : "Wählen Sie Datum und Uhrzeit")
+                        : _dateController.text,
+                    style: TextStyle(
+                      color: Colors.black, // Schwarzer Text für Datum/Uhrzeit
+                      fontSize: 16,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Icon(
+                  Icons.calendar_today,
+                  color: Colors.black.withOpacity(0.3), // Subtiles Icon
+                  size: 20,
+                ),
+              ],
+            ),
+          ),
         ),
       ],
     );
