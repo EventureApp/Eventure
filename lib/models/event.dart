@@ -79,12 +79,13 @@ class Event implements Entity {
     };
   }
 
+  //TODO: Organizer Namen hinzufügen für den Search.
+
   @override
   String toString() {
-    return "id: $id \n name: $name \n descr: $description \n "
-        "startDate: $startDate \n endDate: $endDate \n address: $address \n "
-        "location: $location \n icon: $icon \n eventType: $eventType \n "
-        "eventLink: $eventLink \n maxParticipants: $maxParticipants \n "
-        "organizer: $organizer \n \n";
+    String events = "$name \n $description \n "
+        "$startDate \n $endDate \n $address \n ";
+
+    return events;
   }
 }

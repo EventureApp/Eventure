@@ -3,12 +3,17 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../models/event.dart';
+import '../models/event_filter.dart';
 import '../services/db/event_service.dart';
 
 class EventProvider with ChangeNotifier {
+  static const double DEFAULT_RANGE = 10.0;
+
   final EventService _eventService = EventService();
   List<Event> _events = [];
   List<Event> _filteredEvents = [];
+
+  EventFilter _filter = EventFilter(range: DEFAULT_RANGE);
 
   List<Event> get events => _events;
 
@@ -35,7 +40,7 @@ class EventProvider with ChangeNotifier {
 
   Future<void> fetchEvents() async {
     _events = await _eventService.getAllInRange(
-        const LatLng(49.4699765, 8.4819024), 1);
+        const LatLng(49.4699765, 8.4819024), _filter.range);
     notifyListeners();
   }
 
@@ -43,6 +48,11 @@ class EventProvider with ChangeNotifier {
     await _eventService.create(event);
     _events.add(event);
     notifyListeners();
+  }
+
+  set filter(EventFilter filter) {
+    _filter = filter;
+    fetchEvents();
   }
 
   @override

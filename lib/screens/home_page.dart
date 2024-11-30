@@ -1,6 +1,9 @@
+import 'package:eventure/providers/event_provider.dart';
+import 'package:eventure/services/search_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../models/custom_icons.dart';
 import '../widgets/map.dart';
@@ -28,19 +31,28 @@ class _HomePageState extends State<HomePage> {
           child: Row(
             children: [
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: TextField(
-                    decoration: InputDecoration(
-                        hintText: 'Search...',
-                        prefixIcon: const Icon(Icons.search),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide.none,
-                        ),
-                        filled: true,
-                        fillColor: Colors.white),
-                  ),
+                child: Consumer<EventProvider>(
+                  builder: (context, eventProvider, child) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: TextField(
+                        decoration: InputDecoration(
+                            hintText: 'Search...',
+                            prefixIcon: const Icon(Icons.search),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30),
+                              borderSide: BorderSide.none,
+                            ),
+                            filled: true,
+                            fillColor: Colors.white),
+                        onChanged: (value) {
+                          int result = SearchService.search(
+                              eventProvider.toString(), value);
+                          print(eventProvider.events[result]);
+                        },
+                      ),
+                    );
+                  },
                 ),
               ),
               IconButton(
