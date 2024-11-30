@@ -51,12 +51,6 @@ class _InputScreenState extends State<InputScreen> {
     selectedMultiKeys = ['Option 1', 'Option 3']; // Initialwerte für MultiSelect
   }
 
-  void _onDateChanged(DateTime newDate) {
-    setState(() {
-      selectedDateTime = newDate;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
