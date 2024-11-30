@@ -26,18 +26,6 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
     selectedValues = List.from(widget.initValues); // Kopiere die initialen Werte
   }
 
-  // Funktion zum Umschalten der Auswahl (ab-/anwählen)
-  void _toggleSelection(String value) {
-    setState(() {
-      if (selectedValues.contains(value)) {
-        selectedValues.remove(value); // Wenn der Wert bereits ausgewählt wurde, entfernen
-      } else {
-        selectedValues.add(value); // Wenn der Wert nicht ausgewählt wurde, hinzufügen
-      }
-    });
-    widget.onChanged(selectedValues); // Rückgabe der neuen Liste der ausgewählten Werte
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
