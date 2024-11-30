@@ -26,6 +26,7 @@ class _MapWidgetState extends State<MapWidget> {
   void initState() {
     super.initState();
     _getCurrentLocation(); // Hole die aktuelle Position
+    tappedCoordinates = widget.initialLocation; // Setze die initiale Position (wenn vorhanden)
   }
 
   // Funktion, um den aktuellen Standort zu holen
@@ -54,7 +55,7 @@ class _MapWidgetState extends State<MapWidget> {
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     setState(() {
       currentLocation = LatLng(position.latitude, position.longitude);
-      // Setze den aktuellen Standort als Initialwert
+      // Setze den aktuellen Standort als Initialwert, falls noch kein initialLocation übergeben wurde
       if (widget.initialLocation == null) {
         mapController.move(currentLocation!, 13.0);
       }
@@ -66,11 +67,15 @@ class _MapWidgetState extends State<MapWidget> {
     return FlutterMap(
       mapController: mapController,
       options: MapOptions(
-        initialCenter: currentLocation ?? widget.initialLocation ?? LatLng(49.4699765, 8.4819024), // Standardwert
-        minZoom: 13.0,
+        initialCenter: tappedCoordinates ?? widget.initialLocation ?? LatLng(49.4699765, 8.4819024), // Standardwert
+        initialZoom: 13.0,
+        minZoom: 1.0,
         maxZoom: 18.0,
         onTap: (tapPosition, point) {
           widget.onTap(point); // Den getippten Punkt zurückgeben
+          setState(() {
+            tappedCoordinates = point; // Die angeklickte Position als neue Markerposition setzen
+          });
         },
       ),
       children: [
@@ -275,4 +280,8 @@ class _LocationSelectState extends State<LocationSelect> {
       ],
     );
   }
+}
+
+void main() {
+  runApp(MaterialApp(home: Scaffold(body: LocationSelect(label: 'Wählen Sie einen Standort', onChanged: (location) {}))));
 }
