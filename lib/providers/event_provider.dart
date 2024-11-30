@@ -20,7 +20,7 @@ class EventProvider with ChangeNotifier {
   List<Event> get filteredEvents => _filteredEvents;
 
   EventProvider() {
-    fetchEvents();
+    _fetchEvents();
   }
 
   List<Marker> getLocations() {
@@ -37,7 +37,7 @@ class EventProvider with ChangeNotifier {
     return markers;
   }
 
-  Future<void> fetchEvents() async {
+  Future<void> _fetchEvents() async {
     _events = await _eventService.getAllInRange(
         const LatLng(49.4699765, 8.4819024), _filter.range);
     _filteredEvents = List.from(_events);
