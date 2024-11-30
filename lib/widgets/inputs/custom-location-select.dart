@@ -3,118 +3,52 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 
-class MapWidget extends StatefulWidget {
+class MapWidget extends StatelessWidget {
   final Function(LatLng) onTap;
-  final LatLng? initialLocation;
+  final LatLng initialLocation;
+  final bool isEditable; // Flag, um zu entscheiden, ob die Karte bearbeitbar ist
 
   const MapWidget({
     super.key,
     required this.onTap,
-    this.initialLocation,
+    required this.initialLocation,
+    this.isEditable = false,
   });
-
-  @override
-  _MapWidgetState createState() => _MapWidgetState();
-}
-
-class _MapWidgetState extends State<MapWidget> {
-  LatLng? tappedCoordinates; // Die Position, die der Benutzer auswählt
-  LatLng? currentLocation; // Der initiale Standort
-  MapController mapController = MapController();
-
-  @override
-  void initState() {
-    super.initState();
-    _getCurrentLocation(); // Hole die aktuelle Position
-    tappedCoordinates = widget.initialLocation; // Setze die initiale Position (wenn vorhanden)
-  }
-
-  // Funktion, um den aktuellen Standort zu holen
-  void _getCurrentLocation() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Überprüfen, ob Standortdienste aktiviert sind
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return;
-    }
-
-    // Berechtigungen prüfen
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.deniedForever) {
-      return;
-    } else if (permission == LocationPermission.denied || permission == LocationPermission.whileInUse) {
-      permission = await Geolocator.requestPermission();
-      if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
-        return;
-      }
-    }
-
-    // Hole den aktuellen Standort
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    setState(() {
-      currentLocation = LatLng(position.latitude, position.longitude);
-      // Setze den aktuellen Standort als Initialwert, falls noch kein initialLocation übergeben wurde
-      if (widget.initialLocation == null) {
-        mapController.move(currentLocation!, 13.0);
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return FlutterMap(
-      mapController: mapController,
       options: MapOptions(
-        initialCenter: tappedCoordinates ?? widget.initialLocation ?? LatLng(49.4699765, 8.4819024), // Standardwert
+        initialCenter: initialLocation,
         initialZoom: 13.0,
         minZoom: 1.0,
         maxZoom: 18.0,
-        onTap: (tapPosition, point) {
-          widget.onTap(point); // Den getippten Punkt zurückgeben
-          setState(() {
-            tappedCoordinates = point; // Die angeklickte Position als neue Markerposition setzen
-          });
-        },
+        interactionOptions: isEditable ? InteractionOptions(flags: InteractiveFlag.all) : InteractionOptions(flags: InteractiveFlag.none),
+        onTap: isEditable
+            ? (tapPosition, point) {
+          onTap(point); // Den getippten Punkt zurückgeben
+        }
+            : null, // Wenn nicht editierbar, keine Interaktion
       ),
       children: [
         TileLayer(
           urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
           subdomains: const ['a', 'b', 'c'],
         ),
-        // Zeige den benutzerdefinierten Marker (der ausgewählte Punkt)
-        if (tappedCoordinates != null)
-          MarkerLayer(
-            markers: [
-              Marker(
-                point: tappedCoordinates!,
-                width: 50,
-                height: 50,
-                child: Icon(
-                  Icons.location_on, // Benutzerdefiniertes Icon für den Marker
-                  size: 50,
-                  color: Colors.red,
-                ),
+        MarkerLayer(
+          markers: [
+            Marker(
+              point: initialLocation,
+              width: 50,
+              height: 50,
+              child: Icon(
+                Icons.location_on, // Marker Icon
+                size: 50,
+                color: isEditable ? Colors.red : Colors.blue,
               ),
-            ],
-          ),
-        // Zeige den aktuellen Standort als Marker (falls der Benutzer diesen noch nicht gesetzt hat)
-        if (currentLocation != null && tappedCoordinates == null)
-          MarkerLayer(
-            markers: [
-              Marker(
-                point: currentLocation!,
-                width: 50,
-                height: 50,
-                child: Icon(
-                  Icons.location_on, // Nutzer-Standort als Marker
-                  size: 50,
-                  color: Colors.blue,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -136,7 +70,7 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
   @override
   void initState() {
     super.initState();
-    _selectedLocation = widget.initValue; // Setze den initWert des Markers
+    _selectedLocation = widget.initValue;
   }
 
   void _updateLocation(LatLng? location) {
@@ -172,8 +106,9 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
               width: double.infinity,
               height: 300,
               child: MapWidget(
-                initialLocation: _selectedLocation, // Initialisiert die Karte mit der aktuellen oder ausgewählten Position
+                initialLocation: _selectedLocation!, // Initialisiert die Karte mit der aktuellen oder ausgewählten Position
                 onTap: _updateLocation,
+                isEditable: true, // Die Karte im PopUp ist editierbar
               ),
             ),
             SizedBox(height: 16),
@@ -205,11 +140,58 @@ class LocationSelect extends StatefulWidget {
 
 class _LocationSelectState extends State<LocationSelect> {
   LatLng? _selectedLocation;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     _selectedLocation = widget.initValue;
+    if (_selectedLocation == null) {
+      _getCurrentLocation();
+    }
+  }
+
+  // Funktion, um den aktuellen Standort zu holen
+  void _getCurrentLocation() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Überprüfen, ob Standortdienste aktiviert sind
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
+    // Berechtigungen prüfen
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.deniedForever) {
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    } else if (permission == LocationPermission.denied || permission == LocationPermission.whileInUse) {
+      permission = await Geolocator.requestPermission();
+      if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
+    }
+
+    // Hole den aktuellen Standort
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    setState(() {
+      _selectedLocation = LatLng(position.latitude, position.longitude);
+      _isLoading = false;
+    });
   }
 
   void _openLocationPopover() {
@@ -245,14 +227,19 @@ class _LocationSelectState extends State<LocationSelect> {
             width: double.infinity,
             height: 300,
             color: Colors.grey[300],
-            child: _selectedLocation != null
-                ? Center(
-              child: Text(
-                'Lat: ${_selectedLocation!.latitude}, Lng: ${_selectedLocation!.longitude}',
-                style: TextStyle(fontSize: 16),
-              ),
-            )
-                : Center(child: Text('Tap to select location')),
+            child: _isLoading
+                ? Center(child: CircularProgressIndicator())
+                : MapWidget(
+              initialLocation: _selectedLocation ??
+                  LatLng(49.4699765, 8.4819024), // Default Location (z.B. in der Nähe)
+              onTap: (LatLng point) {
+                setState(() {
+                  _selectedLocation = point;
+                });
+                widget.onChanged(point);
+              },
+              isEditable: false, // Im Select-Modus ist die Karte nicht editierbar
+            ),
           ),
         ),
         SizedBox(height: 16),
@@ -280,8 +267,4 @@ class _LocationSelectState extends State<LocationSelect> {
       ],
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(home: Scaffold(body: LocationSelect(label: 'Wählen Sie einen Standort', onChanged: (location) {}))));
 }
