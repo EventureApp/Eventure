@@ -21,12 +21,11 @@ class EventProvider with ChangeNotifier {
 
   EventProvider() {
     fetchEvents();
-    _filteredEvents = _events;
   }
 
   List<Marker> getLocations() {
     List<Marker> markers = [];
-    for (var event in _events) {
+    for (var event in _filteredEvents) {
       markers.add(Marker(
         point: event.location,
         child: const Icon(
@@ -41,6 +40,7 @@ class EventProvider with ChangeNotifier {
   Future<void> fetchEvents() async {
     _events = await _eventService.getAllInRange(
         const LatLng(49.4699765, 8.4819024), _filter.range);
+    _filteredEvents = List.from(_events);
     notifyListeners();
   }
 
@@ -50,9 +50,27 @@ class EventProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  set filter(EventFilter filter) {
-    _filter = filter;
-    fetchEvents();
+  void setSearchString(String searchString) {
+    _filter.searchInput = searchString;
+    _applyFilter();
+  }
+
+  void _applyFilter() {
+    _filteredEvents = events.where((event) {
+      final matchesSearch = _filter.searchInput == null ||
+          event.name.toLowerCase().contains(_filter.searchInput!.toLowerCase());
+
+      final matchesDateRange = (_filter.startDate == null ||
+              event.endDate.isAfter(_filter.startDate!) ||
+              event.endDate.isAtSameMomentAs(_filter.startDate!)) &&
+          (_filter.endDate == null ||
+              event.startDate.isBefore(_filter.endDate!) ||
+              event.startDate.isAtSameMomentAs(_filter.endDate!));
+
+      return matchesSearch && matchesDateRange;
+    }).toList();
+
+    notifyListeners();
   }
 
   @override
