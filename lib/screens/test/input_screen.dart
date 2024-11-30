@@ -1,5 +1,9 @@
-import 'package:eventure/widgets/inputs/custom-event-select.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:intl/intl.dart';
+
+import 'package:eventure/widgets/inputs/custom-event-select.dart';
+import 'package:eventure/widgets/inputs/custom-location-select.dart';  // Dein LocationSelect importieren
 import 'package:eventure/widgets/inputs/custom_input_line.dart';
 import 'package:eventure/widgets/inputs/custom_date_time_picker.dart';
 import 'package:eventure/widgets/inputs/custom_discription_input.dart';
@@ -33,6 +37,7 @@ class _InputScreenState extends State<InputScreen> {
   };
 
   List<String> selectedEvents = ['Event 1', 'Event 3']; // Initialwerte für EventSelect
+  LatLng? _location = null;
 
   @override
   void initState() {
@@ -54,14 +59,14 @@ class _InputScreenState extends State<InputScreen> {
       appBar: AppBar(title: Text('Input Screen')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(  // Hier wird der SingleChildScrollView hinzugefügt
+        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Custom Date and Time Picker
               CustomDateAndTimePicker(
                 label: 'Start Date and Time',
-                initValue: '2024-11-21 16:00', // Beispielwert
+                initValue: DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now()), // Beispielwert
                 required: true,
                 editable: true,
                 onDateChanged: (dateTime) {
@@ -72,7 +77,7 @@ class _InputScreenState extends State<InputScreen> {
               // Zweiter Custom Date and Time Picker
               CustomDateAndTimePicker(
                 label: 'End Date and Time',
-                initValue: '2024-11-22 10:00', // Beispielwert
+                initValue: DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now()), // Datum richtig formatieren
                 required: false,
                 editable: true,
                 onDateChanged: (dateTime) {
@@ -127,18 +132,20 @@ class _InputScreenState extends State<InputScreen> {
                   print("Ausgewählte Optionen: $selectedKeys");
                 },
               ),
-            EventSelect(
-              label: 'Select Multi Events',
-              initValues: selectedEvents, // Liste der initial ausgewählten Events
-              events: eventIcons, // Die Map mit Events und den Flutter-Icons
-              isMultiSelect: true, // MultiSelect aktiv
-              onChanged: (selectedEvents) {
-                setState(() {
-                  this.selectedEvents = selectedEvents;
-                });
-                print("Selected Events: $selectedEvents");
-              },
-            ),
+
+              // Event Selects
+              EventSelect(
+                label: 'Select Multi Events',
+                initValues: selectedEvents, // Liste der initial ausgewählten Events
+                events: eventIcons, // Die Map mit Events und den Flutter-Icons
+                isMultiSelect: true, // MultiSelect aktiv
+                onChanged: (selectedEvents) {
+                  setState(() {
+                    this.selectedEvents = selectedEvents;
+                  });
+                  print("Selected Events: $selectedEvents");
+                },
+              ),
               EventSelect(
                 label: 'Select Single Event',
                 initValues: selectedEvents, // Liste der initial ausgewählten Events (nur eines)
@@ -152,10 +159,20 @@ class _InputScreenState extends State<InputScreen> {
                 },
               ),
 
-
               const SizedBox(height: 20),
 
-              // Submit Button
+              // Location Select
+              LocationSelect(
+                label: "Wähle location: ", // Das Label für das Widget
+                initValue: this._location, // Initialer Wert (Falls vorhanden)
+                isEditable: false,
+                onChanged: (location) {
+                  setState(() {
+                    _location = location;
+                  });
+                  print("Ausgewählte Location: $location"); // Callback zum Aktualisieren der Location
+                }, // Callback zum Aktualisieren der Location
+              ),
               ElevatedButton(
                 onPressed: () {
                   // Beispielaktion: Weiterverarbeitung der Daten
@@ -165,7 +182,6 @@ class _InputScreenState extends State<InputScreen> {
                 },
                 child: Text("Submit"),
               ),
-
             ],
           ),
         ),
@@ -173,3 +189,4 @@ class _InputScreenState extends State<InputScreen> {
     );
   }
 }
+

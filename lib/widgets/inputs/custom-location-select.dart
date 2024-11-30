@@ -2,20 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
 
 class MapWidget extends StatefulWidget {
   final Function(LatLng) onTap;
   final LatLng initialLocation;
   final bool isEditable; // Flag, um zu entscheiden, ob die Karte bearbeitbar ist
+  final bool isMandatory; // Flag, ob der Standort verpflichtend ist
 
   const MapWidget({
     super.key,
     required this.onTap,
     required this.initialLocation,
     this.isEditable = false,
+    this.isMandatory = false,
   });
 
   @override
@@ -79,7 +78,7 @@ class _MapWidgetState extends State<MapWidget> {
               child: Icon(
                 Icons.location_on, // Marker Icon
                 size: 50,
-                color: Colors.blue, // Markerfarbe anpassen
+                color: widget.isEditable ? Colors.red : Colors.blue, // Wenn editierbar, rot, sonst blau
               ),
             ),
           ],
@@ -89,12 +88,16 @@ class _MapWidgetState extends State<MapWidget> {
   }
 }
 
-
 class LocationSelectPopover extends StatefulWidget {
   final LatLng? initValue;
   final Function(LatLng?) onChanged;
+  final bool isMandatory; // Flag, ob der Standort verpflichtend ist
 
-  LocationSelectPopover({required this.onChanged, this.initValue});
+  LocationSelectPopover({
+    required this.onChanged,
+    this.initValue,
+    this.isMandatory = false,
+  });
 
   @override
   _LocationSelectPopoverState createState() => _LocationSelectPopoverState();
@@ -116,8 +119,16 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
   }
 
   void _submitLocation() {
-    widget.onChanged(_selectedLocation); // Callback für den ausgewählten Standort
-    Navigator.pop(context); // Schließt das Dialogfenster
+    if (_selectedLocation != null || !widget.isMandatory) {
+      widget.onChanged(_selectedLocation); // Callback für den ausgewählten Standort
+      Navigator.pop(context); // Schließt das Dialogfenster
+    } else {
+      // Wenn der Standort erforderlich ist und nicht gesetzt wurde, eine Warnung anzeigen
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Please select a location!'),
+        backgroundColor: Colors.blue,
+      ));
+    }
   }
 
   @override
@@ -163,11 +174,15 @@ class LocationSelect extends StatefulWidget {
   final String label;
   final LatLng? initValue;
   final Function(LatLng?) onChanged;
+  final bool isMandatory; // Flag, ob der Standort verpflichtend ist
+  final bool isEditable; // Flag, ob die Karte bearbeitbar ist
 
   LocationSelect({
     required this.label,
     this.initValue,
     required this.onChanged,
+    this.isMandatory = false,
+    this.isEditable = true, // Standardmäßig auf `true` gesetzt
   });
 
   @override
@@ -231,20 +246,23 @@ class _LocationSelectState extends State<LocationSelect> {
   }
 
   void _openLocationPopover() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return LocationSelectPopover(
-          initValue: _selectedLocation,
-          onChanged: (newLocation) {
-            setState(() {
-              _selectedLocation = newLocation; // Aktualisieren der ausgewählten Position
-            });
-            widget.onChanged(newLocation); // Callback an den übergeordneten Widget
-          },
-        );
-      },
-    );
+    if (widget.isEditable) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return LocationSelectPopover(
+            initValue: _selectedLocation,
+            onChanged: (newLocation) {
+              setState(() {
+                _selectedLocation = newLocation; // Aktualisieren der ausgewählten Position
+              });
+              widget.onChanged(newLocation); // Callback an den übergeordneten Widget
+            },
+            isMandatory: widget.isMandatory, // Standort verpflichtend?
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -261,13 +279,11 @@ class _LocationSelectState extends State<LocationSelect> {
               ),
             ),
             GestureDetector(
-              onTap: () {
-                _openLocationPopover(); // Öffnet den Popover zur Auswahl der Location
-              },
+              onTap: widget.isEditable ? _openLocationPopover : null, // Nur klickbar wenn `isEditable` true
               child: Icon(
                 Icons.map,
                 size: 24,
-                color: Colors.blue, // Farbe des Icons
+                color: widget.isEditable ? Colors.blue : Colors.grey, // Ausgegraut wenn nicht bearbeitbar
               ),
             ),
           ],
@@ -281,10 +297,11 @@ class _LocationSelectState extends State<LocationSelect> {
               ? Center(child: CircularProgressIndicator())
               : MapWidget(
             initialLocation: _selectedLocation ?? LatLng(0.0, 0.0),
-            isEditable: false, // Nicht bearbeitbar, da es nur zur Anzeige dient
+            isEditable: widget.isEditable, // Karte bearbeitbar je nach Flag
             onTap: (LatLng) {
               _openLocationPopover(); // Öffnet den Popover zur Auswahl der Location
             },
+            isMandatory: widget.isMandatory, // Pflichtfeld Flag
           ),
         ),
         SizedBox(height: 16),
@@ -303,6 +320,11 @@ class _LocationSelectState extends State<LocationSelect> {
                 backgroundColor: Colors.blue.withOpacity(0.2),
               ),
             ],
+          )
+        else if (widget.isMandatory)
+          Text(
+            'No Location Selected! This field is mandatory.',
+            style: TextStyle(color: Colors.red),
           )
         else
           Text(
