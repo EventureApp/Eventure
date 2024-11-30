@@ -1,8 +1,8 @@
 import 'package:eventure/services/db/models/entity.dart';
+import 'package:eventure/statics/event_types.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:latlong2/latlong.dart';
-
-enum EventType { public, friendsOnly }
+import '../statics/event_visibility.dart';
 
 class Event implements Entity {
   final String? id;
@@ -14,11 +14,12 @@ class Event implements Entity {
   final LatLng location;
   final IconData icon;
   final EventType eventType;
+  final EventVisability visability;
   final String? eventLink;
   final int? maxParticipants;
   final String? organizer;
 
-  Event({
+  Event( {
     this.id,
     required this.name,
     this.description,
@@ -28,6 +29,7 @@ class Event implements Entity {
     required this.location,
     required this.icon,
     required this.eventType,
+    required this.visability,
     this.eventLink,
     this.maxParticipants,
     required this.organizer,
@@ -36,7 +38,12 @@ class Event implements Entity {
   factory Event.fromMap(Map<String, dynamic> map) {
     EventType eventType = EventType.values.firstWhere(
       (e) => e.toString() == 'EventType.' + map['eventType'],
-      orElse: () => EventType.public,
+      orElse: () => EventType.someThingElse,
+    );
+
+    EventVisability visabilityEvent = EventVisability.values.firstWhere(
+      (e) => e.toString() == 'EventVisability.' + map['visability'],
+      orElse: () => EventVisability.public,
     );
 
     IconData icon = IconData(
@@ -60,6 +67,7 @@ class Event implements Entity {
       eventLink: map['eventLink'] as String?,
       maxParticipants: map['maxParticipants'] as int?,
       organizer: map['organizer'] as String,
+      visability: visabilityEvent,
     );
   }
 
@@ -81,6 +89,7 @@ class Event implements Entity {
       'eventLink': eventLink,
       'participants': maxParticipants,
       'organizer': organizer,
+      'visability': visability.toString().split('.').last,
     };
   }
 }

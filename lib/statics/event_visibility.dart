@@ -1,0 +1,3 @@
+
+
+enum EventVisability { public, friendsOnly }

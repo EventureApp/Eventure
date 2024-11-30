@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eventure/models/event.dart';
+import 'package:eventure/statics/event_visibility.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../statics/event_types.dart';
 import 'models/db_service.dart';
 
 class EventService implements DatabaseService<Event> {
@@ -21,7 +23,11 @@ class EventService implements DatabaseService<Event> {
 
       final eventType = EventType.values.firstWhere(
         (e) => e.toString() == 'EventType.' + data['eventType'],
-        orElse: () => EventType.public,
+        orElse: () => EventType.someThingElse,
+      );
+      final EventVisability visabilityEvent = EventVisability.values.firstWhere(
+        (e) => e.toString() == 'EventVisability.' + data['visability'],
+        orElse: () => EventVisability.public,
       );
 
       final icon = IconData(
@@ -45,6 +51,7 @@ class EventService implements DatabaseService<Event> {
         eventLink: data['eventLink'] as String?,
         maxParticipants: data['participants'] as int?,
         organizer: data['organizer'] as String,
+        visability: visabilityEvent
       );
     }).toList();
   }
