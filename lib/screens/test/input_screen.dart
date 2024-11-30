@@ -7,7 +7,9 @@ import 'package:eventure/widgets/inputs/custom-location-select.dart';  // Dein L
 import 'package:eventure/widgets/inputs/custom_input_line.dart';
 import 'package:eventure/widgets/inputs/custom_date_time_picker.dart';
 import 'package:eventure/widgets/inputs/custom_discription_input.dart';
+import '../../widgets/inputs/custom-link-select.dart';
 import '../../widgets/inputs/custom-multi-select.dart';
+import '../../widgets/inputs/custom-number-select.dart';
 import '../../widgets/inputs/custom-single-select.dart'; // Angenommen, CustomSelect ist der Name der Dropdown-Komponente
 
 class InputScreen extends StatefulWidget {
@@ -38,6 +40,8 @@ class _InputScreenState extends State<InputScreen> {
 
   List<String> selectedEvents = ['Event 1', 'Event 3']; // Initialwerte für EventSelect
   LatLng? _location = null;
+  int? _age;
+  String? _website;
 
   @override
   void initState() {
@@ -182,6 +186,28 @@ class _InputScreenState extends State<InputScreen> {
                 },
                 child: Text("Submit"),
               ),
+              CustomNumberInput(
+                label: 'Anzahl der Teilnehmer ',
+                isMandatory: true, // Pflichtfeld
+                hint: 'Enter your age',
+                onChanged: (value) {
+                  setState(() {
+                    _age = value; // Alter setzen
+                  });
+                },
+              ),
+
+              CustomLinkInput(
+                label: 'Website',
+                isMandatory: false, // Optionales Feld
+                hint: 'Enter your website URL',
+                onChanged: (value) {
+                  setState(() {
+                    _website = value; // Website-Link setzen
+                  });
+                },
+              ),
+
             ],
           ),
         ),
