@@ -40,6 +40,7 @@ class EventProvider with ChangeNotifier {
   Future<void> _fetchEvents() async {
     _events = await _eventService.getAllInRange(
         const LatLng(49.4699765, 8.4819024), _filter.range);
+    print(this);
     _filteredEvents = List.from(_events);
     notifyListeners();
   }
@@ -58,7 +59,16 @@ class EventProvider with ChangeNotifier {
   void _applyFilter() {
     _filteredEvents = events.where((event) {
       final matchesSearch = _filter.searchInput == null ||
-          event.name.toLowerCase().contains(_filter.searchInput!.toLowerCase());
+          (event.name
+              .toLowerCase()
+              .contains(_filter.searchInput!.toLowerCase())) ||
+          (event.address
+              .toLowerCase()
+              .contains(_filter.searchInput!.toLowerCase())) ||
+          (event.description
+                  ?.toLowerCase()
+                  .contains(_filter.searchInput!.toLowerCase()) ??
+              false);
 
       final matchesDateRange = (_filter.startDate == null ||
               event.endDate.isAfter(_filter.startDate!) ||
