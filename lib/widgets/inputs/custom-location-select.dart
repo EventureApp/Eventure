@@ -3,7 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 
-class MapWidget extends StatelessWidget {
+class MapWidget extends StatefulWidget {
   final Function(LatLng) onTap;
   final LatLng initialLocation;
   final bool isEditable; // Flag, um zu entscheiden, ob die Karte bearbeitbar ist
@@ -16,17 +16,41 @@ class MapWidget extends StatelessWidget {
   });
 
   @override
+  _MapWidgetState createState() => _MapWidgetState();
+}
+
+class _MapWidgetState extends State<MapWidget> {
+  late LatLng _currentLocation;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentLocation = widget.initialLocation;
+  }
+
+  @override
+  void didUpdateWidget(covariant MapWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Wenn sich der initiale Standort ändert, aktualisieren wir den Standort der Karte.
+    if (widget.initialLocation != oldWidget.initialLocation) {
+      setState(() {
+        _currentLocation = widget.initialLocation;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FlutterMap(
       options: MapOptions(
-        initialCenter: initialLocation,
+        initialCenter: _currentLocation,
         initialZoom: 13.0,
         minZoom: 1.0,
         maxZoom: 18.0,
-        interactionOptions: isEditable ? InteractionOptions(flags: InteractiveFlag.all) : InteractionOptions(flags: InteractiveFlag.none),
-        onTap: isEditable
+        interactionOptions: widget.isEditable ? InteractionOptions(flags: InteractiveFlag.all) : InteractionOptions(flags: InteractiveFlag.none),
+        onTap: widget.isEditable
             ? (tapPosition, point) {
-          onTap(point); // Den getippten Punkt zurückgeben
+          widget.onTap(point); // Den getippten Punkt zurückgeben
         }
             : null, // Wenn nicht editierbar, keine Interaktion
       ),
@@ -38,13 +62,13 @@ class MapWidget extends StatelessWidget {
         MarkerLayer(
           markers: [
             Marker(
-              point: initialLocation,
+              point: _currentLocation,
               width: 50,
               height: 50,
               child: Icon(
                 Icons.location_on, // Marker Icon
                 size: 50,
-                color: isEditable ? Colors.red : Colors.blue,
+                color: widget.isEditable ? Colors.red : Colors.blue,
               ),
             ),
           ],
@@ -70,7 +94,7 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
   @override
   void initState() {
     super.initState();
-    _selectedLocation = widget.initValue;
+    _selectedLocation = widget.initValue; // Default fallback value
   }
 
   void _updateLocation(LatLng? location) {
@@ -80,8 +104,8 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
   }
 
   void _submitLocation() {
-    widget.onChanged(_selectedLocation);
-    Navigator.pop(context);
+    widget.onChanged(_selectedLocation); // Call the callback to pass the selected location back
+    Navigator.pop(context); // Close the dialog after selecting
   }
 
   @override
@@ -106,9 +130,9 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
               width: double.infinity,
               height: 300,
               child: MapWidget(
-                initialLocation: _selectedLocation!, // Initialisiert die Karte mit der aktuellen oder ausgewählten Position
+                initialLocation: _selectedLocation!,
                 onTap: _updateLocation,
-                isEditable: true, // Die Karte im PopUp ist editierbar
+                isEditable: true, // Allow editing the location
               ),
             ),
             SizedBox(height: 16),
@@ -190,6 +214,8 @@ class _LocationSelectState extends State<LocationSelect> {
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     setState(() {
       _selectedLocation = LatLng(position.latitude, position.longitude);
+      print(_selectedLocation);
+
       _isLoading = false;
     });
   }
@@ -202,9 +228,9 @@ class _LocationSelectState extends State<LocationSelect> {
           initValue: _selectedLocation, // Initialisiert die Karte mit der aktuellen oder ausgewählten Position
           onChanged: (newLocation) {
             setState(() {
-              _selectedLocation = newLocation;
+              _selectedLocation = newLocation; // Hier wird der Standort gesetzt
             });
-            widget.onChanged(newLocation); // Ändere die ausgewählte Position
+            widget.onChanged(newLocation); // Neue Position an den Parent weitergeben
           },
         );
       },
@@ -216,30 +242,39 @@ class _LocationSelectState extends State<LocationSelect> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.label,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                widget.label,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                _openLocationPopover(); // Öffnet den Popover zur Auswahl der Location
+              },
+              child: Icon(
+                Icons.map,
+                size: 24,
+                color: Colors.blue, // Farbe des Icons
+              ),
+            ),
+          ],
         ),
         SizedBox(height: 8),
-        GestureDetector(
-          onTap: _openLocationPopover,
-          child: Container(
-            width: double.infinity,
-            height: 300,
-            color: Colors.grey[300],
-            child: _isLoading
-                ? Center(child: CircularProgressIndicator())
-                : MapWidget(
-              initialLocation: _selectedLocation ??
-                  LatLng(49.4699765, 8.4819024), // Default Location (z.B. in der Nähe)
-              onTap: (LatLng point) {
-                setState(() {
-                  _selectedLocation = point;
-                });
-                widget.onChanged(point);
-              },
-              isEditable: false, // Im Select-Modus ist die Karte nicht editierbar
-            ),
+        Container(
+          width: double.infinity,
+          height: 300,
+          color: Colors.grey[300],
+          child: _isLoading
+              ? Center(child: CircularProgressIndicator())
+              : MapWidget(
+            initialLocation: _selectedLocation!,
+            isEditable: false,
+            onTap: (LatLng) {
+              _openLocationPopover(); // Wenn die Karte getippt wird, öffne den Popover
+            },
           ),
         ),
         SizedBox(height: 16),
