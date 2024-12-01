@@ -6,7 +6,9 @@ class LocationSelectPopover extends StatefulWidget {
   final LatLng? initValue;
   final Function(LatLng?) onChanged;
 
-  LocationSelectPopover({required this.onChanged, this.initValue});
+  const LocationSelectPopover(
+      {Key? key, required this.onChanged, this.initValue})
+      : super(key: key);
 
   @override
   _LocationSelectPopoverState createState() => _LocationSelectPopoverState();
@@ -29,7 +31,7 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
 
   void _submitLocation() {
     widget.onChanged(_selectedLocation);
-    Navigator.pop(context);  // PopOver schließen
+    Navigator.pop(context); // Close PopOver
   }
 
   @override
@@ -41,25 +43,25 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Schließen-Button oben links
+            // Close button at the top left
             Align(
               alignment: Alignment.topLeft,
               child: IconButton(
-                icon: Icon(Icons.close),
+                icon: const Icon(Icons.close),
                 onPressed: () {
-                  Navigator.pop(context);  // PopOver schließen
+                  Navigator.pop(context); // Close PopOver
                 },
               ),
             ),
-            // MapWidget im PopOver
+            // MapWidget in PopOver
             SizedBox(
               width: double.infinity,
               height: 300,
               child: MapWidget(
-                onTap: _updateLocation,  // Methode zum Aktualisieren der Position
+                onTap: _updateLocation, // Method to update the position
               ),
             ),
-            // Zeigt die aktuelle ausgewählte Position im PopOver
+            // Show the currently selected position in PopOver
             if (_selectedLocation != null)
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
@@ -68,11 +70,11 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
                   textAlign: TextAlign.center,
                 ),
               ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // Submit Button
             ElevatedButton(
               onPressed: _submitLocation,
-              child: Text('Submit'),
+              child: const Text('Submit'),
             ),
           ],
         ),

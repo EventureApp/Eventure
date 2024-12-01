@@ -1,3 +1,4 @@
+// ignore: file_names
 import 'package:flutter/material.dart';
 
 class SingleSelectDropdown extends StatefulWidget {
@@ -6,7 +7,8 @@ class SingleSelectDropdown extends StatefulWidget {
   final Map<String, dynamic> data; // Die verfügbaren Optionen
   final Function(String?) onChanged; // Callback für Änderungen
 
-  SingleSelectDropdown({
+  const SingleSelectDropdown({
+    super.key,
     required this.label,
     this.initValue,
     required this.data,
@@ -42,13 +44,14 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
         // Label mit optionalem Sternchen für Pflichtfelder
         Text(
           widget.label,
-          style: TextStyle(
-            fontWeight: FontWeight.w400, // Einheitliche Schriftart wie beim DateTimePicker
+          style: const TextStyle(
+            fontWeight: FontWeight
+                .w400, // Einheitliche Schriftart wie beim DateTimePicker
             fontSize: 16,
             color: Colors.black, // Schwarzer Text für das Label
           ),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
 
         // Dropdown-Eingabefeld
         GestureDetector(
@@ -58,7 +61,7 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: Text('Select Option'),
+                  title: const Text('Select Option'),
                   content: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,7 +69,8 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
                         return RadioListTile<String>(
                           title: Text(option),
                           value: option,
-                          groupValue: _selectedValue, // Verknüpfung mit dem ausgewählten Wert
+                          groupValue:
+                              _selectedValue, // Verknüpfung mit dem ausgewählten Wert
                           onChanged: (String? value) {
                             _selectValue(value!); // Wert auswählen
                             Navigator.of(context).pop(); // Dialog schließen
@@ -78,9 +82,10 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
                   actions: <Widget>[
                     TextButton(
                       onPressed: () {
-                        Navigator.of(context).pop(); // Dialog schließen ohne Auswahl
+                        Navigator.of(context)
+                            .pop(); // Dialog schließen ohne Auswahl
                       },
-                      child: Text('Close'),
+                      child: const Text('Close'),
                     ),
                   ],
                 );
@@ -88,7 +93,7 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
             );
           },
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(4), // Abgerundete Ecken
@@ -100,7 +105,7 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
                 BoxShadow(
                   color: Colors.black.withOpacity(0.1), // Subtiler Schatten
                   blurRadius: 4,
-                  offset: Offset(0, 2),
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
@@ -110,9 +115,10 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
                 Expanded(
                   child: Text(
                     _selectedValue ?? 'Select option',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16,
-                      color: Colors.black, // Schwarzer Text für die Anzeige der Auswahl
+                      color: Colors
+                          .black, // Schwarzer Text für die Anzeige der Auswahl
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
