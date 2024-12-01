@@ -10,6 +10,7 @@ import 'firebase_options.dart';
 import 'providers/auth_provider.dart';
 import 'providers/chat_provider.dart';
 import 'screens/home_page.dart';
+import 'screens/profile/user_profile.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -99,33 +100,12 @@ final _router = GoRouter(
           ],
         ),
         GoRoute(
-          path: 'profile',
-          builder: (context, state) {
-            return Consumer<AuthenticationProvider>(
-              builder: (context, authProvider, _) => ProfileScreen(
-                key: ValueKey(authProvider.isEmailVerified),
-                providers: const [],
-                actions: [
-                  SignedOutAction(
-                    ((context) {
-                      context.pushReplacement('/');
-                    }),
-                  ),
-                ],
-                children: [
-                  Visibility(
-                      visible: !authProvider.isEmailVerified,
-                      child: OutlinedButton(
-                        child: const Text('Recheck Verification State'),
-                        onPressed: () {
-                          authProvider.refreshUser();
-                        },
-                      ))
-                ],
-              ),
-            );
-          },
-        ),
+            path: 'profile',
+            builder: (context, state) {
+              return Consumer<AuthenticationProvider>(
+                  builder: (context, authProvider, _) =>
+                      const ProfileDetailScreen());
+            })
       ],
     ),
   ],
