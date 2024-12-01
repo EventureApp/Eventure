@@ -13,8 +13,8 @@ class MapWidget extends StatefulWidget {
     super.key,
     required this.onTap,
     required this.initialLocation,
-    this.isEditable = false,
-    this.isMandatory = false,
+    required this.isEditable,
+    required this.isMandatory,
   });
 
   @override
@@ -78,7 +78,7 @@ class _MapWidgetState extends State<MapWidget> {
               child: Icon(
                 Icons.location_on, // Marker Icon
                 size: 50,
-                color: widget.isEditable ? Colors.red : Colors.blue, // Wenn editierbar, rot, sonst blau
+                color: Colors.blue, // Wenn editierbar, rot, sonst blau
               ),
             ),
           ],
@@ -156,6 +156,7 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
                 initialLocation: _selectedLocation ?? LatLng(0.0, 0.0),
                 onTap: _updateLocation,
                 isEditable: true, // Karte editierbar
+                isMandatory: true, // Pflichtfeld Flag
               ),
             ),
             SizedBox(height: 16),
@@ -297,40 +298,14 @@ class _LocationSelectState extends State<LocationSelect> {
               ? Center(child: CircularProgressIndicator())
               : MapWidget(
             initialLocation: _selectedLocation ?? LatLng(0.0, 0.0),
-            isEditable: widget.isEditable, // Karte bearbeitbar je nach Flag
+            isEditable: false, // Karte bearbeitbar je nach Flag
             onTap: (LatLng) {
               _openLocationPopover(); // Öffnet den Popover zur Auswahl der Location
             },
-            isMandatory: widget.isMandatory, // Pflichtfeld Flag
+            isMandatory: true, // Pflichtfeld Flag
           ),
         ),
         SizedBox(height: 16),
-        if (_selectedLocation != null)
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Selected Location:',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              Chip(
-                label: Text(
-                  'Lat: ${_selectedLocation!.latitude.toStringAsFixed(4)}, Lng: ${_selectedLocation!.longitude.toStringAsFixed(4)}',
-                ),
-                backgroundColor: Colors.blue.withOpacity(0.2),
-              ),
-            ],
-          )
-        else if (widget.isMandatory)
-          Text(
-            'No Location Selected! This field is mandatory.',
-            style: TextStyle(color: Colors.red),
-          )
-        else
-          Text(
-            'No Location Selected',
-            style: TextStyle(color: Colors.grey),
-          ),
       ],
     );
   }
