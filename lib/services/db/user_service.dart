@@ -28,7 +28,9 @@ class UserService implements DatabaseService<User> {
   Future<void> update(User user) async{
     await _firestore.collection('users').doc(user.id).update(user.toMap());
   }
-
+  /*
+  This is implemented so we don't have to call the entire data base for the friends Operation
+  */
   Future<User> getSingleUser(String id) async{
     DocumentSnapshot document = await _firestore.collection('users').doc(id).get();
     Map<String, dynamic> userData = document.data() as Map<String, dynamic>;
@@ -36,6 +38,7 @@ class UserService implements DatabaseService<User> {
     return user;
   }
 
+  // If there are no Friends an empty List is returned!!!
   Future<List<User>> getFriends(User user) async{
     if (user.friends == null){
       return Future.value([]);
