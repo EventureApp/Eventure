@@ -5,12 +5,16 @@ class SingleSelectDropdown extends StatefulWidget {
   final String? initValue; // Initialer Wert
   final Map<String, dynamic> data; // Die verfügbaren Optionen
   final Function(String?) onChanged; // Callback für Änderungen
+  final bool required; // Hinzugefügte required-Option
+  final bool editable; // Hinzugefügte editable-Option
 
   SingleSelectDropdown({
     required this.label,
     this.initValue,
     required this.data,
     required this.onChanged,
+    required this.required, // Pflichtfeld
+    required this.editable, // Bearbeitbarkeit
   });
 
   @override
@@ -41,7 +45,7 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
       children: [
         // Label mit optionalem Sternchen für Pflichtfelder
         Text(
-          widget.label,
+          widget.required ? "${widget.label} *" : widget.label,
           style: TextStyle(
             fontWeight: FontWeight.w400, // Einheitliche Schriftart wie beim DateTimePicker
             fontSize: 16,
@@ -52,7 +56,7 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
 
         // Dropdown-Eingabefeld
         GestureDetector(
-          onTap: () async {
+          onTap: widget.editable ? () async {
             // Anzeigen eines modalen Dialogs mit den Auswahlmöglichkeiten
             await showDialog(
               context: context,
@@ -86,7 +90,7 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
                 );
               },
             );
-          },
+          } : null, // Nur wenn editable true ist
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
@@ -109,17 +113,17 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
               children: [
                 Expanded(
                   child: Text(
-                    _selectedValue ?? 'Select option',
+                    _selectedValue ?? (widget.required ? 'Pflichtfeld' : 'Select option'),
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.black, // Schwarzer Text für die Anzeige der Auswahl
+                      color: widget.editable ? Colors.black : Colors.grey, // Textfarbe je nach Bearbeitbarkeit
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 Icon(
                   Icons.arrow_drop_down,
-                  color: Colors.black.withOpacity(0.3), // Subtiles Icon
+                  color: widget.editable ? Colors.black.withOpacity(0.3) : Colors.grey.withOpacity(0.3), // Icon nur aktiv bei editable
                 ),
               ],
             ),

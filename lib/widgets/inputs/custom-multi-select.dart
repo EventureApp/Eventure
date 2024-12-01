@@ -5,12 +5,16 @@ class MultiSelectDropdown extends StatefulWidget {
   final List<String> initValues; // Initial ausgewählte Werte
   final Map<String, dynamic> data; // Die verfügbaren Optionen
   final Function(List<String>) onChanged; // Callback für Änderungen
+  final bool required; // Hinzugefügte required-Option
+  final bool editable; // Hinzugefügte editable-Option
 
   MultiSelectDropdown({
     required this.label,
     required this.initValues,
     required this.data,
     required this.onChanged,
+    required this.required, // Pflichtfeld
+    required this.editable, // Bearbeitbarkeit
   });
 
   @override
@@ -33,7 +37,7 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
       children: [
         // Label mit optionalem Sternchen für Pflichtfelder
         Text(
-          widget.label,
+          widget.required ? "${widget.label} *" : widget.label,
           style: TextStyle(
             fontWeight: FontWeight.w400, // Einheitliche Schriftart wie beim DateTimePicker
             fontSize: 16,
@@ -44,7 +48,7 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
 
         // Eingabefeld für die Auswahl
         GestureDetector(
-          onTap: () async {
+          onTap: widget.editable ? () async {
             // Anzeigen eines modalen Dialogs mit den Auswahlmöglichkeiten
             await showDialog(
               context: context,
@@ -60,7 +64,7 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
                             return CheckboxListTile(
                               title: Text(option),
                               value: selectedValues.contains(option), // Überprüfe, ob der Wert ausgewählt ist
-                              onChanged: (bool? value) {
+                              onChanged: widget.editable ? (bool? value) {
                                 setState(() {
                                   if (value == true) {
                                     selectedValues.add(option); // Wert hinzufügen
@@ -69,7 +73,7 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
                                   }
                                 });
                                 widget.onChanged(selectedValues); // Rückgabe der neuen Liste
-                              },
+                              } : null, // Nur wenn editable true ist
                             );
                           },
                         );
@@ -87,7 +91,7 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
                 );
               },
             );
-          },
+          } : null, // Nur wenn editable true ist
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
@@ -111,18 +115,18 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
                 Expanded(
                   child: Text(
                     selectedValues.isEmpty
-                        ? 'Select options'
+                        ? (widget.required ? 'Pflichtfeld' : 'Select options') // Hinweis, wenn keine Auswahl getroffen wurde
                         : selectedValues.join(', '), // Anzeige der ausgewählten Optionen
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.black, // Schwarzer Text für die Anzeige der Auswahl
+                      color: widget.editable ? Colors.black : Colors.grey, // Textfarbe je nach Bearbeitbarkeit
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 Icon(
                   Icons.arrow_drop_down,
-                  color: Colors.black.withOpacity(0.3), // Subtiles Icon
+                  color: widget.editable ? Colors.black.withOpacity(0.3) : Colors.grey.withOpacity(0.3), // Icon nur aktiv bei editable
                 ),
               ],
             ),

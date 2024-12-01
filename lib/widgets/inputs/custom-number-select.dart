@@ -51,12 +51,12 @@ class _CustomNumberInputState extends State<CustomNumberInput> {
     if (number != null) {
       if (widget.minValue != null && number < widget.minValue!) {
         setState(() {
-          _errorMessage = 'Value must be greater than or equal to ${widget.minValue}';
+          _errorMessage = 'Value must be >= ${widget.minValue}';
         });
         widget.onChanged(null);
       } else if (widget.maxValue != null && number > widget.maxValue!) {
         setState(() {
-          _errorMessage = 'Value must be less than or equal to ${widget.maxValue}';
+          _errorMessage = 'Value must be <= ${widget.maxValue}';
         });
         widget.onChanged(null);
       } else {
@@ -78,31 +78,64 @@ class _CustomNumberInputState extends State<CustomNumberInput> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                widget.label,
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            if (widget.isMandatory!)
-              Text(
-                '*',
-                style: TextStyle(color: Colors.red),
-              ),
-          ],
+        // Label
+        Text(
+          widget.isMandatory! ? '${widget.label} *' : widget.label,
+          style: TextStyle(
+            fontWeight: FontWeight.w400,
+            fontSize: 16,
+            color: Colors.black,
+          ),
         ),
         SizedBox(height: 8),
-        TextField(
-          controller: _controller,
-          decoration: InputDecoration(
-            hintText: widget.hint ?? 'Enter a number',
-            errorText: _errorMessage.isEmpty ? null : _errorMessage,
-            border: OutlineInputBorder(),
+        // Eingabefeld
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(
+              color: Colors.black.withOpacity(0.2),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
+            ],
           ),
-          keyboardType: TextInputType.number,
-          onChanged: _onChange,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                controller: _controller,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: widget.hint ?? 'Enter a number',
+                  hintStyle: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontSize: 14,
+                  ),
+                  border: InputBorder.none,
+                ),
+                onChanged: _onChange,
+              ),
+              // Fehlernachricht
+              if (_errorMessage.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    _errorMessage,
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ],
     );
