@@ -8,7 +8,7 @@ class UserService implements DatabaseService<User> {
 
   @override
   Future<void> create(User user) async {
-    await _firestore.collection('users').add(user.toMap());
+    await _firestore.collection('users').doc(user.id).set(user.toMap());
   }
 
   @override
@@ -27,5 +27,24 @@ class UserService implements DatabaseService<User> {
   @override
   Future<void> update(User user) async{
     await _firestore.collection('users').doc(user.id).update(user.toMap());
+  }
+
+  Future<User> getSingleUser(String id) async{
+    DocumentSnapshot document = await _firestore.collection('users').doc(id).get();
+    Map<String, dynamic> userData = document.data() as Map<String, dynamic>;
+    User user = User.fromMap(userData, id);
+    return user;
+  }
+
+  Future<List<User>> getFriends(User user) async{
+    if (user.friends == null){
+      return Future.value([]);
+    }
+    List<User> friends = [];
+    for (String friend in user.friends!) {
+      User user = await getSingleUser(friend);
+      friends.add(user);
+    }
+    return friends;
   }
 }

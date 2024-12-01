@@ -10,6 +10,7 @@ class User implements Entity {
   final String description;
   final String uni;
   final List<String> socialMediaLinks;
+  final List<String>? friends;
 
   User({
     this.id,
@@ -19,7 +20,8 @@ class User implements Entity {
     required this.lastName,
     required this.description,
     required this.uni,
-    required this.socialMediaLinks
+    required this.socialMediaLinks,
+    this.friends
 });
 
   factory User.fromMap(Map<String, dynamic> map, String id){
@@ -31,7 +33,8 @@ class User implements Entity {
       lastName: map['lastName'] as String,
       description:  map['description'] as String,
       uni: map['uni'] as String,
-      socialMediaLinks: map['socialMediaLinks'] as List<String>
+      socialMediaLinks: map['socialMediaLinks'] as List<String>,
+      friends: map['friends'] as List<String>
     );
   }
   @override
@@ -44,7 +47,8 @@ class User implements Entity {
       'lastName': lastName,
       'description': description,
       'uni': uni,
-      'socialMediaLinks': socialMediaLinks
+      'socialMediaLinks': socialMediaLinks,
+      'friends': friends
     };
   }
 
@@ -52,7 +56,7 @@ class User implements Entity {
   String toString() {
     return 'id : $id \n profilePicture: $profilePicture \n studyCourse: $studyCourse \n'
         'firstName: $firstName \n lastName: $lastName \n description: $description \n'
-        'uni: $uni \n socialMediaLink: $socialMediaLinks';
+        'uni: $uni \n socialMediaLink: $socialMediaLinks \n friends: $friends';
   }
 
 }
