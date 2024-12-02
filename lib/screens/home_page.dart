@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       bottomNavigationBar: SizedBox(
-        height: 60,
+        height: 90,
         child: BottomAppBar(
           color: Colors.white,
           elevation: 4,

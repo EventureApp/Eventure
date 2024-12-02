@@ -38,4 +38,13 @@ class EventProvider with ChangeNotifier {
     _events.add(event);
     notifyListeners();
   }
+
+  @override
+  String toString() {
+    String events = "";
+    for (Event event in _events) {
+      events += event.toString();
+    }
+    return events;
+  }
 }

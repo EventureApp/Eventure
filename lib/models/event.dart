@@ -2,6 +2,7 @@ import 'package:eventure/services/db/models/entity.dart';
 import 'package:eventure/statics/event_types.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:latlong2/latlong.dart';
+
 import '../statics/event_visibility.dart';
 
 class Event implements Entity {
@@ -10,7 +11,7 @@ class Event implements Entity {
   final String? description;
   final DateTime startDate;
   final DateTime endDate;
-  final String adress;
+  final String address;
   final LatLng location;
   final IconData icon;
   final EventType eventType;
@@ -19,13 +20,13 @@ class Event implements Entity {
   final int? maxParticipants;
   final String? organizer;
 
-  Event( {
+  Event({
     this.id,
     required this.name,
     this.description,
     required this.startDate,
     required this.endDate,
-    required this.adress,
+    required this.address,
     required this.location,
     required this.icon,
     required this.eventType,
@@ -35,39 +36,29 @@ class Event implements Entity {
     required this.organizer,
   });
 
-  factory Event.fromMap(Map<String, dynamic> map) {
-    EventType eventType = EventType.values.firstWhere(
-      (e) => e.toString() == 'EventType.' + map['eventType'],
-      orElse: () => EventType.someThingElse,
-    );
-
-    EventVisability visabilityEvent = EventVisability.values.firstWhere(
-      (e) => e.toString() == 'EventVisability.' + map['visability'],
-      orElse: () => EventVisability.public,
-    );
-
+  factory Event.fromMap(Map<String, dynamic> map, String id) {
     IconData icon = IconData(
       map['icon'] as int,
       fontFamily: 'CustomIcons',
     );
 
     return Event(
-      id: map['id'] as String,
+      id: id,
       name: map['name'] as String,
       description: map['description'] as String?,
       startDate: DateTime.parse(map['startDate'] as String),
       endDate: DateTime.parse(map['endDate'] as String),
-      adress: map['adress'] as String,
+      address: map['address'] as String,
       location: LatLng(
         map['location']['latitude'] as double,
         map['location']['longitude'] as double,
       ),
       icon: icon,
-      eventType: eventType,
+      eventType: EventType.values[map['eventType'] as int],
       eventLink: map['eventLink'] as String?,
-      maxParticipants: map['maxParticipants'] as int?,
+      maxParticipants: map['participants'] as int?,
       organizer: map['organizer'] as String,
-      visability: visabilityEvent,
+      visability: EventVisability.values[map['visibility'] as int],
     );
   }
 
@@ -79,17 +70,26 @@ class Event implements Entity {
       'description': description,
       'startDate': startDate.toIso8601String(),
       'endDate': endDate.toIso8601String(),
-      'adress': adress,
+      'address': address,
       'location': {
         'latitude': location.latitude,
         'longitude': location.longitude,
       },
       'icon': icon.codePoint,
-      'eventType': eventType.toString().split('.').last,
+      'eventType': eventType.index,
       'eventLink': eventLink,
       'participants': maxParticipants,
       'organizer': organizer,
       'visability': visability.toString().split('.').last,
     };
+  }
+
+  @override
+  String toString() {
+    return "id: $id \n name: $name \n descr: $description \n "
+        "startDate: $startDate \n endDate: $endDate \n address: $address \n "
+        "location: $location \n icon: $icon \n eventType: $eventType \n "
+        "eventLink: $eventLink \n maxParticipants: $maxParticipants \n "
+        "organizer: $organizer \n \n";
   }
 }
