@@ -80,7 +80,9 @@ class _HomePageState extends State<HomePage> {
                     CustomIcons.filteroptions,
                     size: 24,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    context.push('/addFilter');
+                  },
                 ),
                 ToggleButtons(
                   isSelected: [isMapSelected, !isMapSelected],
