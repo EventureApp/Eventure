@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:eventure/widgets/inputs/custom_input_line.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -92,14 +93,15 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
 
   Widget _buildTextField(String label, TextEditingController controller) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          border: const OutlineInputBorder(),
-        ),
-      ),
-    );
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+        child: CustomInputLine(
+          label: label,
+          initValue: controller.text,
+          required: false,
+          editable: true,
+          onChanged: (value) {
+            controller.text = value;
+          },
+        ));
   }
 }
