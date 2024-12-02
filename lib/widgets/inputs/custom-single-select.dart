@@ -23,6 +23,7 @@ class SingleSelectDropdown extends StatefulWidget {
 
 class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
   String? _selectedValue;
+  String _errorMessage = ''; // Validierungsnachricht
 
   @override
   void initState() {
@@ -30,12 +31,17 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
     _selectedValue = widget.initValue; // Initialen Wert setzen
   }
 
-  // Funktion zum Auswählen eines Wertes
-  void _selectValue(String value) {
-    setState(() {
-      _selectedValue = value; // Den ausgewählten Wert setzen
-    });
-    widget.onChanged(value); // Rückgabe des neuen Wertes
+  // Validierungsfunktion
+  void _validate() {
+    if (widget.required && _selectedValue == null) {
+      setState(() {
+        _errorMessage = 'Bitte eine Auswahl treffen!';
+      });
+    } else {
+      setState(() {
+        _errorMessage = ''; // Fehler zurücksetzen, wenn gültig
+      });
+    }
   }
 
   @override
@@ -47,9 +53,9 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
         Text(
           widget.required ? "${widget.label} *" : widget.label,
           style: TextStyle(
-            fontWeight: FontWeight.w400, // Einheitliche Schriftart wie beim DateTimePicker
+            fontWeight: FontWeight.w400,
             fontSize: 16,
-            color: Colors.black, // Schwarzer Text für das Label
+            color: Colors.black, // Schwarz für das Label
           ),
         ),
         SizedBox(height: 8),
@@ -70,9 +76,13 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
                         return RadioListTile<String>(
                           title: Text(option),
                           value: option,
-                          groupValue: _selectedValue, // Verknüpfung mit dem ausgewählten Wert
+                          groupValue: _selectedValue,
                           onChanged: (String? value) {
-                            _selectValue(value!); // Wert auswählen
+                            setState(() {
+                              _selectedValue = value;
+                              _errorMessage = ''; // Fehler zurücksetzen
+                            });
+                            widget.onChanged(value); // Rückgabe des neuen Wertes
                             Navigator.of(context).pop(); // Dialog schließen
                           },
                         );
@@ -95,14 +105,14 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(4), // Abgerundete Ecken
+              borderRadius: BorderRadius.circular(4),
               border: Border.all(
-                color: Colors.black.withOpacity(0.2), // Subtile Ränder
+                color: Colors.black.withOpacity(0.2), // Schwarz für den Rand
                 width: 1.5,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1), // Subtiler Schatten
+                  color: Colors.black.withOpacity(0.1),
                   blurRadius: 4,
                   offset: Offset(0, 2),
                 ),
@@ -123,12 +133,24 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
                 ),
                 Icon(
                   Icons.arrow_drop_down,
-                  color: widget.editable ? Colors.black.withOpacity(0.3) : Colors.grey.withOpacity(0.3), // Icon nur aktiv bei editable
+                  color: widget.editable ? Colors.black.withOpacity(0.3) : Colors.grey, // Blau für aktive Dropdowns
                 ),
               ],
             ),
           ),
         ),
+        // Fehlernachricht
+        if (_errorMessage.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              _errorMessage,
+              style: TextStyle(
+                color: Colors.red, // Rote Farbe für Fehlermeldungen
+                fontSize: 12,
+              ),
+            ),
+          ),
       ],
     );
   }

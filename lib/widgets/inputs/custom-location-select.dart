@@ -6,8 +6,8 @@ import 'package:geolocator/geolocator.dart';
 class MapWidget extends StatefulWidget {
   final Function(LatLng) onTap;
   final LatLng initialLocation;
-  final bool isEditable; // Flag, um zu entscheiden, ob die Karte bearbeitbar ist
-  final bool isMandatory; // Flag, ob der Standort verpflichtend ist
+  final bool isEditable;
+  final bool isMandatory;
 
   const MapWidget({
     super.key,
@@ -23,33 +23,30 @@ class MapWidget extends StatefulWidget {
 
 class _MapWidgetState extends State<MapWidget> {
   late LatLng _currentLocation;
-  late MapController _mapController; // MapController für die Steuerung der Karte
+  late MapController _mapController;
 
   @override
   void initState() {
     super.initState();
-    // Sicherstellen, dass der initiale Standort immer einen gültigen Wert hat
     _currentLocation = widget.initialLocation;
-    _mapController = MapController(); // Initialisiere den MapController
+    _mapController = MapController();
   }
 
   @override
   void didUpdateWidget(covariant MapWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Wenn sich der initiale Standort ändert, aktualisieren wir den Standort der Karte.
     if (widget.initialLocation != oldWidget.initialLocation) {
       setState(() {
         _currentLocation = widget.initialLocation;
       });
-      // Bewege die Karte zum neuen Standort
-      _mapController.move(_currentLocation, 13.0); // Verschiebe die Karte und setze den Zoom-Level
+      _mapController.move(_currentLocation, 13.0);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return FlutterMap(
-      mapController: _mapController, // MapController zur Steuerung der Karte
+      mapController: _mapController,
       options: MapOptions(
         initialCenter: _currentLocation,
         initialZoom: 13.0,
@@ -60,9 +57,9 @@ class _MapWidgetState extends State<MapWidget> {
             : InteractionOptions(flags: InteractiveFlag.none),
         onTap: widget.isEditable
             ? (tapPosition, point) {
-          widget.onTap(point); // Den getippten Punkt zurückgeben
+          widget.onTap(point);
         }
-            : null, // Wenn nicht editierbar, keine Interaktion
+            : null,
       ),
       children: [
         TileLayer(
@@ -76,9 +73,9 @@ class _MapWidgetState extends State<MapWidget> {
               width: 50,
               height: 50,
               child: Icon(
-                Icons.location_on, // Marker Icon
+                Icons.location_on,
                 size: 50,
-                color: Colors.blue, // Wenn editierbar, rot, sonst blau
+                color: Colors.blue,
               ),
             ),
           ],
@@ -91,7 +88,7 @@ class _MapWidgetState extends State<MapWidget> {
 class LocationSelectPopover extends StatefulWidget {
   final LatLng? initValue;
   final Function(LatLng?) onChanged;
-  final bool isMandatory; // Flag, ob der Standort verpflichtend ist
+  final bool isMandatory;
 
   LocationSelectPopover({
     required this.onChanged,
@@ -109,7 +106,7 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
   @override
   void initState() {
     super.initState();
-    _selectedLocation = widget.initValue; // Default fallback value
+    _selectedLocation = widget.initValue;
   }
 
   void _updateLocation(LatLng? location) {
@@ -120,13 +117,12 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
 
   void _submitLocation() {
     if (_selectedLocation != null || !widget.isMandatory) {
-      widget.onChanged(_selectedLocation); // Callback für den ausgewählten Standort
-      Navigator.pop(context); // Schließt das Dialogfenster
+      widget.onChanged(_selectedLocation);
+      Navigator.pop(context);
     } else {
-      // Wenn der Standort erforderlich ist und nicht gesetzt wurde, eine Warnung anzeigen
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Please select a location!'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.red,
       ));
     }
   }
@@ -151,12 +147,12 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
             ),
             SizedBox(
               width: double.infinity,
-              height: 300,
+              height: 400, // Karte größer anzeigen
               child: MapWidget(
                 initialLocation: _selectedLocation ?? LatLng(0.0, 0.0),
                 onTap: _updateLocation,
-                isEditable: true, // Karte editierbar
-                isMandatory: true, // Pflichtfeld Flag
+                isEditable: true,
+                isMandatory: true,
               ),
             ),
             SizedBox(height: 16),
@@ -175,15 +171,15 @@ class LocationSelect extends StatefulWidget {
   final String label;
   final LatLng? initValue;
   final Function(LatLng?) onChanged;
-  final bool isMandatory; // Flag, ob der Standort verpflichtend ist
-  final bool isEditable; // Flag, ob die Karte bearbeitbar ist
+  final bool isMandatory;
+  final bool isEditable;
 
   LocationSelect({
     required this.label,
     this.initValue,
     required this.onChanged,
     this.isMandatory = false,
-    this.isEditable = true, // Standardmäßig auf `true` gesetzt
+    this.isEditable = true,
   });
 
   @override
@@ -203,7 +199,6 @@ class _LocationSelectState extends State<LocationSelect> {
     }
   }
 
-  // Funktion, um den aktuellen Standort zu holen
   void _getCurrentLocation() async {
     setState(() {
       _isLoading = true;
@@ -212,7 +207,6 @@ class _LocationSelectState extends State<LocationSelect> {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Überprüfen, ob Standortdienste aktiviert sind
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       setState(() {
@@ -221,7 +215,6 @@ class _LocationSelectState extends State<LocationSelect> {
       return;
     }
 
-    // Berechtigungen prüfen
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.deniedForever) {
       setState(() {
@@ -238,7 +231,6 @@ class _LocationSelectState extends State<LocationSelect> {
       }
     }
 
-    // Hole den aktuellen Standort
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     setState(() {
       _selectedLocation = LatLng(position.latitude, position.longitude);
@@ -255,11 +247,11 @@ class _LocationSelectState extends State<LocationSelect> {
             initValue: _selectedLocation,
             onChanged: (newLocation) {
               setState(() {
-                _selectedLocation = newLocation; // Aktualisieren der ausgewählten Position
+                _selectedLocation = newLocation;
               });
-              widget.onChanged(newLocation); // Callback an den übergeordneten Widget
+              widget.onChanged(newLocation);
             },
-            isMandatory: widget.isMandatory, // Standort verpflichtend?
+            isMandatory: widget.isMandatory,
           );
         },
       );
@@ -276,15 +268,15 @@ class _LocationSelectState extends State<LocationSelect> {
             Expanded(
               child: Text(
                 widget.label,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
               ),
             ),
             GestureDetector(
-              onTap: widget.isEditable ? _openLocationPopover : null, // Nur klickbar wenn `isEditable` true
+              onTap: widget.isEditable ? _openLocationPopover : null,
               child: Icon(
                 Icons.map,
                 size: 24,
-                color: widget.isEditable ? Colors.blue : Colors.grey, // Ausgegraut wenn nicht bearbeitbar
+                color: widget.isEditable ? Colors.blue : Colors.grey,
               ),
             ),
           ],
@@ -292,17 +284,32 @@ class _LocationSelectState extends State<LocationSelect> {
         SizedBox(height: 8),
         Container(
           width: double.infinity,
-          height: 300,
-          color: Colors.grey[200], // Hellerer Hintergrund für das Map-Widget
+          height: 300, // Größe der Karte hier angepasst
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: widget.isMandatory && _selectedLocation == null
+                  ? Colors.red
+                  : Colors.black.withOpacity(0.2),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
           child: _isLoading
               ? Center(child: CircularProgressIndicator())
               : MapWidget(
             initialLocation: _selectedLocation ?? LatLng(0.0, 0.0),
-            isEditable: false, // Karte bearbeitbar je nach Flag
+            isEditable: false,
             onTap: (LatLng) {
-              _openLocationPopover(); // Öffnet den Popover zur Auswahl der Location
+              _openLocationPopover();
             },
-            isMandatory: true, // Pflichtfeld Flag
+            isMandatory: widget.isMandatory,
           ),
         ),
         SizedBox(height: 16),

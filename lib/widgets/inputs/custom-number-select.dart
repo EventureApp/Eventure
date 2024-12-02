@@ -95,7 +95,7 @@ class _CustomNumberInputState extends State<CustomNumberInput> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
-              color: Colors.black.withOpacity(0.2),
+              color: _errorMessage.isNotEmpty ? Colors.red : Colors.black.withOpacity(0.2), // Fehlerfarbe
               width: 1.5,
             ),
             boxShadow: [

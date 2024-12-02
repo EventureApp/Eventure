@@ -80,7 +80,7 @@ class _CustomLinkInputState extends State<CustomLinkInput> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
-              color: Colors.black.withOpacity(0.2),
+              color: _errorMessage.isNotEmpty ? Colors.red : Colors.black.withOpacity(0.2),
               width: 1.5,
             ),
             boxShadow: [
