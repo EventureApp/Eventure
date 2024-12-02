@@ -130,6 +130,33 @@ class ProfileDetailScreen extends StatelessWidget {
                     Text('www.instagram.de'),
                   ],
                 ),
+                const SizedBox(height: 20),
+                Consumer<AuthenticationProvider>(
+                  builder: (context, authProvider, _) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.red,
+                            side: const BorderSide(color: Colors.red),
+                          ),
+                          onPressed: () async {
+                            await authProvider.logout();
+                          },
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.delete, color: Colors.red),
+                              SizedBox(width: 8),
+                              Text('Logout'),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ],
             ),
           ),

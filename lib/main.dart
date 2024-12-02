@@ -32,90 +32,94 @@ void main() {
   });
 }
 
-final _router = GoRouter(
-  redirect: (context, state) {
-    final authProvider =
-        Provider.of<AuthenticationProvider>(context, listen: false);
-    final isLoggingIn = state.uri.toString() == '/sign-in';
-
-    if (!authProvider.isLoggedIn && !isLoggingIn) {
-      return '/sign-in';
-    }
-    return null;
-  },
-  routes: [
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const HomePage(),
-      routes: [
-        GoRoute(
-          path: 'sign-in',
-          builder: (context, state) {
-            return SignInScreen(
-              actions: [
-                ForgotPasswordAction(((context, email) {
-                  final uri = Uri(
-                    path: '/sign-in/forgot-password',
-                    queryParameters: <String, String?>{
-                      'email': email,
-                    },
-                  );
-                  context.push(uri.toString());
-                })),
-                AuthStateChangeAction(((context, state) {
-                  final user = switch (state) {
-                    SignedIn state => state.user,
-                    UserCreated state => state.credential.user,
-                    _ => null
-                  };
-                  if (user == null) {
-                    return;
-                  }
-                  if (state is UserCreated) {
-                    user.updateDisplayName(user.email!.split('@')[0]);
-                  }
-                  if (!user.emailVerified) {
-                    user.sendEmailVerification();
-                    const snackBar = SnackBar(
-                        content: Text(
-                            'Please check your email to verify your email address'));
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }
-                  context.go('/');
-                })),
-              ],
-            );
-          },
-          routes: [
-            GoRoute(
-              path: 'forgot-password',
-              builder: (context, state) {
-                final arguments = state.uri.queryParameters;
-                return ForgotPasswordScreen(
-                  email: arguments['email'],
-                  headerMaxExtent: 200,
-                );
-              },
-            ),
-          ],
-        ),
-        GoRoute(
-            path: 'profile',
-            builder: (context, state) {
-              return Consumer<AuthenticationProvider>(
-                  builder: (context, authProvider, _) =>
-                      const ProfileDetailScreen());
-            })
-      ],
-    ),
-  ],
-);
-
 class App extends StatelessWidget {
   const App({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthenticationProvider>(context);
+
+    final _router = GoRouter(
+      refreshListenable: authProvider,
+      redirect: (context, state) {
+        final isLoggingIn = state.uri.toString() == '/sign-in';
+
+        if (!authProvider.isLoggedIn && !isLoggingIn) {
+          return '/sign-in';
+        }
+        return null;
+      },
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const HomePage(),
+          routes: [
+            GoRoute(
+              path: 'sign-in',
+              builder: (context, state) {
+                return PopScope(
+                  canPop: false,
+                  child: SignInScreen(
+                    actions: [
+                      ForgotPasswordAction(((context, email) {
+                        final uri = Uri(
+                          path: '/sign-in/forgot-password',
+                          queryParameters: <String, String?>{
+                            'email': email,
+                          },
+                        );
+                        context.push(uri.toString());
+                      })),
+                      AuthStateChangeAction(((context, state) {
+                        final user = switch (state) {
+                          SignedIn state => state.user,
+                          UserCreated state => state.credential.user,
+                          _ => null
+                        };
+                        if (user == null) {
+                          return;
+                        }
+                        if (state is UserCreated) {
+                          user.updateDisplayName(user.email!.split('@')[0]);
+                        }
+                        if (!user.emailVerified) {
+                          user.sendEmailVerification();
+                          const snackBar = SnackBar(
+                              content: Text(
+                                  'Please check your email to verify your email address'));
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        }
+                        context.go('/');
+                      })),
+                    ],
+                  ),
+                );
+              },
+              routes: [
+                GoRoute(
+                  path: 'forgot-password',
+                  builder: (context, state) {
+                    final arguments = state.uri.queryParameters;
+                    return ForgotPasswordScreen(
+                      email: arguments['email'],
+                      headerMaxExtent: 200,
+                    );
+                  },
+                ),
+              ],
+            ),
+            GoRoute(
+                path: 'profile',
+                builder: (context, state) {
+                  return Consumer<AuthenticationProvider>(
+                      builder: (context, authProvider, _) =>
+                          const ProfileDetailScreen());
+                })
+          ],
+        ),
+      ],
+    );
+
     return MaterialApp.router(
       title: 'Eventure',
       debugShowCheckedModeBanner: false,
