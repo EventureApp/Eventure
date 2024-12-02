@@ -7,13 +7,13 @@ import '../../providers/event_provider.dart'; // Dein EventProvider
 import '../../statics/event_types.dart';
 import '../../statics/event_visibility.dart';
 import '../../widgets/inputs/custom-event-select.dart';
-import '../../widgets/inputs/custom-location-select.dart';
-import '../../widgets/inputs/custom_input_line.dart';
-import '../../widgets/inputs/custom_date_time_picker.dart';
-import '../../widgets/inputs/custom_discription_input.dart';
 import '../../widgets/inputs/custom-link-select.dart';
+import '../../widgets/inputs/custom-location-select.dart';
 import '../../widgets/inputs/custom-number-select.dart';
 import '../../widgets/inputs/custom-single-select.dart';
+import '../../widgets/inputs/custom_date_time_picker.dart';
+import '../../widgets/inputs/custom_discription_input.dart';
+import '../../widgets/inputs/custom_input_line.dart';
 
 class EventScreen extends StatefulWidget {
   final Event? event;
@@ -92,7 +92,8 @@ class _EventScreenState extends State<EventScreen> {
         startDate: _startDate,
         endDate: _endDate,
         location: _location,
-        adress: '', // Address handling could be added here
+        address: '',
+        // Address handling could be added here
         eventType: _eventType,
         icon: _eventIcon,
         visability: _visibility,
@@ -255,7 +256,8 @@ class _EventScreenState extends State<EventScreen> {
                   if (widget.event == null) ...[
                     SizedBox(height: 32),
                     ElevatedButton(
-                      onPressed: _isFormValid ? () => _saveEvent(context) : null,
+                      onPressed:
+                          _isFormValid ? () => _saveEvent(context) : null,
                       child: Text("Save"),
                     ),
                   ],

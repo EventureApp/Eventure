@@ -1,3 +1,4 @@
+import 'package:eventure/providers/auth_provider.dart';
 import 'package:eventure/services/db/models/entity.dart';
 import 'package:eventure/statics/event_types.dart';
 import 'package:flutter/cupertino.dart';
@@ -65,7 +66,6 @@ class Event implements Entity {
   @override
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'name': name,
       'description': description,
       'startDate': startDate.toIso8601String(),
@@ -79,8 +79,8 @@ class Event implements Entity {
       'eventType': eventType.index,
       'eventLink': eventLink,
       'participants': maxParticipants,
-      'organizer': organizer,
-      'visability': visability.toString().split('.').last,
+      'organizer': AuthenticationProvider().currentUser?.uid,
+      'visability': visability.index,
     };
   }
 
