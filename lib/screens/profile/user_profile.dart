@@ -55,7 +55,7 @@ class ProfileDetailScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      user.firstName ?? 'my-user',
+                      "${user.firstName ?? ''} ${user.lastName ?? ''}",
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -69,16 +69,43 @@ class ProfileDetailScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Username: ${user.username ?? ''}'),
-                    Text('University: ${user.uni ?? ''}'),
-                    Text('Course: ${user.studyCourse ?? ''}'),
-                    Text(
-                        'Name: ${user.firstName ?? ''} ${user.lastName ?? ''}'),
-                    Text('Description: ${user.description ?? ''}'),
+                    const Text(
+                      'Description',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(user.description ?? ''),
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        const Icon(Icons.school),
+                        const SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(user.uni ?? ''),
+                            Text(user.studyCourse ?? ''),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
                     if (user.socialMediaLinks != null &&
                         user.socialMediaLinks!.isNotEmpty)
-                      Text(
-                          'Social Media: ${user.socialMediaLinks!.join(', ')}'),
+                      Column(
+                        children: user.socialMediaLinks!
+                            .map((link) => Row(
+                                  children: [
+                                    Icon(Icons.link),
+                                    SizedBox(width: 10),
+                                    Text(link!),
+                                  ],
+                                ))
+                            .toList(),
+                      ),
                     if (user.friends != null && user.friends!.isNotEmpty)
                       Text('Friends: ${user.friends!.join(', ')}'),
                   ],
