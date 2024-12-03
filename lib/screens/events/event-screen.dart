@@ -1,5 +1,6 @@
 import 'package:eventure/models/event.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart'; // Provider importieren
 
@@ -104,13 +105,13 @@ class _EventScreenState extends State<EventScreen> {
       );
 
       // Event über den Provider speichern
-      context.read<EventProvider>().addEvent(newEvent);
+      Provider.of<EventProvider>(context, listen: false).addEvent(newEvent);
 
       // Feedback an den Nutzer und zurück navigieren
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Event successfully saved!")),
       );
-      Navigator.pop(context);
+      context.go("/");
     }
   }
 

@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:eventure/statics/event_types.dart';
+import 'package:flutter/material.dart';
 
 class EventSelect extends StatefulWidget {
   final String label;
-  final List<EventType> initValues; // Initial ausgewählte Werte (EventType-Enum)
+  final List<EventType>
+      initValues; // Initial ausgewählte Werte (EventType-Enum)
   final Map<EventType, IconData> events; // Map von Event-Keys zu Event-Icons
   final Function(List<EventType>) onChanged; // Callback für Änderungen
   final bool isMultiSelect; // True für MultiSelect, False für SingleSelect
@@ -46,7 +47,9 @@ class _EventSelectState extends State<EventSelect> {
           _selectedEvents.add(event); // Auswählen
         }
       } else {
-        _selectedEvents = [event]; // Nur das ausgewählte Event im SingleSelect-Modus
+        _selectedEvents = [
+          event
+        ]; // Nur das ausgewählte Event im SingleSelect-Modus
       }
     });
     widget.onChanged(_selectedEvents); // Rückgabe der ausgewählten Events
@@ -60,7 +63,9 @@ class _EventSelectState extends State<EventSelect> {
     });
 
     // Validierung auslösen, wenn SingleSelect und Pflichtfeld
-    if (!widget.isMultiSelect && widget.isMandatory && _selectedEvents.isEmpty) {
+    if (!widget.isMultiSelect &&
+        widget.isMandatory &&
+        _selectedEvents.isEmpty) {
       setState(() {
         _errorMessage = "At least one event must be selected.";
       });
@@ -126,35 +131,46 @@ class _EventSelectState extends State<EventSelect> {
                           mainAxisSpacing: 10.0, // Abstand zwischen den Reihen
                         ),
                         itemBuilder: (context, index) {
-                          EventType eventKey = widget.events.keys.elementAt(index);
+                          EventType eventKey =
+                              widget.events.keys.elementAt(index);
                           IconData eventIcon = widget.events[eventKey]!;
 
-                          bool isSelected = _selectedEvents.contains(eventKey); // Überprüfen, ob das Event ausgewählt wurde
+                          bool isSelected = _selectedEvents.contains(
+                              eventKey); // Überprüfen, ob das Event ausgewählt wurde
 
                           return GestureDetector(
                             onTap: widget.isEditable
                                 ? () {
-                              setState(() {
-                                _toggleEventSelection(eventKey);
-                              });
-                            }
-                                : null, // Deaktivieren der Tap-Funktion, wenn nicht bearbeitbar
+                                    setState(() {
+                                      _toggleEventSelection(eventKey);
+                                    });
+                                  }
+                                : null,
+                            // Deaktivieren der Tap-Funktion, wenn nicht bearbeitbar
                             child: Opacity(
-                              opacity: widget.isEditable ? 1.0 : 0.5, // Reduzierte Sichtbarkeit, wenn nicht bearbeitbar
+                              opacity: widget.isEditable ? 1.0 : 0.5,
+                              // Reduzierte Sichtbarkeit, wenn nicht bearbeitbar
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Icon(
-                                    eventIcon, // Verwendet das Event-Icon aus der Map
+                                    eventIcon,
+                                    // Verwendet das Event-Icon aus der Map
                                     size: 40, // Angepasste Größe
-                                    color: isSelected ? Colors.blue : Colors.grey, // Farbänderung des Icons
+                                    color: isSelected
+                                        ? Colors.blue
+                                        : Colors.grey, // Farbänderung des Icons
                                   ),
                                   SizedBox(height: 8),
                                   Text(
-                                    eventKey.toString().split('.').last, // Anzeige des Event-Namens aus dem Enum
+                                    eventKey.toString().split('.').last,
+                                    // Anzeige des Event-Namens aus dem Enum
                                     style: TextStyle(
                                       fontSize: 14,
-                                      color: isSelected ? Colors.blue : Colors.black, // Farbänderung des Texts
+                                      color: isSelected
+                                          ? Colors.blue
+                                          : Colors
+                                              .black, // Farbänderung des Texts
                                     ),
                                   ),
                                 ],
