@@ -3,6 +3,7 @@ import 'package:eventure/providers/event_provider.dart';
 import 'package:eventure/providers/location_provider.dart';
 import 'package:eventure/providers/user_provider.dart';
 import 'package:eventure/screens/events/event-screen.dart';
+import 'package:eventure/screens/events/detail_view.dart';
 import 'package:eventure/screens/filter/filter-screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
@@ -142,6 +143,22 @@ final _router = GoRouter(
             path: "addEvent",
             builder: (context, state) {
               return EventScreen();
+            }),
+        GoRoute(
+            path: 'events/:id',
+            builder: (context, state) {
+              final id = state.pathParameters['id'];
+              final event = Provider.of<EventProvider>(context, listen: false)
+                  .getEventFromId(id!);
+              return EventDetailViewScreen(event: event);
+            }),
+        GoRoute(
+            path: "editEvent/:id",
+            builder: (context, state) {
+              final id = state.pathParameters['id'];
+              final event = Provider.of<EventProvider>(context, listen: false)
+                  .getEventFromId(id!);
+              return EventScreen(event: event);
             }),
         GoRoute(
             path: "addFilter",
