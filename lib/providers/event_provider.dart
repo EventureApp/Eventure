@@ -42,7 +42,6 @@ class EventProvider with ChangeNotifier {
   }
 
   Future<void> _fetchEvents() async {
-    print("-------------------------------" + filter.location.toString());
     _events =
         await _eventService.getAllInRange(_filter.location, _filter.range);
     _filteredEvents = List.from(_events);
@@ -66,7 +65,6 @@ class EventProvider with ChangeNotifier {
   void setFilter(EventFilter filter) {
     print(_filter);
     if (filter.location != _filter.location || filter.range != _filter.range) {
-      print("aaaa");
       _filter = filter;
       _fetchEvents();
     }

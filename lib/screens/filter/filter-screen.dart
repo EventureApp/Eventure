@@ -1,5 +1,6 @@
 import 'package:eventure/models/event_filter.dart';
 import 'package:eventure/providers/event_provider.dart';
+import 'package:eventure/providers/location_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
@@ -40,6 +41,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
 
   void _applyFilters() {
     if (_formKey.currentState!.validate()) {
+      context.read<LocationProvider>().setLocation(_location);
       context.read<EventProvider>().setFilter(EventFilter(
             range: _radius,
             startDate: _startDate,

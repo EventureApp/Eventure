@@ -55,11 +55,9 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
               width: double.infinity,
               height: 300,
               child: MapWidget(
-                onTap:
-                    _updateLocation, // Methode zum Aktualisieren der Position
+                onTap: _updateLocation,
               ),
             ),
-            // Zeigt die aktuelle ausgewählte Position im PopOver
             if (_selectedLocation != null)
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
