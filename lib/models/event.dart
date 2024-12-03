@@ -16,7 +16,7 @@ class Event implements Entity {
   final LatLng location;
   final IconData icon;
   final EventType eventType;
-  final EventVisability visability;
+  final EventVisability visibility;
   final String? eventLink;
   final int? maxParticipants;
   final String? organizer;
@@ -31,7 +31,7 @@ class Event implements Entity {
     required this.location,
     required this.icon,
     required this.eventType,
-    required this.visability,
+    required this.visibility,
     this.eventLink,
     this.maxParticipants,
     required this.organizer,
@@ -59,7 +59,7 @@ class Event implements Entity {
       eventLink: map['eventLink'] as String?,
       maxParticipants: map['participants'] as int?,
       organizer: map['organizer'] as String,
-      visability: EventVisability.values[map['visibility'] as int],
+      visibility: EventVisability.values[map['visibility'] as int],
     );
   }
 
@@ -80,7 +80,7 @@ class Event implements Entity {
       'eventLink': eventLink,
       'participants': maxParticipants,
       'organizer': AuthenticationProvider().currentUser?.uid,
-      'visability': visability.index,
+      'visibility': visibility.index,
     };
   }
 
