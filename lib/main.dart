@@ -1,4 +1,6 @@
+import 'package:eventure/models/user.dart';
 import 'package:eventure/providers/event_provider.dart';
+import 'package:eventure/providers/user_provider.dart';
 import 'package:eventure/screens/events/event-screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
@@ -25,6 +27,7 @@ void main() {
           ChangeNotifierProvider(create: (context) => AuthenticationProvider()),
           ChangeNotifierProvider(create: (context) => ChatProvider()),
           ChangeNotifierProvider(create: (context) => EventProvider()),
+          ChangeNotifierProvider(create: (context) => UserProvider()),
         ],
         child: const App(),
       ),
@@ -63,6 +66,7 @@ final _router = GoRouter(
                   context.push(uri.toString());
                 })),
                 AuthStateChangeAction(((context, state) {
+                  final userProvider = Provider.of<UserProvider>(context, listen:false);
                   final user = switch (state) {
                     SignedIn state => state.user,
                     UserCreated state => state.credential.user,
@@ -73,6 +77,8 @@ final _router = GoRouter(
                   }
                   if (state is UserCreated) {
                     user.updateDisplayName(user.email!.split('@')[0]);
+                    AppUser appUser = AppUser(id: user.uid, username: user.email!.split('@')[0]);
+                    userProvider.addUser(appUser);
                   }
                   if (!user.emailVerified) {
                     user.sendEmailVerification();
