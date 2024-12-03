@@ -1,6 +1,7 @@
 import 'package:eventure/providers/location_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
@@ -36,29 +37,50 @@ class _MapWidgetState extends State<MapWidget> {
             builder: (context, eventProvider, locationProvider, child) {
               final currentLocation = locationProvider.currentLocation;
               if (currentLocation == null) {
-                return const Center(child: Text('Unable to fetch location.'));
+                return const Center(
+                  child: Text('Unable to fetch location.'),
+                );
               }
 
               return Stack(
                 children: [
-                  FlutterMap(
-                    options: MapOptions(
-                      initialCenter: currentLocation,
-                      initialZoom: 13.0,
-                      onTap: (tapPosition, point) {
-                        setState(() {
-                          tappedCoordinates = point;
-                        });
-                      },
-                    ),
-                    children: [
-                      TileLayer(
-                        urlTemplate:
+                  Consumer<EventProvider>(
+                    builder: (context, eventProvider, child) {
+                      return FlutterMap(
+                        options: MapOptions(
+                          initialCenter: currentLocation,
+                          initialZoom: 13.0,
+                          onTap: (tapPosition, point) {
+                            setState(() {
+                              tappedCoordinates = point;
+                            });
+                          },
+                        ),
+                        children: [
+                          TileLayer(
+                            urlTemplate:
                             "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                        subdomains: const ['a', 'b', 'c'],
-                      ),
-                      MarkerLayer(markers: eventProvider.getLocations()),
-                    ],
+                            subdomains: const ['a', 'b', 'c'],
+                          ),
+                          MarkerLayer(
+                            markers: eventProvider.filteredEvents.map((event) {
+                              return Marker(
+                                point: event.location,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    context.push('/events/${event.id!}');
+                                  },
+                                  child: const Icon(
+                                    Icons.location_pin,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                   if (tappedCoordinates != null)
                     Positioned(

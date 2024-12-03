@@ -27,18 +27,9 @@ class EventProvider with ChangeNotifier {
     _fetchEvents();
   }
 
-  List<Marker> getLocations() {
-    List<Marker> markers = [];
-    for (var event in _filteredEvents) {
-      markers.add(Marker(
-        point: event.location,
-        child: const Icon(
-          Icons.location_pin,
-          color: Colors.red,
-        ),
-      ));
-    }
-    return markers;
+
+  Event getEventFromId(String id) {
+    return events.firstWhere((event) => event.id == id);
   }
 
   Future<void> _fetchEvents() async {
@@ -107,7 +98,6 @@ class EventProvider with ChangeNotifier {
       final matchesEventType = _filter.eventType == null ||
           _filter.eventType!.isEmpty ||
           _filter.eventType!.contains(event.eventType);
-
       return matchesSearch && matchesDateRange && matchesEventType;
     }).toList();
 
