@@ -63,7 +63,7 @@ class _MapWidgetState extends State<MapWidget> {
                             subdomains: const ['a', 'b', 'c'],
                           ),
                           MarkerLayer(
-                            markers: eventProvider.events.map((event) {
+                            markers: eventProvider.filteredEvents.map((event) {
                               return Marker(
                                 point: event.location,
                                 child: GestureDetector(

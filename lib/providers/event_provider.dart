@@ -98,7 +98,6 @@ class EventProvider with ChangeNotifier {
       final matchesEventType = _filter.eventType == null ||
           _filter.eventType!.isEmpty ||
           _filter.eventType!.contains(event.eventType);
-
       return matchesSearch && matchesDateRange && matchesEventType;
     }).toList();
 
