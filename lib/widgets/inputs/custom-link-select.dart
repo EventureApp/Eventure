@@ -63,32 +63,61 @@ class _CustomLinkInputState extends State<CustomLinkInput> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                widget.label,
-                style: TextStyle(fontWeight: FontWeight.bold),
+        // Label mit Sternchen für Pflichtfelder
+        Text(
+          widget.isMandatory! ? '${widget.label} *' : widget.label,
+          style: TextStyle(
+            fontWeight: FontWeight.w400,
+            fontSize: 16,
+            color: Colors.black,
+          ),
+        ),
+        SizedBox(height: 8),
+        // Eingabefeld im angepassten Design
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(
+              color: _errorMessage.isNotEmpty ? Colors.red : Colors.black.withOpacity(0.2),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: TextField(
+            controller: _controller,
+            decoration: InputDecoration(
+              hintText: widget.hint ?? 'Enter a link',
+              hintStyle: TextStyle(
+                color: Colors.grey.shade600,
+                fontSize: 14,
+              ),
+              border: InputBorder.none,
+            ),
+            onChanged: _onChange,
+          ),
+        ),
+        SizedBox(height: 8),
+        // Fehlernachricht
+        if (_errorMessage.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              _errorMessage,
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 12,
               ),
             ),
-            if (widget.isMandatory!)
-              Text(
-                '*',
-                style: TextStyle(color: Colors.red),
-              ),
-          ],
-        ),
-        SizedBox(height: 8),
-        TextField(
-          controller: _controller,
-          decoration: InputDecoration(
-            hintText: widget.hint ?? 'Enter a link',
-            errorText: _errorMessage.isEmpty ? null : _errorMessage,
-            border: OutlineInputBorder(),
           ),
-          onChanged: _onChange,
-        ),
-        SizedBox(height: 8),
+        // Link öffnen
         if (_errorMessage.isEmpty && _controller.text.isNotEmpty)
           GestureDetector(
             onTap: () async {
@@ -101,9 +130,15 @@ class _CustomLinkInputState extends State<CustomLinkInput> {
                 });
               }
             },
-            child: Text(
-              'Open link',
-              style: TextStyle(color: Colors.blue),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Text(
+                'Open link',
+                style: TextStyle(
+                  color: Colors.blue,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
             ),
           ),
       ],

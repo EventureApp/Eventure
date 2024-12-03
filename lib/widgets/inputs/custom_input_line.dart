@@ -21,11 +21,21 @@ class CustomInputLine extends StatefulWidget {
 
 class _CustomInputLineState extends State<CustomInputLine> {
   late TextEditingController _textController;
+  bool _isFieldEmpty = false; // Überprüft, ob das Feld leer ist
 
   @override
   void initState() {
     super.initState();
     _textController = TextEditingController(text: widget.initValue ?? '');
+  }
+
+  // Validierungslogik
+  void _validateField(String value) {
+    setState(() {
+      // Wenn das Feld erforderlich ist und leer bleibt, markieren wir es als "leer"
+      _isFieldEmpty = widget.required && value.isEmpty;
+    });
+    widget.onChanged(value); // Rufe den Callback auf, um den Wert zu aktualisieren
   }
 
   @override
@@ -37,66 +47,58 @@ class _CustomInputLineState extends State<CustomInputLine> {
         Text(
           widget.required ? widget.label + " *" : widget.label,
           style: TextStyle(
-            fontWeight: FontWeight.w400, // Einheitliche Schriftart wie beim DateTimePicker
+            fontWeight: FontWeight.w400,
             fontSize: 16,
-            color: Colors.black, // Schwarzer Text für das Label
+            color: Colors.black,
           ),
         ),
         SizedBox(height: 8),
 
-        // Eingabefeld im gleichen Design wie der DateTimePicker
-        GestureDetector(
-          onTap: () {
-            if (widget.editable) {
-              // Hier könnte zusätzliches Verhalten hinzugefügt werden, wenn benötigt
-            }
-          },
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(4), // Abgerundete Ecken
-              border: Border.all(
-                color: Colors.black.withOpacity(0.2), // Subtile Ränder ohne auffällige Farben
-                width: 1.5,
+        // Eingabefeld ohne Icon, aber mit einem sauberen, modernen Design
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12), // Weniger Padding
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),  // Leicht abgerundete Ecken
+            border: Border.all(
+              color: _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 4,
+                offset: Offset(0, 2),
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1), // Subtiler Schatten für Tiefe
-                  blurRadius: 4,
-                  offset: Offset(0, 2),
-                ),
-              ],
+            ],
+          ),
+          child: TextFormField(
+            controller: _textController,
+            readOnly: !widget.editable,
+            decoration: InputDecoration(
+              hintText: widget.required ? 'Pflichtfeld' : 'Optional',
+              hintStyle: TextStyle(
+                color: Colors.grey.shade600,
+                fontSize: 14,
+              ),
+              border: InputBorder.none,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: _textController,
-                    readOnly: !widget.editable,
-                    decoration: InputDecoration(
-                      hintText: widget.required ? 'Pflichtfeld' : 'Optional',
-                      hintStyle: TextStyle(
-                        color: Colors.grey.shade600, // Grauer Hinweistext
-                        fontSize: 14,
-                      ),
-                      border: InputBorder.none, // Kein Border von InputDecoration
-                    ),
-                    onChanged: widget.editable
-                        ? (value) => widget.onChanged(value)
-                        : null, // Callback nur bei Editierbarkeit
-                  ),
-                ),
-                Icon(
-                  Icons.edit, // Optionales Bearbeitungs-Icon
-                  color: widget.editable ? Colors.black : Colors.grey,
-                  size: 20,
-                ),
-              ],
-            ),
+            onChanged: widget.editable ? _validateField : null,
           ),
         ),
+
+        // Wenn das Feld erforderlich ist und leer bleibt, Fehlermeldung anzeigen
+        if (_isFieldEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              'Dieses Feld ist erforderlich.',
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 12,
+              ),
+            ),
+          ),
       ],
     );
   }

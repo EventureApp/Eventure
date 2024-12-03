@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../models/custom_icons.dart';
+import '../statics/custom_icons.dart';
 import '../widgets/map.dart';
 
 class HomePage extends StatefulWidget {

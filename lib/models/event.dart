@@ -1,8 +1,10 @@
+import 'package:eventure/providers/auth_provider.dart';
 import 'package:eventure/services/db/models/entity.dart';
+import 'package:eventure/statics/event_types.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:latlong2/latlong.dart';
 
-enum EventType { public, friendsOnly }
+import '../statics/event_visibility.dart';
 
 class Event implements Entity {
   final String? id;
@@ -14,6 +16,7 @@ class Event implements Entity {
   final LatLng location;
   final IconData icon;
   final EventType eventType;
+  final EventVisability visability;
   final String? eventLink;
   final int? maxParticipants;
   final String? organizer;
@@ -28,6 +31,7 @@ class Event implements Entity {
     required this.location,
     required this.icon,
     required this.eventType,
+    required this.visability,
     this.eventLink,
     this.maxParticipants,
     required this.organizer,
@@ -55,13 +59,13 @@ class Event implements Entity {
       eventLink: map['eventLink'] as String?,
       maxParticipants: map['participants'] as int?,
       organizer: map['organizer'] as String,
+      visability: EventVisability.values[map['visibility'] as int],
     );
   }
 
   @override
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'name': name,
       'description': description,
       'startDate': startDate.toIso8601String(),
@@ -75,7 +79,8 @@ class Event implements Entity {
       'eventType': eventType.index,
       'eventLink': eventLink,
       'participants': maxParticipants,
-      'organizer': organizer,
+      'organizer': AuthenticationProvider().currentUser?.uid,
+      'visability': visability.index,
     };
   }
 

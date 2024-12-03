@@ -24,6 +24,7 @@ class CustomDateAndTimePicker extends StatefulWidget {
 class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
   late TextEditingController _dateController;
   late DateTime _selectedDateTime;
+  bool _isFieldEmpty = false;
 
   @override
   void initState() {
@@ -81,6 +82,14 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
     }
   }
 
+  // Validierungslogik
+  void _validateField(String value) {
+    setState(() {
+      // Wenn das Feld erforderlich ist und leer bleibt, markieren wir es als "leer"
+      _isFieldEmpty = widget.required && value.isEmpty;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -105,12 +114,12 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
             }
           },
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14), // Weniger Padding für ein schmaleres Design
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(4),
               border: Border.all(
-                color: Colors.black.withOpacity(0.2), // Subtile Ränder ohne auffällige Farben
+                color: _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2), // Wenn das Feld leer ist, wird es rot
                 width: 1.5,
               ),
             ),
@@ -138,6 +147,19 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
             ),
           ),
         ),
+
+        // Fehlertext anzeigen, wenn das Feld leer ist und als "required" markiert
+        if (_isFieldEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              'Dieses Feld ist erforderlich.',
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 12,
+              ),
+            ),
+          ),
       ],
     );
   }
