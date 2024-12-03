@@ -1,33 +1,33 @@
 import 'package:eventure/services/db/models/entity.dart';
 import 'dart:typed_data';
 
-class User implements Entity {
+class AppUser implements Entity {
   final String? id;
   final String username;
   final Uint8List? profilePicture;
   final String? studyCourse;
-  final String firstName;
-  final String lastName;
+  final String? firstName;
+  final String? lastName;
   final String? description;
   final String? uni;
   final List<String>? socialMediaLinks;
   final List<String>? friends;
 
-  User({
+  AppUser({
     this.id,
     required this.username,
     this.profilePicture,
     this.studyCourse,
-    required this.firstName,
-    required this.lastName,
+    this.firstName,
+    this.lastName,
     this.description,
     this.uni,
     this.socialMediaLinks,
     this.friends
 });
 
-  factory User.fromMap(Map<String, dynamic> map, String id){
-    return User(
+  factory AppUser.fromMap(Map<String, dynamic> map, String id){
+    return AppUser(
       id: id,
       username: map['username'] as String,
       profilePicture: map['profilePicture'] as Uint8List,
