@@ -16,10 +16,11 @@ class ProfileEditScreen extends StatefulWidget {
 class _ProfileEditScreenState extends State<ProfileEditScreen> {
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController bioController = TextEditingController();
-  final TextEditingController courseController = TextEditingController();
-  final TextEditingController universityController = TextEditingController();
-  final TextEditingController linkController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController studyCourseController = TextEditingController();
+  final TextEditingController uniController = TextEditingController();
+  final TextEditingController socialMediaLinksController =
+      TextEditingController();
 
   File? _image;
 
@@ -52,10 +53,10 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                   userProvider.addUser(user.copyWith(
                     lastName: lastNameController.text,
                     firstName: firstNameController.text,
-                    description: bioController.text,
-                    studyCourse: courseController.text,
-                    uni: universityController.text,
-                    socialMediaLinks: linkController.text
+                    description: descriptionController.text,
+                    studyCourse: studyCourseController.text,
+                    uni: uniController.text,
+                    socialMediaLinks: socialMediaLinksController.text
                         .split(',')
                         .map((e) => e.trim())
                         .toList(),
@@ -100,10 +101,10 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                 const SizedBox(height: 20),
                 _buildTextField('Nachname', lastNameController),
                 _buildTextField('Vorname', firstNameController),
-                _buildTextField('Bio', bioController),
-                _buildTextField('Studiengang', courseController),
-                _buildTextField('Universität', universityController),
-                _buildTextField('Links', linkController),
+                _buildTextField('Bio', descriptionController),
+                _buildTextField('Studiengang', studyCourseController),
+                _buildTextField('Universität', uniController),
+                _buildTextField('Links', socialMediaLinksController),
               ],
             ),
           ),

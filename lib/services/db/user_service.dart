@@ -3,49 +3,51 @@ import 'package:eventure/models/user.dart';
 
 import 'models/db_service.dart';
 
-class UserService implements DatabaseService<User> {
+class UserService implements DatabaseService<AppUser> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
-  Future<void> create(User user) async {
-    await _firestore.collection('users').doc(user.id).set(user.toMap());
+  Future<void> create(AppUser user) async {
+    await _firestore.collection('users').add(user.toMap());
   }
 
   @override
-  Future<void> delete(String id) async{
+  Future<void> delete(String id) async {
     await _firestore.collection('users').doc(id).delete();
   }
 
   @override
-  Future<List<User>> getAll() async{
+  Future<List<AppUser>> getAll() async {
     final snapshot = await _firestore.collection('users').get();
     return snapshot.docs.map((doc) {
-    return User.fromMap(doc.data(), doc.id);
+      return AppUser.fromMap(doc.data(), doc.id);
     }).toList();
   }
 
   @override
-  Future<void> update(User user) async{
+  Future<void> update(AppUser user) async {
     await _firestore.collection('users').doc(user.id).update(user.toMap());
   }
+
   /*
   This is implemented so we don't have to call the entire data base for the friends Operation
   */
-  Future<User> getSingleUser(String id) async{
-    DocumentSnapshot document = await _firestore.collection('users').doc(id).get();
+  Future<AppUser> getSingleUser(String? id) async {
+    DocumentSnapshot document =
+        await _firestore.collection('users').doc(id).get();
     Map<String, dynamic> userData = document.data() as Map<String, dynamic>;
-    User user = User.fromMap(userData, id);
+    AppUser user = AppUser.fromMap(userData, id!);
     return user;
   }
 
   // If there are no Friends an empty List is returned!!!
-  Future<List<User>> getFriends(User user) async{
-    if (user.friends == null){
+  Future<List<AppUser>> getFriends(AppUser user) async {
+    if (user.friends == null) {
       return Future.value([]);
     }
-    List<User> friends = [];
+    List<AppUser> friends = [];
     for (String friend in user.friends!) {
-      User user = await getSingleUser(friend);
+      AppUser user = await getSingleUser(friend);
       friends.add(user);
     }
     return friends;
