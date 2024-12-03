@@ -46,9 +46,11 @@ class UserService implements DatabaseService<AppUser> {
       return Future.value([]);
     }
     List<AppUser> friends = [];
-    for (String friend in user.friends!) {
-      AppUser user = await getSingleUser(friend);
-      friends.add(user);
+    for (String? friend in user.friends!) {
+      if (friend != null) {
+        AppUser user = await getSingleUser(friend);
+        friends.add(user);
+      }
     }
     return friends;
   }

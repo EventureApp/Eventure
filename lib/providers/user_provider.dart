@@ -10,6 +10,8 @@ class UserProvider with ChangeNotifier {
   List<AppUser> _users = [];
   List<AppUser> _friends = [];
   AppUser _user = AppUser(username: '');
+  AppUser get user => _user;
+  List<AppUser> get friends => _friends;
   List<AppUser> get users => _users;
 
   UserProvider() {
@@ -28,7 +30,8 @@ class UserProvider with ChangeNotifier {
   }
 
   Future<void> updateUser(AppUser user) async {
-    _userService.update(user);
+    await _userService.update(user);
+    _user = user;
     notifyListeners();
   }
 

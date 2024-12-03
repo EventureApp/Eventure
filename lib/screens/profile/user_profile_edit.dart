@@ -14,18 +14,32 @@ class ProfileEditScreen extends StatefulWidget {
 }
 
 class _ProfileEditScreenState extends State<ProfileEditScreen> {
-  final TextEditingController lastNameController = TextEditingController();
-  final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
-  final TextEditingController studyCourseController = TextEditingController();
-  final TextEditingController uniController = TextEditingController();
-  final TextEditingController socialMediaLinksController =
-      TextEditingController();
+  late TextEditingController lastNameController;
+  late TextEditingController firstNameController;
+  late TextEditingController descriptionController;
+  late TextEditingController studyCourseController;
+  late TextEditingController uniController;
+  late TextEditingController socialMediaLinksController;
 
   File? _image;
-
   final ImagePicker _picker = ImagePicker();
   XFile? _pickedFile;
+
+  @override
+  void initState() {
+    super.initState();
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final user = userProvider.user;
+
+    lastNameController = TextEditingController(text: user.lastName);
+    firstNameController = TextEditingController(text: user.firstName);
+    descriptionController = TextEditingController(text: user.description);
+    studyCourseController = TextEditingController(text: user.studyCourse);
+    uniController = TextEditingController(text: user.uni);
+    socialMediaLinksController = TextEditingController(
+      text: user.socialMediaLinks?.join(', ') ?? '',
+    );
+  }
 
   Future<void> _pickImage() async {
     _pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -47,10 +61,9 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
               IconButton(
                 icon: const Icon(Icons.done),
                 onPressed: () {
-                  final user = userProvider.users.firstWhere(
-                    (user) => user.id == FirebaseAuth.instance.currentUser?.uid,
-                  );
-                  userProvider.addUser(user.copyWith(
+                  final user = userProvider.users
+                      .firstWhere((user) => user.id == userProvider.user.id);
+                  userProvider.updateUser(user.copyWith(
                     lastName: lastNameController.text,
                     firstName: firstNameController.text,
                     description: descriptionController.text,
@@ -61,6 +74,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                         .map((e) => e.trim())
                         .toList(),
                   ));
+                  Navigator.pop(context);
                 },
               ),
             ],
@@ -99,8 +113,8 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                _buildTextField('Nachname', lastNameController),
                 _buildTextField('Vorname', firstNameController),
+                _buildTextField('Nachname', lastNameController),
                 _buildTextField('Bio', descriptionController),
                 _buildTextField('Studiengang', studyCourseController),
                 _buildTextField('Universität', uniController),

@@ -33,48 +33,87 @@ class ProfileDetailScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Container(
-            color: const Color(0xFFB7CBDD),
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            child: Column(
-              children: [
-                CircleAvatar(
-                  radius: 50,
-                  backgroundImage: NetworkImage(
-                    currentUser?.photoURL ?? 'https://i.pravatar.cc/300',
-                  ),
+      body: Consumer<UserProvider>(
+        builder: (context, userProvider, child) {
+          final user = userProvider.user;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                color: const Color(0xFFB7CBDD),
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: NetworkImage(
+                        currentUser?.photoURL ?? 'https://i.pravatar.cc/300',
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      user.firstName ?? 'my-user',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 10),
-                Text(
-                  currentUser?.displayName ?? 'my-user',
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Username: ${user.username ?? ''}'),
+                    Text('University: ${user.uni ?? ''}'),
+                    Text('Course: ${user.studyCourse ?? ''}'),
+                    Text(
+                        'Name: ${user.firstName ?? ''} ${user.lastName ?? ''}'),
+                    Text('Description: ${user.description ?? ''}'),
+                    if (user.socialMediaLinks != null &&
+                        user.socialMediaLinks!.isNotEmpty)
+                      Text(
+                          'Social Media: ${user.socialMediaLinks!.join(', ')}'),
+                    if (user.friends != null && user.friends!.isNotEmpty)
+                      Text('Friends: ${user.friends!.join(', ')}'),
+                  ],
                 ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Consumer<UserProvider>(
-              builder: (context, userProvider, child) {
-                return ListView.builder(
-                  itemCount: userProvider.users.length,
-                  itemBuilder: (context, index) {
-                    final user = userProvider.users[index];
-                    return ListTile(
-                      title: Text(user.username ?? ''),
-                      subtitle: Text(user.uni ?? ''),
+              ),
+              const Spacer(),
+              Center(
+                child: Consumer<AuthenticationProvider>(
+                  builder: (context, authProvider, _) {
+                    return Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.red,
+                          side: const BorderSide(color: Colors.red),
+                        ),
+                        onPressed: () async {
+                          await authProvider.logout();
+                        },
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.logout, color: Colors.red),
+                            SizedBox(width: 8),
+                            Text('Logout'),
+                          ],
+                        ),
+                      ),
                     );
                   },
-                );
-              },
-            ),
-          ),
-        ],
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
