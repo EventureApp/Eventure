@@ -45,7 +45,7 @@ class _MapWidgetState extends State<MapWidget> {
                     point: event.location,
                     child: GestureDetector(
                       onTap: () {
-                        context.go('/events/${event.id!}');
+                        context.push('/events/${event.id!}');
                       },
                       child: const Icon(
                         Icons.location_pin,

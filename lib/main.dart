@@ -134,16 +134,27 @@ final _router = GoRouter(
             );
           },
         ),
-        GoRoute(path: "addEvent", builder: (context, state) {
-          return EventScreen();
-        }),
+        GoRoute(
+            path: "addEvent",
+            builder: (context, state) {
+              return EventScreen();
+            }),
         GoRoute(
             path: 'events/:id',
             builder: (context, state) {
               final id = state.pathParameters['id'];
-              return EventDetailViewScreen.create(context, id!);
-            }
-        ),
+              final event = Provider.of<EventProvider>(context, listen: false)
+                  .getEventFromId(id!);
+              return EventDetailViewScreen(event: event);
+            }),
+        GoRoute(
+            path: "editEvent/:id",
+            builder: (context, state) {
+              final id = state.pathParameters['id'];
+              final event = Provider.of<EventProvider>(context, listen: false)
+                  .getEventFromId(id!);
+              return EventScreen(event: event);
+            }),
       ],
     ),
   ],

@@ -13,6 +13,10 @@ class EventProvider with ChangeNotifier {
     fetchEvents();
   }
 
+  Event getEventFromId(String id) {
+    return events.firstWhere((event) => event.id == id);
+  }
+
   Future<void> fetchEvents() async {
     _events = await _eventService.getAll();
     notifyListeners();
