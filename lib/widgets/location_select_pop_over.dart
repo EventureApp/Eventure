@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
+
 import 'input_map_widget.dart';
 
 class LocationSelectPopover extends StatefulWidget {
@@ -29,7 +30,7 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
 
   void _submitLocation() {
     widget.onChanged(_selectedLocation);
-    Navigator.pop(context);  // PopOver schließen
+    Navigator.pop(context);
   }
 
   @override
@@ -41,22 +42,21 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Schließen-Button oben links
             Align(
               alignment: Alignment.topLeft,
               child: IconButton(
                 icon: Icon(Icons.close),
                 onPressed: () {
-                  Navigator.pop(context);  // PopOver schließen
+                  Navigator.pop(context);
                 },
               ),
             ),
-            // MapWidget im PopOver
             SizedBox(
               width: double.infinity,
               height: 300,
               child: MapWidget(
-                onTap: _updateLocation,  // Methode zum Aktualisieren der Position
+                onTap:
+                    _updateLocation, // Methode zum Aktualisieren der Position
               ),
             ),
             // Zeigt die aktuelle ausgewählte Position im PopOver

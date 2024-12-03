@@ -1,4 +1,5 @@
 import 'package:eventure/providers/event_provider.dart';
+import 'package:eventure/providers/location_provider.dart';
 import 'package:eventure/screens/events/event-screen.dart';
 import 'package:eventure/screens/filter/filter-screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -24,8 +25,9 @@ void main() {
       MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => AuthenticationProvider()),
-          ChangeNotifierProvider(create: (context) => ChatProvider()),
+          ChangeNotifierProvider(create: (context) => LocationProvider()),
           ChangeNotifierProvider(create: (context) => EventProvider()),
+          ChangeNotifierProvider(create: (context) => ChatProvider()),
         ],
         child: const App(),
       ),
@@ -128,12 +130,16 @@ final _router = GoRouter(
             );
           },
         ),
-        GoRoute(path: "addEvent", builder: (context, state) {
-          return EventScreen();
-        }),
-        GoRoute(path: "addFilter", builder: (context, state) {
-          return EventFilterScreen();
-        }),
+        GoRoute(
+            path: "addEvent",
+            builder: (context, state) {
+              return EventScreen();
+            }),
+        GoRoute(
+            path: "addFilter",
+            builder: (context, state) {
+              return EventFilterScreen();
+            }),
       ],
     ),
   ],

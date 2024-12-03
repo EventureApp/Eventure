@@ -1,12 +1,15 @@
+import 'package:eventure/models/event_filter.dart';
+import 'package:eventure/providers/event_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
-import '../../widgets/inputs/custom_date_time_picker.dart';
-import '../../widgets/inputs/custom-single-select.dart';
-import '../../widgets/inputs/custom-number-select.dart';
-import '../../widgets/inputs/custom-location-select.dart';
-import '../../widgets/inputs/custom-event-select.dart';
-import '../../statics/event_visibility.dart';
+import 'package:provider/provider.dart';
+
 import '../../statics/event_types.dart';
+import '../../statics/event_visibility.dart';
+import '../../widgets/inputs/custom-event-select.dart';
+import '../../widgets/inputs/custom-location-select.dart';
+import '../../widgets/inputs/custom-number-select.dart';
+import '../../widgets/inputs/custom_date_time_picker.dart';
 
 class EventFilterScreen extends StatefulWidget {
   @override
@@ -16,43 +19,45 @@ class EventFilterScreen extends StatefulWidget {
 class _EventFilterScreenState extends State<EventFilterScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  // Felder für die Filterdaten
   late DateTime? _startDate;
   late DateTime? _endDate;
   late EventVisability _visibility;
-  late EventType _eventType;
-  late LatLng? _location;
-  late int? _radius;
+  late List<EventType> _eventType;
+  late LatLng _location;
+  late double _radius;
 
   @override
   void initState() {
     super.initState();
 
-    // Initialisiere Filter mit Default-Werten
     _startDate = null;
     _endDate = null;
     _visibility = EventVisability.public;
-    _eventType = EventType.someThingElse;
-    _location = null;
-    _radius = null;
+    _eventType = [EventType.someThingElse];
+    _location = context.read<EventProvider>().filter.location;
+    _radius = context.read<EventProvider>().filter.range;
   }
 
   void _applyFilters() {
     if (_formKey.currentState!.validate()) {
-      // Gib die Filterwerte aus (hier könntest du die Daten weiterverarbeiten oder an den Provider senden)
-      print("Start Date: $_startDate");
-      print("End Date: $_endDate");
-      print("Visibility: $_visibility");
-      print("Event Type: $_eventType");
-      print("Location: $_location");
-      print("Radius: $_radius");
+      context.read<EventProvider>().setFilter(EventFilter(
+            range: _radius,
+            startDate: _startDate,
+            endDate: _endDate,
+            location: _location,
+            eventType: _eventType,
+          ));
 
-      // Feedback für den Nutzer
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Filters applied!")),
       );
       Navigator.pop(context);
     }
+  }
+
+  void _resetFilters() {
+    context.read<EventProvider>().resetFilter();
+    Navigator.pop(context);
   }
 
   @override
@@ -95,6 +100,11 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                     label: "Start Date",
                     required: false,
                     editable: true,
+                    initValue: context
+                        .read<EventProvider>()
+                        .filter
+                        .startDate
+                        ?.toString(),
                     onDateChanged: (date) {
                       setState(() {
                         _startDate = date;
@@ -108,39 +118,46 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                     label: "End Date",
                     required: false,
                     editable: true,
+                    initValue: context
+                        .read<EventProvider>()
+                        .filter
+                        .endDate
+                        ?.toString(),
                     onDateChanged: (date) {
                       setState(() {
                         _endDate = date;
                       });
                     },
                   ),
-                  SizedBox(height: 16),
-
-                  // Sichtbarkeit (Dropdown)
-                  SingleSelectDropdown(
-                    label: 'Visibility',
-                    initValue: _visibility.toString().split('.').last,
-                    data: eventVisibilityData,
-                    required: true,
-                    editable: true,
-                    onChanged: (value) {
-                      setState(() {
-                        _visibility = eventVisibilityData[value];
-                      });
-                    },
-                  ),
+                  // SizedBox(height: 16),
+                  //
+                  // // // Sichtbarkeit (Dropdown)
+                  // // SingleSelectDropdown(
+                  // //   label: 'Visibility',
+                  // //   initValue: _visibility.toString().split('.').last,
+                  // //   data: eventVisibilityData,
+                  // //   required: true,
+                  // //   editable: true,
+                  // //   onChanged: (value) {
+                  // //     setState(() {
+                  // //       _visibility = eventVisibilityData[value];
+                  // //     });
+                  // //   },
+                  // // ),
                   SizedBox(height: 16),
 
                   // Event-Typ (Einzelauswahl)
                   EventSelect(
                     label: 'Event Type',
                     isEditable: true,
-                    initValues: [_eventType],
+                    initValues:
+                        context.read<EventProvider>().filter.eventType ??
+                            _eventType,
                     events: EventTypesWithIcon,
                     isMultiSelect: true,
                     onChanged: (selected) {
                       setState(() {
-                        _eventType = selected[0];
+                        _eventType = selected;
                       });
                     },
                   ),
@@ -152,7 +169,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                     isEditable: true,
                     onChanged: (location) {
                       setState(() {
-                        _location = location;
+                        _location = location!;
                       });
                     },
                   ),
@@ -161,9 +178,10 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                   // Radius
                   CustomNumberInput(
                     label: "Radius (km)",
+                    hint: context.read<EventProvider>().filter.range.toString(),
                     onChanged: (value) {
                       setState(() {
-                        _radius = value;
+                        _radius = value!.toDouble();
                       });
                     },
                   ),
@@ -173,6 +191,10 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                   ElevatedButton(
                     onPressed: _applyFilters,
                     child: Text("Filter"),
+                  ),
+                  ElevatedButton(
+                    onPressed: _resetFilters,
+                    child: Text("Reset"),
                   ),
                 ],
               ),
