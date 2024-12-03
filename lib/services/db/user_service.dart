@@ -8,7 +8,7 @@ class UserService implements DatabaseService<AppUser> {
 
   @override
   Future<void> create(AppUser user) async {
-    await _firestore.collection('users').add(user.toMap());
+    await _firestore.collection('users').doc(user.id).set(user.toMap());
   }
 
   @override
