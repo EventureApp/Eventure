@@ -79,6 +79,7 @@ final _router = GoRouter(
                     user.updateDisplayName(user.email!.split('@')[0]);
                     AppUser appUser = AppUser(id: user.uid, username: user.email!.split('@')[0]);
                     userProvider.addUser(appUser);
+                    userProvider.u
                   }
                   if (!user.emailVerified) {
                     user.sendEmailVerification();
