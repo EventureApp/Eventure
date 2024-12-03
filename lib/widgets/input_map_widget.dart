@@ -1,7 +1,8 @@
+import 'package:eventure/providers/location_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 
 // Dein MapWidget
 class MapWidget extends StatefulWidget {
@@ -27,33 +28,11 @@ class _MapWidgetState extends State<MapWidget> {
 
   // Funktion, um den aktuellen Standort zu holen
   void _getCurrentLocation() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Überprüfen, ob Standortdienste aktiviert sind
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // Standortdienste sind deaktiviert
-      return;
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.deniedForever) {
-      // Berechtigungen dauerhaft verweigert
-      return;
-    } else if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
-        return;
-      }
-
-    }
-
-    // Hole den aktuellen Standort
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     setState(() {
-      currentLocation = LatLng(position.latitude, position.longitude);
-      mapController.move(currentLocation!, 13.0); // Karte auf den aktuellen Standort zentrieren
+      currentLocation =
+          Provider.of<LocationProvider>(context, listen: false).currentLocation;
+      mapController.move(currentLocation!,
+          13.0); // Karte auf den aktuellen Standort zentrieren
     });
   }
 
@@ -67,18 +46,21 @@ class _MapWidgetState extends State<MapWidget> {
           child: FlutterMap(
             mapController: mapController,
             options: MapOptions(
-              initialCenter: widget.initialLocation ?? LatLng(49.4699765, 8.4819024),
+              initialCenter:
+                  widget.initialLocation ?? LatLng(49.4699765, 8.4819024),
               initialZoom: 13.0,
               onTap: (tapPosition, point) {
                 setState(() {
                   tappedCoordinates = point;
                 });
-                widget.onTap(point);  // Callback zur Übertragung der ausgewählten Position
+                widget.onTap(
+                    point); // Callback zur Übertragung der ausgewählten Position
               },
             ),
             children: [
               TileLayer(
-                urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                urlTemplate:
+                    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                 subdomains: const ['a', 'b', 'c'],
               ),
               if (tappedCoordinates != null)
@@ -148,7 +130,7 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
 
   void _submitLocation() {
     widget.onChanged(_selectedLocation);
-    Navigator.pop(context);  // PopOver schließen
+    Navigator.pop(context); // PopOver schließen
   }
 
   @override
@@ -166,7 +148,7 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
               child: IconButton(
                 icon: Icon(Icons.close),
                 onPressed: () {
-                  Navigator.pop(context);  // PopOver schließen
+                  Navigator.pop(context); // PopOver schließen
                 },
               ),
             ),
@@ -176,7 +158,8 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
               height: 300,
               child: MapWidget(
                 initialLocation: _selectedLocation,
-                onTap: _updateLocation,  // Methode zum Aktualisieren der Position
+                onTap:
+                    _updateLocation, // Methode zum Aktualisieren der Position
               ),
             ),
             SizedBox(height: 16),
@@ -214,7 +197,8 @@ class _LocationSelectState extends State<LocationSelect> {
   @override
   void initState() {
     super.initState();
-    _selectedLocation = widget.initValue; // Initialisiere mit der übergebenen Location
+    _selectedLocation =
+        widget.initValue; // Initialisiere mit der übergebenen Location
   }
 
   // Methode zum Öffnen des Popovers
@@ -240,31 +224,28 @@ class _LocationSelectState extends State<LocationSelect> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Label anzeigen
         Text(
           widget.label,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         SizedBox(height: 8),
-        // Button oder Karte, um das PopOver zu öffnen
         GestureDetector(
           onTap: _openLocationPopover,
           child: Container(
             width: double.infinity,
             height: 300,
-            color: Colors.grey[300],  // Nur eine Platzhalterfläche für die Karte
+            color: Colors.grey[300],
             child: _selectedLocation != null
                 ? Center(
-              child: Text(
-                'Lat: ${_selectedLocation!.latitude}, Lng: ${_selectedLocation!.longitude}',
-                style: TextStyle(fontSize: 16),
-              ),
-            )
+                    child: Text(
+                      'Lat: ${_selectedLocation!.latitude}, Lng: ${_selectedLocation!.longitude}',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  )
                 : Center(child: Text('Tap to select location')),
           ),
         ),
         SizedBox(height: 16),
-        // Zeigt die aktuell ausgewählte Location an
         if (_selectedLocation != null)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
