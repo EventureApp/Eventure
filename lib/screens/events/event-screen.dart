@@ -54,7 +54,7 @@ class _EventScreenState extends State<EventScreen> {
       _location = widget.event!.location;
       _eventType = widget.event!.eventType;
       _eventIcon = widget.event!.icon;
-      _visibility = widget.event!.visability;
+      _visibility = widget.event!.visibility;
       _link = widget.event!.eventLink;
       _maxParticipants = widget.event!.maxParticipants;
       _description = widget.event!.description;
@@ -96,7 +96,7 @@ class _EventScreenState extends State<EventScreen> {
         // Address handling could be added here
         eventType: _eventType,
         icon: _eventIcon,
-        visability: _visibility,
+        visibility: _visibility,
         eventLink: _link,
         maxParticipants: _maxParticipants,
         description: _description,
