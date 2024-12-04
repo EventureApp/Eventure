@@ -6,6 +6,8 @@
 	<string>Allow access to photo library</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Allow access to camera</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Allow access to location when the app is in use</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
