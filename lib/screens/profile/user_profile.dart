@@ -1,7 +1,9 @@
 import 'package:eventure/providers/auth_provider.dart';
+import 'package:eventure/screens/auth/authentication.dart';
 import 'package:eventure/screens/profile/user_profile_edit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:eventure/providers/user_provider.dart';
 
@@ -124,6 +126,7 @@ class ProfileDetailScreen extends StatelessWidget {
                         ),
                         onPressed: () async {
                           await authProvider.logout();
+                          context.go("/sign-in");
                         },
                         child: const Row(
                           mainAxisSize: MainAxisSize.min,
