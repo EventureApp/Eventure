@@ -5,6 +5,7 @@ import 'package:eventure/providers/user_provider.dart';
 import 'package:eventure/screens/events/event-screen.dart';
 import 'package:eventure/screens/events/detail_view.dart';
 import 'package:eventure/screens/filter/filter-screen.dart';
+import 'package:eventure/screens/profile/user_profile.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
@@ -58,45 +59,47 @@ final _router = GoRouter(
         GoRoute(
           path: 'sign-in',
           builder: (context, state) {
-            return SignInScreen(
-              actions: [
-                ForgotPasswordAction(((context, email) {
-                  final uri = Uri(
-                    path: '/sign-in/forgot-password',
-                    queryParameters: <String, String?>{
-                      'email': email,
-                    },
-                  );
-                  context.push(uri.toString());
-                })),
-                AuthStateChangeAction(((context, state) {
-                  final userProvider =
-                      Provider.of<UserProvider>(context, listen: false);
-                  final user = switch (state) {
-                    SignedIn state => state.user,
-                    UserCreated state => state.credential.user,
-                    _ => null
-                  };
-                  if (user == null) {
-                    return;
-                  }
-                  if (state is UserCreated) {
-                    user.updateDisplayName(user.email!.split('@')[0]);
-                    AppUser appUser = AppUser(
-                        id: user.uid, username: user.email!.split('@')[0]);
-                    userProvider.addUser(appUser);
-                  }
-                  if (!user.emailVerified) {
-                    user.sendEmailVerification();
-                    const snackBar = SnackBar(
-                        content: Text(
-                            'Please check your email to verify your email address'));
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }
-                  context.go('/');
-                })),
-              ],
-            );
+            return PopScope(
+                canPop: false,
+                child: SignInScreen(
+                  actions: [
+                    ForgotPasswordAction(((context, email) {
+                      final uri = Uri(
+                        path: '/sign-in/forgot-password',
+                        queryParameters: <String, String?>{
+                          'email': email,
+                        },
+                      );
+                      context.push(uri.toString());
+                    })),
+                    AuthStateChangeAction(((context, state) {
+                      final userProvider =
+                          Provider.of<UserProvider>(context, listen: false);
+                      final user = switch (state) {
+                        SignedIn state => state.user,
+                        UserCreated state => state.credential.user,
+                        _ => null
+                      };
+                      if (user == null) {
+                        return;
+                      }
+                      if (state is UserCreated) {
+                        user.updateDisplayName(user.email!.split('@')[0]);
+                        AppUser appUser = AppUser(
+                            id: user.uid, username: user.email!.split('@')[0]);
+                        userProvider.addUser(appUser);
+                      }
+                      if (!user.emailVerified) {
+                        user.sendEmailVerification();
+                        const snackBar = SnackBar(
+                            content: Text(
+                                'Please check your email to verify your email address'));
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      }
+                      context.go('/');
+                    })),
+                  ],
+                ));
           },
           routes: [
             GoRoute(
@@ -112,33 +115,12 @@ final _router = GoRouter(
           ],
         ),
         GoRoute(
-          path: 'profile',
-          builder: (context, state) {
-            return Consumer<AuthenticationProvider>(
-              builder: (context, authProvider, _) => ProfileScreen(
-                key: ValueKey(authProvider.isEmailVerified),
-                providers: const [],
-                actions: [
-                  SignedOutAction(
-                    ((context) {
-                      context.pushReplacement('/');
-                    }),
-                  ),
-                ],
-                children: [
-                  Visibility(
-                      visible: !authProvider.isEmailVerified,
-                      child: OutlinedButton(
-                        child: const Text('Recheck Verification State'),
-                        onPressed: () {
-                          authProvider.refreshUser();
-                        },
-                      ))
-                ],
-              ),
-            );
-          },
-        ),
+            path: 'profile',
+            builder: (context, state) {
+              return Consumer<AuthenticationProvider>(
+                  builder: (context, authProvider, _) =>
+                      const ProfileDetailScreen());
+            }),
         GoRoute(
             path: "addEvent",
             builder: (context, state) {
@@ -161,10 +143,10 @@ final _router = GoRouter(
               return EventScreen(event: event);
             }),
         GoRoute(
-            path: "addFilter",
-            builder: (context, state) {
-              return EventFilterScreen();
-            }),
+                    path: "addFilter",
+                    builder: (context, state) {
+                      return EventFilterScreen();
+                    }),
       ],
     ),
   ],

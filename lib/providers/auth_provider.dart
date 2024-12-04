@@ -25,4 +25,9 @@ class AuthenticationProvider extends ChangeNotifier {
     await _firebaseAuth.currentUser?.reload();
     notifyListeners();
   }
+
+  Future<void> logout() async {
+    await _firebaseAuth.signOut();
+    notifyListeners();
+  }
 }

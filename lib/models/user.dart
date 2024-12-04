@@ -10,36 +10,66 @@ class AppUser implements Entity {
   final String? lastName;
   final String? description;
   final String? uni;
-  final List<String>? socialMediaLinks;
-  final List<String>? friends;
+  final List<String?>? socialMediaLinks;
+  final List<String?>? friends;
 
-  AppUser({
-    this.id,
-    required this.username,
-    this.profilePicture,
-    this.studyCourse,
-    this.firstName,
-    this.lastName,
-    this.description,
-    this.uni,
-    this.socialMediaLinks,
-    this.friends
-});
+  AppUser(
+      {this.id,
+      required this.username,
+      this.profilePicture,
+      this.studyCourse,
+      this.firstName,
+      this.lastName,
+      this.description,
+      this.uni,
+      this.socialMediaLinks,
+      this.friends});
 
-  factory AppUser.fromMap(Map<String, dynamic> map, String id){
+  factory AppUser.fromMap(Map<String, dynamic> map, String id) {
     return AppUser(
       id: id,
       username: map['username'] as String,
-      profilePicture: map['profilePicture'] as Uint8List,
-      studyCourse: map['studyCourse'] as String,
-      firstName: map['firstName'] as String,
-      lastName: map['lastName'] as String,
-      description:  map['description'] as String,
-      uni: map['uni'] as String,
-      socialMediaLinks: map['socialMediaLinks'] as List<String>,
-      friends: map['friends'] as List<String>
+      profilePicture: map['profilePicture'] as Uint8List?,
+      studyCourse: map['studyCourse'] as String?,
+      firstName: map['firstName'] as String?,
+      lastName: map['lastName'] as String?,
+      description: map['description'] as String?,
+      uni: map['uni'] as String?,
+      socialMediaLinks: (map['socialMediaLinks'] as List<dynamic>?)
+          ?.map((item) => item as String?)
+          .toList(),
+      friends: (map['friends'] as List<dynamic>?)
+          ?.map((item) => item as String?)
+          .toList(),
     );
   }
+
+  AppUser copyWith({
+    String? id,
+    String? username,
+    Uint8List? profilePicture,
+    String? studyCourse,
+    String? firstName,
+    String? lastName,
+    String? description,
+    String? uni,
+    List<String>? socialMediaLinks,
+    List<String>? friends,
+  }) {
+    return AppUser(
+      id: id ?? this.id,
+      username: username ?? this.username,
+      profilePicture: profilePicture ?? this.profilePicture,
+      studyCourse: studyCourse ?? this.studyCourse,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      description: description ?? this.description,
+      uni: uni ?? this.uni,
+      socialMediaLinks: socialMediaLinks ?? this.socialMediaLinks,
+      friends: friends ?? this.friends,
+    );
+  }
+
   @override
   Map<String, dynamic> toMap() {
     return {
@@ -63,5 +93,4 @@ class AppUser implements Entity {
         'firstName: $firstName \n lastName: $lastName \n description: $description \n'
         'uni: $uni \n socialMediaLink: $socialMediaLinks \n friends: $friends';
   }
-
 }

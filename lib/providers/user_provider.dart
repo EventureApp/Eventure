@@ -10,6 +10,8 @@ class UserProvider with ChangeNotifier {
   List<AppUser> _users = [];
   List<AppUser> _friends = [];
   AppUser _user = AppUser(username: '');
+  AppUser get user => _user;
+  List<AppUser> get friends => _friends;
   List<AppUser> get users => _users;
 
   UserProvider() {
@@ -18,17 +20,18 @@ class UserProvider with ChangeNotifier {
     fetchFriends();
   }
 
-  Future<void> getCurrentUser(String? id) async{
+  Future<void> getCurrentUser(String? id) async {
     _user = await _userService.getSingleUser(id);
     notifyListeners();
   }
 
-  Future<AppUser> getUser(String id) async{
+  Future<AppUser> getUser(String id) async {
     return await _userService.getSingleUser(id);
   }
 
-  Future<void> updateUser(AppUser user) async{
-    _userService.update(user);
+  Future<void> updateUser(AppUser user) async {
+    await _userService.update(user);
+    _user = user;
     notifyListeners();
   }
 
@@ -36,13 +39,13 @@ class UserProvider with ChangeNotifier {
     _friends = await _userService.getFriends(_user);
     notifyListeners();
   }
-  
-  Future<void> fetchUsers() async{
+
+  Future<void> fetchUsers() async {
     _users = await _userService.getAll();
     notifyListeners();
   }
 
-  Future<void> addUser(AppUser user) async{
+  Future<void> addUser(AppUser user) async {
     await _userService.create(user);
     _users.add(user);
     notifyListeners();
@@ -56,5 +59,4 @@ class UserProvider with ChangeNotifier {
     }
     return users;
   }
-
 }
