@@ -5,7 +5,7 @@ import 'custom_icons.dart';
 enum EventType {
   concert,
   bar,
-  praty,
+  party,
   rave,
   playNight,
   chilling,
@@ -18,7 +18,7 @@ enum EventType {
 Map<EventType, IconData> EventTypesWithIcon = {
   EventType.concert : CustomIcons.beer2,
   EventType.bar : CustomIcons.beer2,
-  EventType.praty : CustomIcons.beer2,
+  EventType.party : CustomIcons.beer2,
   EventType.rave : CustomIcons.beer2,
   EventType.playNight : CustomIcons.beer2,
   EventType.chilling :CustomIcons.beer2,
