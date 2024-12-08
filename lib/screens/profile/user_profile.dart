@@ -1,6 +1,8 @@
 import 'package:eventure/providers/auth_provider.dart';
 import 'package:eventure/screens/auth/authentication.dart';
+import 'package:eventure/screens/profile/add_friends.dart';
 import 'package:eventure/screens/profile/user_profile_edit.dart';
+import 'package:eventure/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -66,6 +68,16 @@ class ProfileDetailScreen extends StatelessWidget {
                   ],
                 ),
               ),
+              Center(
+                  child: StyledButton(
+                      child: const Text("Search users/Add friends"),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddFriendsScreen()),
+                        );
+                      })),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
