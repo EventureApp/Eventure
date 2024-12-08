@@ -16,6 +16,11 @@ class AddFriendsScreen extends StatefulWidget {
 
 class _AddFriendsScreenState extends State<AddFriendsScreen> {
   @override
+  void initState(){
+    super.initState();
+    context.read<UserProvider>().fetchUsersStartingWith();
+  }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
