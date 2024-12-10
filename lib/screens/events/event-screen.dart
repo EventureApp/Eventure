@@ -1,4 +1,5 @@
 import 'package:eventure/models/event.dart';
+import 'package:eventure/widgets/inputs/custom-number-select.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
@@ -10,7 +11,6 @@ import '../../statics/event_visibility.dart';
 import '../../widgets/inputs/custom-event-select.dart';
 import '../../widgets/inputs/custom-link-select.dart';
 import '../../widgets/inputs/custom-location-select.dart';
-import '../../widgets/inputs/custom-number-select.dart';
 import '../../widgets/inputs/custom-single-select.dart';
 import '../../widgets/inputs/custom_date_time_picker.dart';
 import '../../widgets/inputs/custom_discription_input.dart';
@@ -120,7 +120,7 @@ class _EventScreenState extends State<EventScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color(0xFFB7CBDD),
         title: Row(
           children: [
             Icon(Icons.event, color: Colors.white),
@@ -128,6 +128,16 @@ class _EventScreenState extends State<EventScreen> {
             Text(widget.event == null ? "Create Event" : "Edit Event"),
           ],
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.done),
+            onPressed: () {
+              if (_isFormValid) {
+                _saveEvent(context);
+              }
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -254,14 +264,6 @@ class _EventScreenState extends State<EventScreen> {
                       });
                     },
                   ),
-                  if (widget.event == null) ...[
-                    SizedBox(height: 32),
-                    ElevatedButton(
-                      onPressed:
-                          _isFormValid ? () => _saveEvent(context) : null,
-                      child: Text("Save"),
-                    ),
-                  ],
                 ],
               ),
             ),

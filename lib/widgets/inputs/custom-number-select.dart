@@ -90,12 +90,14 @@ class _CustomNumberInputState extends State<CustomNumberInput> {
         SizedBox(height: 8),
         // Eingabefeld
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          padding: EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(8), // Match the rounded corners
             border: Border.all(
-              color: _errorMessage.isNotEmpty ? Colors.red : Colors.black.withOpacity(0.2), // Fehlerfarbe
+              color: _errorMessage.isNotEmpty
+                  ? Colors.red
+                  : Colors.black.withOpacity(0.2), // Fehlerfarbe
               width: 1.5,
             ),
             boxShadow: [
@@ -106,37 +108,32 @@ class _CustomNumberInputState extends State<CustomNumberInput> {
               ),
             ],
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextField(
-                controller: _controller,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  hintText: widget.hint ?? 'Enter a number',
-                  hintStyle: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 14,
-                  ),
-                  border: InputBorder.none,
-                ),
-                onChanged: _onChange,
+          child: TextField(
+            controller: _controller,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              hintText: widget.hint ?? 'Enter a number',
+              hintStyle: TextStyle(
+                color: Colors.grey.shade600,
+                fontSize: 14,
               ),
-              // Fehlernachricht
-              if (_errorMessage.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Text(
-                    _errorMessage,
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-            ],
+              border: InputBorder.none,
+            ),
+            onChanged: _onChange,
           ),
         ),
+        // Fehlernachricht
+        if (_errorMessage.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              _errorMessage,
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 12,
+              ),
+            ),
+          ),
       ],
     );
   }

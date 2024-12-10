@@ -1,6 +1,7 @@
 import 'package:eventure/models/event_filter.dart';
 import 'package:eventure/providers/event_provider.dart';
 import 'package:eventure/providers/location_provider.dart';
+import 'package:eventure/widgets/inputs/custom-number-select.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +10,6 @@ import '../../statics/event_types.dart';
 import '../../statics/event_visibility.dart';
 import '../../widgets/inputs/custom-event-select.dart';
 import '../../widgets/inputs/custom-location-select.dart';
-import '../../widgets/inputs/custom-number-select.dart';
 import '../../widgets/inputs/custom_date_time_picker.dart';
 
 class EventFilterScreen extends StatefulWidget {
@@ -67,7 +67,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color(0xFFB7CBDD),
         title: Row(
           children: [
             Icon(Icons.filter_list, color: Colors.white),
@@ -75,6 +75,12 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
             Text("Filter Events"),
           ],
         ),
+        actions: [
+          TextButton(
+            onPressed: _resetFilters,
+            child: Text("Reset"),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -188,21 +194,16 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                     },
                   ),
                   SizedBox(height: 32),
-
-                  // Filter-Button
-                  ElevatedButton(
-                    onPressed: _applyFilters,
-                    child: Text("Filter"),
-                  ),
-                  ElevatedButton(
-                    onPressed: _resetFilters,
-                    child: Text("Reset"),
-                  ),
                 ],
               ),
             ),
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _applyFilters,
+        child: Icon(Icons.check),
+        backgroundColor: const Color(0xFFB7CBDD),
       ),
     );
   }

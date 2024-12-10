@@ -143,10 +143,10 @@ final _router = GoRouter(
               return EventScreen(event: event);
             }),
         GoRoute(
-                    path: "addFilter",
-                    builder: (context, state) {
-                      return EventFilterScreen();
-                    }),
+            path: "addFilter",
+            builder: (context, state) {
+              return EventFilterScreen();
+            }),
       ],
     ),
   ],

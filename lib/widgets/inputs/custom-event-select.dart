@@ -108,7 +108,7 @@ class _EventSelectState extends State<EventSelect> {
           child: StatefulBuilder(
             builder: (context, setState) {
               return Container(
-                padding: EdgeInsets.all(16),
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
                 height: 400,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

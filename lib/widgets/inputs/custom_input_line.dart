@@ -35,7 +35,8 @@ class _CustomInputLineState extends State<CustomInputLine> {
       // Wenn das Feld erforderlich ist und leer bleibt, markieren wir es als "leer"
       _isFieldEmpty = widget.required && value.isEmpty;
     });
-    widget.onChanged(value); // Rufe den Callback auf, um den Wert zu aktualisieren
+    widget.onChanged(
+        value); // Rufe den Callback auf, um den Wert zu aktualisieren
   }
 
   @override
@@ -56,10 +57,10 @@ class _CustomInputLineState extends State<CustomInputLine> {
 
         // Eingabefeld ohne Icon, aber mit einem sauberen, modernen Design
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12), // Weniger Padding
+          padding: EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(8),  // Leicht abgerundete Ecken
+            borderRadius: BorderRadius.circular(8), // Leicht abgerundete Ecken
             border: Border.all(
               color: _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2),
               width: 1.5,
@@ -72,7 +73,7 @@ class _CustomInputLineState extends State<CustomInputLine> {
               ),
             ],
           ),
-          child: TextFormField(
+          child: TextField(
             controller: _textController,
             readOnly: !widget.editable,
             decoration: InputDecoration(

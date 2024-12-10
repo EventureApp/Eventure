@@ -29,10 +29,9 @@ class _CustomDescriptionInputState extends State<CustomDescriptionInput> {
     _textController = TextEditingController(text: widget.initValue ?? '');
   }
 
-  // Validierungslogik
+  // Validation logic
   void _validateField(String value) {
     setState(() {
-      // Wenn das Feld erforderlich ist und leer bleibt, markieren wir es als "leer"
       _isFieldEmpty = widget.required && value.isEmpty;
     });
   }
@@ -42,57 +41,66 @@ class _CustomDescriptionInputState extends State<CustomDescriptionInput> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Label mit optionalem Sternchen für Pflichtfelder
+        // Label with optional asterisk for required fields
         Text(
           widget.required ? "${widget.label} *" : widget.label,
           style: TextStyle(
-            fontWeight: FontWeight.w400, // Einheitliche Schriftart
+            fontWeight: FontWeight.w400,
             fontSize: 16,
-            color: Colors.black, // Schwarzer Text für das Label
+            color: Colors.black,
           ),
         ),
         SizedBox(height: 8),
 
-        // Eingabefeld für die Beschreibung
+        // Input field for description
         GestureDetector(
           onTap: () {
             if (widget.editable) {
-              // Hier könnte zusätzliches Verhalten hinzugefügt werden
+              // Additional behavior can be added here
             }
           },
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14), // Weniger Padding für ein schmaleres Design
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(4), // Abgerundete Ecken
+              borderRadius:
+                  BorderRadius.circular(8), // Match the rounded corners
               border: Border.all(
-                color: _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2), // Rot, wenn leer
+                color:
+                    _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2),
                 width: 1.5,
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                ),
+              ],
             ),
             child: TextFormField(
               controller: _textController,
               readOnly: !widget.editable,
-              maxLines: 5, // Mehrzeiliges Textfeld
+              maxLines: 5, // Multiline text field
               decoration: InputDecoration(
                 hintText: widget.required ? 'Pflichtfeld' : 'Optional',
                 hintStyle: TextStyle(
-                  color: Colors.grey.shade600, // Grauer Hinweistext
+                  color: Colors.grey.shade600,
                   fontSize: 14,
                 ),
-                border: InputBorder.none, // Kein Border von InputDecoration
+                border: InputBorder.none,
               ),
               onChanged: widget.editable
                   ? (value) {
-                widget.onChanged(value); // Callback nur bei Editierbarkeit
-                _validateField(value); // Validierung durchführen
-              }
+                      widget.onChanged(value);
+                      _validateField(value);
+                    }
                   : null,
             ),
           ),
         ),
 
-        // Fehlertext anzeigen, wenn das Feld leer ist und als "required" markiert
+        // Error message if the field is required and empty
         if (_isFieldEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 4),

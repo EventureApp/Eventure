@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 class CustomDateAndTimePicker extends StatefulWidget {
   final String label;
   final String? initValue;
-  final Function(DateTime) onDateChanged; // Callback für ausgewähltes Datum/Uhrzeit
+  final Function(DateTime) onDateChanged;
   final bool required;
   final bool editable;
 
@@ -29,7 +29,6 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
   @override
   void initState() {
     super.initState();
-    // Wenn initValue vorhanden ist, verwenden wir es, andernfalls das aktuelle Datum
     _selectedDateTime = widget.initValue != null
         ? DateFormat('yyyy-MM-dd HH:mm').parse(widget.initValue!)
         : DateTime.now();
@@ -38,9 +37,7 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
     );
   }
 
-  // Funktion, um den PopOver zu öffnen und Datum und Uhrzeit auszuwählen
   void _showDateTimePicker(BuildContext context) async {
-    // Datumsauswahl
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: _selectedDateTime,
@@ -51,7 +48,7 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
           data: ThemeData.light().copyWith(
             primaryColor: Colors.black,
             buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.accent),
-            dialogBackgroundColor: Colors.white, // Weißer Hintergrund
+            dialogBackgroundColor: Colors.white,
           ),
           child: child!,
         );
@@ -59,7 +56,6 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
     );
 
     if (pickedDate != null) {
-      // Zeit-Auswahl
       TimeOfDay? pickedTime = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.fromDateTime(_selectedDateTime),
@@ -67,7 +63,6 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
 
       if (pickedTime != null) {
         setState(() {
-          // Kombiniere Datum und Uhrzeit
           _selectedDateTime = DateTime(
             pickedDate.year,
             pickedDate.month,
@@ -75,17 +70,16 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
             pickedTime.hour,
             pickedTime.minute,
           );
-          _dateController.text = DateFormat('yyyy-MM-dd HH:mm').format(_selectedDateTime);
+          _dateController.text =
+              DateFormat('yyyy-MM-dd HH:mm').format(_selectedDateTime);
         });
         widget.onDateChanged(_selectedDateTime);
       }
     }
   }
 
-  // Validierungslogik
   void _validateField(String value) {
     setState(() {
-      // Wenn das Feld erforderlich ist und leer bleibt, markieren wir es als "leer"
       _isFieldEmpty = widget.required && value.isEmpty;
     });
   }
@@ -95,18 +89,15 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Label mit optionalem Sternchen für Pflichtfelder
         Text(
-          widget.required ? widget.label + " *" : widget.label,
+          widget.required ? "${widget.label} *" : widget.label,
           style: TextStyle(
-            fontWeight: FontWeight.w400, // Einfache, klare Schriftart
+            fontWeight: FontWeight.w400,
             fontSize: 16,
-            color: Colors.black, // Schwarzer Text für das Label
+            color: Colors.black,
           ),
         ),
         SizedBox(height: 8),
-
-        // Eingabefeld für Datum und Uhrzeit
         GestureDetector(
           onTap: () {
             if (widget.editable) {
@@ -114,14 +105,22 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
             }
           },
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14), // Weniger Padding für ein schmaleres Design
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12.25),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(4),
               border: Border.all(
-                color: _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2), // Wenn das Feld leer ist, wird es rot
+                color:
+                    _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2),
                 width: 1.5,
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                ),
+              ],
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -129,10 +128,12 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
                 Expanded(
                   child: Text(
                     _dateController.text.isEmpty
-                        ? (widget.required ? "Pflichtfeld" : "Wählen Sie Datum und Uhrzeit")
+                        ? (widget.required
+                            ? "Pflichtfeld"
+                            : "Wählen Sie Datum und Uhrzeit")
                         : _dateController.text,
                     style: TextStyle(
-                      color: Colors.black, // Schwarzer Text für Datum/Uhrzeit
+                      color: Colors.black,
                       fontSize: 16,
                     ),
                     overflow: TextOverflow.ellipsis,
@@ -140,15 +141,13 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
                 ),
                 Icon(
                   Icons.calendar_today,
-                  color: Colors.black.withOpacity(0.3), // Subtiles Icon
+                  color: Colors.black.withOpacity(0.3),
                   size: 20,
                 ),
               ],
             ),
           ),
         ),
-
-        // Fehlertext anzeigen, wenn das Feld leer ist und als "required" markiert
         if (_isFieldEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 4),
