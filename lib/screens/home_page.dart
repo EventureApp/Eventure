@@ -1,4 +1,6 @@
+import 'package:eventure/models/user.dart';
 import 'package:eventure/providers/event_provider.dart';
+import 'package:eventure/providers/user_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +18,72 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool isMapSelected = true;
+
+  void _optionsDialog(BuildContext context, AppUser user) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              ListTile(
+                leading: CircleAvatar(
+                  backgroundImage: NetworkImage(
+                    user.profilePicture as String? ??
+                        'https://i.pravatar.cc/300',
+                  ),
+                ),
+                title: Text(
+                  "${user.firstName ?? 'User'} ${user.lastName ?? 'Name'}",
+                ),
+              ),
+              const Divider(),
+              ListTile(
+                leading: const Icon(Icons.person),
+                title: const Text('Mein Profil'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  context.push('/profile');
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.group),
+                title: const Text('Nutzer'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.settings),
+                title: const Text('Einstellungen'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,16 +120,21 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
               ),
-              IconButton(
-                icon: CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(
-                    FirebaseAuth.instance.currentUser?.photoURL ??
-                        'https://i.pravatar.cc/300',
-                  ),
-                ),
-                onPressed: () {
-                  context.push('/profile');
+              Consumer<UserProvider>(
+                builder: (context, userProvider, child) {
+                  final user = userProvider.user;
+                  return IconButton(
+                    icon: CircleAvatar(
+                      radius: 20,
+                      backgroundImage: NetworkImage(
+                        user.profilePicture as String? ??
+                            'https://i.pravatar.cc/300',
+                      ),
+                    ),
+                    onPressed: () {
+                      _optionsDialog(context, user);
+                    },
+                  );
                 },
               ),
               const SizedBox(width: 10),
