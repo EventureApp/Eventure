@@ -59,7 +59,7 @@ class _MapWidgetState extends State<MapWidget> {
                         children: [
                           TileLayer(
                             urlTemplate:
-                            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                             subdomains: const ['a', 'b', 'c'],
                           ),
                           MarkerLayer(

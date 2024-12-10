@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'providers/auth_provider.dart';
 import 'providers/chat_provider.dart';
-import 'screens/home_page.dart';
+import 'screens/home/home_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -162,13 +162,11 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.light,
-        primarySwatch: Colors.blueGrey,
         primaryColor: const Color(0xFFB7CBDD),
         useMaterial3: true,
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
-        primarySwatch: Colors.blueGrey,
         primaryColor: const Color(0xFFB7CBDD),
         useMaterial3: true,
       ),
