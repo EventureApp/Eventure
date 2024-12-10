@@ -67,7 +67,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFB7CBDD),
+        backgroundColor: Theme.of(context).primaryColor,
         title: Row(
           children: [
             Icon(Icons.filter_list, color: Colors.white),
@@ -203,7 +203,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: _applyFilters,
         child: Icon(Icons.check),
-        backgroundColor: const Color(0xFFB7CBDD),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
     );
   }

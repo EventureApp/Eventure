@@ -120,7 +120,7 @@ class _EventScreenState extends State<EventScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFB7CBDD),
+        backgroundColor: Theme.of(context).primaryColor,
         title: Row(
           children: [
             Icon(Icons.event, color: Colors.white),

@@ -161,16 +161,18 @@ class App extends StatelessWidget {
       title: 'Eventure',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        buttonTheme: Theme.of(context).buttonTheme.copyWith(
-              highlightColor: Colors.deepPurple,
-            ),
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        textTheme: GoogleFonts.robotoTextTheme(
-          Theme.of(context).textTheme,
-        ),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+        brightness: Brightness.light,
+        primarySwatch: Colors.blueGrey,
+        primaryColor: const Color(0xFFB7CBDD),
         useMaterial3: true,
       ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.blueGrey,
+        primaryColor: const Color(0xFFB7CBDD),
+        useMaterial3: true,
+      ),
+      themeMode: ThemeMode.system,
       routerConfig: _router,
     );
   }
