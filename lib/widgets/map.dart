@@ -50,11 +50,6 @@ class _MapWidgetState extends State<MapWidget> {
                         options: MapOptions(
                           initialCenter: currentLocation,
                           initialZoom: 13.0,
-                          onTap: (tapPosition, point) {
-                            setState(() {
-                              tappedCoordinates = point;
-                            });
-                          },
                         ),
                         children: [
                           TileLayer(
@@ -70,10 +65,13 @@ class _MapWidgetState extends State<MapWidget> {
                                   onTap: () {
                                     context.push('/events/${event.id!}');
                                   },
-                                  child: const Icon(
-                                    Icons.location_pin,
-                                    color: Colors.red,
-                                  ),
+                                    child: CircleAvatar(
+                                      radius: 60,
+                                      backgroundColor: Colors.white,
+                                      child: Icon(
+                                        event.icon,
+                                      ),
+                                    )
                                 ),
                               );
                             }).toList(),
@@ -82,29 +80,6 @@ class _MapWidgetState extends State<MapWidget> {
                       );
                     },
                   ),
-                  if (tappedCoordinates != null)
-                    Positioned(
-                      bottom: 100,
-                      left: 20,
-                      child: Container(
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8.0),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 4.0,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Text(
-                          'Tapped Location: \nLat: ${tappedCoordinates!.latitude}, Lng: ${tappedCoordinates!.longitude}',
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ),
-                    ),
                 ],
               );
             },
