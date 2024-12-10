@@ -15,7 +15,7 @@ class UserProvider with ChangeNotifier {
   List<AppUser> get users => _users;
 
   UserProvider() {
-    fetchUsers();
+    _fetchUsers();
     getCurrentUser(_firebaseAuth.currentUser?.uid);
     fetchFriends();
   }
@@ -32,6 +32,7 @@ class UserProvider with ChangeNotifier {
   Future<void> updateUser(AppUser user) async {
     await _userService.update(user);
     _user = user;
+    _fetchUsers();
     notifyListeners();
   }
 
@@ -40,7 +41,7 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchUsers() async {
+  Future<void> _fetchUsers() async {
     _users = await _userService.getAll();
     notifyListeners();
   }
@@ -48,6 +49,7 @@ class UserProvider with ChangeNotifier {
   Future<void> addUser(AppUser user) async {
     await _userService.create(user);
     _users.add(user);
+    _fetchUsers();
     notifyListeners();
   }
 
