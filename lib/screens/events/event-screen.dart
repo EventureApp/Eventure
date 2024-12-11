@@ -66,7 +66,7 @@ class _EventScreenState extends State<EventScreen> {
       _startDate = DateTime.now();
       _endDate = DateTime.now().add(Duration(hours: 1));
       _location = LatLng(0.0, 0.0);
-      _eventType = EventType.someThingElse;
+      _eventType = EventType.other;
       _eventIcon = Icons.event;
       _visibility = EventVisability.public;
       _link = null;
@@ -202,12 +202,12 @@ class _EventScreenState extends State<EventScreen> {
                     label: 'Event Type',
                     isEditable: _isEditing,
                     initValues: [_eventType],
-                    events: EventTypesWithIcon,
+                    events: eventTypesWithIcon,
                     isMultiSelect: false,
                     onChanged: (selected) {
                       setState(() {
                         _eventType = selected[0];
-                        _eventIcon = EventTypesWithIcon[selected[0]]!;
+                        _eventIcon = eventTypesWithIcon[selected[0]]!;
                       });
                     },
                   ),

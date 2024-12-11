@@ -34,7 +34,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
     _startDate = null;
     _endDate = null;
     _visibility = EventVisability.public;
-    _eventType = [EventType.someThingElse];
+    _eventType = [EventType.other];
     _location = context.read<EventProvider>().filter.location;
     _radius = context.read<EventProvider>().filter.range;
   }
@@ -155,7 +155,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                     initValues:
                         context.read<EventProvider>().filter.eventType ??
                             _eventType,
-                    events: EventTypesWithIcon,
+                    events: eventTypesWithIcon,
                     isMultiSelect: true,
                     onChanged: (selected) {
                       setState(() {
