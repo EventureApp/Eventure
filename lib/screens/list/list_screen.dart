@@ -1,3 +1,4 @@
+import 'package:eventure/providers/user_provider.dart';
 import 'package:eventure/screens/events/detail_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +23,8 @@ class ListScreen extends StatelessWidget {
                 startDate: event.startDate,
                 address: event.address,
                 icon: event.icon,
+                organizer: Provider.of<UserProvider>(context)
+                    .getUserName(event.organizer ?? ""),
                 onTap: () {
                   Navigator.push(
                     context,
