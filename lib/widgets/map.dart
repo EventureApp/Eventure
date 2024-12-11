@@ -54,7 +54,7 @@ class _MapWidgetState extends State<MapWidget> {
                         children: [
                           TileLayer(
                             urlTemplate:
-                            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                             subdomains: const ['a', 'b', 'c'],
                           ),
                           MarkerLayer(
@@ -62,17 +62,23 @@ class _MapWidgetState extends State<MapWidget> {
                               return Marker(
                                 point: event.location,
                                 child: GestureDetector(
-                                  onTap: () {
-                                    context.push('/events/${event.id!}');
-                                  },
-                                    child: CircleAvatar(
-                                      radius: 60,
-                                      backgroundColor: Colors.white,
-                                      child: Icon(
-                                        event.icon,
-                                      ),
-                                    )
-                                ),
+                                    onTap: () {
+                                      context.push('/events/${event.id!}');
+                                    },
+                                    child: Container(
+                                        decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.black),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(1.0),
+                                          child: CircleAvatar(
+                                            radius: 60,
+                                            backgroundColor: Colors.white,
+                                            child: Icon(
+                                              event.icon,
+                                            ),
+                                          ),
+                                        ))),
                               );
                             }).toList(),
                           ),
