@@ -1,8 +1,10 @@
+import 'package:eventure/providers/event_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
-import '../models/custom_icons.dart';
+import '../statics/custom_icons.dart';
 import '../widgets/map.dart';
 import 'package:eventure/screens/list/list_screen.dart';
 
@@ -29,19 +31,26 @@ class _HomePageState extends State<HomePage> {
           child: Row(
             children: [
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: TextField(
-                    decoration: InputDecoration(
-                        hintText: 'Search...',
-                        prefixIcon: const Icon(Icons.search),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide.none,
-                        ),
-                        filled: true,
-                        fillColor: Colors.white),
-                  ),
+                child: Consumer<EventProvider>(
+                  builder: (context, eventProvider, child) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: TextField(
+                        decoration: InputDecoration(
+                            hintText: 'Search...',
+                            prefixIcon: const Icon(Icons.search),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30),
+                              borderSide: BorderSide.none,
+                            ),
+                            filled: true,
+                            fillColor: Colors.white),
+                        onChanged: (value) {
+                          eventProvider.setSearchString(value);
+                        },
+                      ),
+                    );
+                  },
                 ),
               ),
               IconButton(
@@ -69,7 +78,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       bottomNavigationBar: SizedBox(
-        height: 60,
+        height: 90,
         child: BottomAppBar(
           color: Colors.white,
           elevation: 4,
@@ -83,7 +92,9 @@ class _HomePageState extends State<HomePage> {
                     CustomIcons.filteroptions,
                     size: 24,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    context.push('/addFilter');
+                  },
                 ),
                 ToggleButtons(
                   isSelected: [isMapSelected, !isMapSelected],

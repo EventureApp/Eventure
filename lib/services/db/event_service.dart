@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eventure/models/event.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../lat_lng.dart';
 import 'models/db_service.dart';
 
 class EventService implements DatabaseService<Event> {
@@ -17,36 +17,26 @@ class EventService implements DatabaseService<Event> {
   Future<List<Event>> getAll() async {
     final snapshot = await _firestore.collection('events').get();
     return snapshot.docs.map((doc) {
-      final data = doc.data();
-
-      final eventType = EventType.values.firstWhere(
-        (e) => e.toString() == 'EventType.' + data['eventType'],
-        orElse: () => EventType.public,
-      );
-
-      final icon = IconData(
-        data['icon'] as int,
-        fontFamily: 'CustomIcons',
-      );
-
-      return Event(
-        id: doc.id,
-        name: data['name'] as String,
-        description: data['description'] as String?,
-        startDate: DateTime.parse(data['startDate'] as String),
-        endDate: DateTime.parse(data['endDate'] as String),
-        adress: data['adress'] as String,
-        location: LatLng(
-          data['location']['latitude'] as double,
-          data['location']['longitude'] as double,
-        ),
-        icon: icon,
-        eventType: eventType,
-        eventLink: data['eventLink'] as String?,
-        maxParticipants: data['participants'] as int?,
-        organizer: data['organizer'] as String,
-      );
+      return Event.fromMap(doc.data(), doc.id);
     }).toList();
+  }
+
+  Future<List<Event>> getAllInRange(LatLng center, double rangeInKm) async {
+    LatLngBounds bounds = LatLngBounds.fromCenterAndRadius(center, rangeInKm);
+
+    final QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('events')
+        .where('location.latitude', isGreaterThanOrEqualTo: bounds.south)
+        .where('location.latitude', isLessThanOrEqualTo: bounds.north)
+        .where('location.longitude', isGreaterThanOrEqualTo: bounds.west)
+        .where('location.longitude', isLessThanOrEqualTo: bounds.east)
+        .get();
+
+    final List<Event> events = snapshot.docs.map((doc) {
+      return Event.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+    }).toList();
+
+    return events;
   }
 
   @override
