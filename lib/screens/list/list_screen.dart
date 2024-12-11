@@ -1,3 +1,4 @@
+import 'package:eventure/screens/events/detail_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,24 +11,30 @@ class ListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Events'),
-        ),
-        body: Consumer<EventProvider>(
-          builder: (context, eventProvider, child) {
-            return ListView.builder(
-              itemCount: eventProvider.events.length,
-              itemBuilder: (context, index) {
-                final event = eventProvider.events[index];
-                return EventCard(
-                  name: event.name,
-                  startDate: event.startDate,
-                  adress: event.adress,
-                  icon: event.icon,
-                );
-              },
-            );
-          },
-        ));
+      body: Consumer<EventProvider>(
+        builder: (context, eventProvider, child) {
+          return ListView.builder(
+            itemCount: eventProvider.filteredEvents.length,
+            itemBuilder: (context, index) {
+              final event = eventProvider.filteredEvents[index];
+              return EventCard(
+                name: event.name,
+                startDate: event.startDate,
+                address: event.address,
+                icon: event.icon,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EventDetailViewScreen(event: event),
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
+    );
   }
 }
