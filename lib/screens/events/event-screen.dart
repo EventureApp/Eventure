@@ -1,4 +1,5 @@
 import 'package:eventure/models/event.dart';
+import 'package:eventure/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
@@ -101,7 +102,7 @@ class _EventScreenState extends State<EventScreen> {
         eventLink: _link,
         maxParticipants: _maxParticipants,
         description: _description,
-        organizer: 'Current User', // Replace with actual user
+        organizer: AuthenticationProvider().currentUser?.uid,
       );
 
       // Event über den Provider speichern

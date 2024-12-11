@@ -1,3 +1,4 @@
+import 'package:eventure/utils/string_parser.dart';
 import 'package:flutter/material.dart';
 
 class EventCard extends StatelessWidget {
@@ -39,7 +40,7 @@ class EventCard extends StatelessWidget {
           children: [
             SizedBox(
               width: 117,
-              height: 141,
+              height: 100,
               child: Center(
                 child: Icon(
                   icon,
@@ -68,7 +69,7 @@ class EventCard extends StatelessWidget {
                             size: 18, color: Colors.black),
                         const SizedBox(width: 8),
                         Text(
-                          startDate.toString(),
+                          parseDateForEvents(startDate),
                           style: const TextStyle(
                             color: Colors.black,
                           ),
