@@ -1,18 +1,16 @@
 import 'package:eventure/models/event.dart';
-import 'package:eventure/providers/auth_provider.dart';
+import 'package:eventure/widgets/inputs/custom-number-select.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart'; // Provider importieren
 
-import '../../providers/auth_provider.dart';
 import '../../providers/event_provider.dart'; // Dein EventProvider
 import '../../statics/event_types.dart';
 import '../../statics/event_visibility.dart';
 import '../../widgets/inputs/custom-event-select.dart';
 import '../../widgets/inputs/custom-link-select.dart';
 import '../../widgets/inputs/custom-location-select.dart';
-import '../../widgets/inputs/custom-number-select.dart';
 import '../../widgets/inputs/custom-single-select.dart';
 import '../../widgets/inputs/custom_date_time_picker.dart';
 import '../../widgets/inputs/custom_discription_input.dart';
@@ -103,7 +101,7 @@ class _EventScreenState extends State<EventScreen> {
         eventLink: _link,
         maxParticipants: _maxParticipants,
         description: _description,
-        organizer: AuthenticationProvider().currentUser?.uid,
+        organizer: 'Current User', // Replace with actual user
       );
 
       // Event über den Provider speichern
@@ -122,19 +120,46 @@ class _EventScreenState extends State<EventScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Row(
-          children: [
-            Icon(Icons.event, color: Colors.white),
-            SizedBox(width: 8),
-            Text(widget.event == null ? "Create Event" : "Edit Event"),
-          ],
-        ),
+        title: Text(widget.event == null ? "Create Event" : "Edit Event"),
+        actions: [
+          IconButton(
+            icon: Icon(widget.event == null || _isEditing ? Icons.save : Icons.edit),
+            onPressed: _isFormValid
+                ? () {
+              _saveEvent(context);
+            } : _isEditing == false ? () {
+              setState(() {
+                _isEditing = true;
+              });
+            }: null,
+          ),
+        ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Container(
+      body: SingleChildScrollView(
+        child: Column(children: [
+          Container(
+            color: Theme.of(context).primaryColor,
+            width: double.infinity,
+            height: 100,
+            padding: const EdgeInsets.symmetric(vertical: 13),
+            child: Center(
+              child: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Icon(
+                    _eventIcon,
+                    size: 30,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Container(
             padding: EdgeInsets.all(16.0),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -256,19 +281,11 @@ class _EventScreenState extends State<EventScreen> {
                       });
                     },
                   ),
-                  if (widget.event == null) ...[
-                    SizedBox(height: 32),
-                    ElevatedButton(
-                      onPressed:
-                          _isFormValid ? () => _saveEvent(context) : null,
-                      child: Text("Save"),
-                    ),
-                  ],
                 ],
               ),
             ),
           ),
-        ),
+        ]),
       ),
     );
   }
