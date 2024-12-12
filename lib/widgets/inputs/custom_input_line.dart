@@ -95,7 +95,7 @@ class _CustomInputLineState extends State<CustomInputLine> {
             focusNode: _focusNode, // Fokus-Node an das Textfeld binden
             readOnly: !widget.editable,
             decoration: InputDecoration(
-              hintText: widget.required ? 'Pflichtfeld' : 'Optional',
+              hintText: widget.required ? 'Mandatory' : 'Optional',
               hintStyle: TextStyle(
                 color: Colors.grey.shade600,
                 fontSize: 14,
@@ -111,7 +111,7 @@ class _CustomInputLineState extends State<CustomInputLine> {
           Padding(
             padding: const EdgeInsets.only(top: 4),
             child: Text(
-              'Dieses Feld ist erforderlich.',
+              'This field is required.',
               style: TextStyle(
                 color: Colors.red,
                 fontSize: 12,

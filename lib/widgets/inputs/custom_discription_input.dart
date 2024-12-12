@@ -110,7 +110,7 @@ class _CustomDescriptionInputState extends State<CustomDescriptionInput> {
               readOnly: !widget.editable,
               maxLines: 5, // Mehrzeiliges Textfeld
               decoration: InputDecoration(
-                hintText: widget.required ? 'Pflichtfeld' : 'Optional',
+                hintText: widget.required ? 'Madatory' : 'Optional',
                 hintStyle: TextStyle(
                   color: Colors.grey.shade600,
                   fontSize: 14,
@@ -132,7 +132,7 @@ class _CustomDescriptionInputState extends State<CustomDescriptionInput> {
           Padding(
             padding: const EdgeInsets.only(top: 4),
             child: Text(
-              'Dieses Feld ist erforderlich.',
+              'This field is mandatory.',
               style: TextStyle(
                 color: Colors.red,
                 fontSize: 12,
