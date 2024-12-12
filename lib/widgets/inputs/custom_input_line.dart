@@ -21,12 +21,19 @@ class CustomInputLine extends StatefulWidget {
 
 class _CustomInputLineState extends State<CustomInputLine> {
   late TextEditingController _textController;
+  late FocusNode _focusNode; // Fokus-Node zum Überwachen des Fokus
   bool _isFieldEmpty = false; // Überprüft, ob das Feld leer ist
 
   @override
   void initState() {
     super.initState();
     _textController = TextEditingController(text: widget.initValue ?? '');
+    _focusNode = FocusNode(); // Fokus-Node initialisieren
+
+    // Fokus-Listener hinzufügen
+    _focusNode.addListener(() {
+      setState(() {}); // UI bei Fokusänderungen aktualisieren
+    });
   }
 
   // Validierungslogik
@@ -35,8 +42,14 @@ class _CustomInputLineState extends State<CustomInputLine> {
       // Wenn das Feld erforderlich ist und leer bleibt, markieren wir es als "leer"
       _isFieldEmpty = widget.required && value.isEmpty;
     });
-    widget.onChanged(
-        value); // Rufe den Callback auf, um den Wert zu aktualisieren
+    widget.onChanged(value); // Rufe den Callback auf, um den Wert zu aktualisieren
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    _focusNode.dispose(); // Fokus-Node entladen
+    super.dispose();
   }
 
   @override
@@ -45,36 +58,41 @@ class _CustomInputLineState extends State<CustomInputLine> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Label mit optionalem Sternchen für Pflichtfelder
-        Text(
-          widget.required ? widget.label + " *" : widget.label,
-          style: TextStyle(
-            fontWeight: FontWeight.w400,
-            fontSize: 16,
-            color: Colors.black,
+        Text.rich(
+          TextSpan(
+            text: widget.label.toUpperCase(), // Label immer in Großbuchstaben
+            style: const TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+              color: Colors.black,
+            ),
+            children: widget.required
+                ? [
+              const TextSpan(
+                text: " *", // Stern hinzufügen, wenn erforderlich
+                style: TextStyle(
+                  color: Colors.red, // Stern in Rot
+                ),
+              ),
+            ]
+                : [], // Kein Stern, wenn nicht erforderlich
           ),
         ),
-        SizedBox(height: 8),
-
+        SizedBox(height: 5),
         // Eingabefeld ohne Icon, aber mit einem sauberen, modernen Design
         Container(
           padding: EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8), // Leicht abgerundete Ecken
+            color: Colors.white, // Weiß, wenn nicht fokussiert
+            borderRadius: BorderRadius.circular(2), // Leicht abgerundete Ecken
             border: Border.all(
-              color: _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2),
+              color:_focusNode.hasFocus ? Theme.of(context).primaryColor :  _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2),
               width: 1.5,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 4,
-                offset: Offset(0, 2),
-              ),
-            ],
           ),
           child: TextField(
             controller: _textController,
+            focusNode: _focusNode, // Fokus-Node an das Textfeld binden
             readOnly: !widget.editable,
             decoration: InputDecoration(
               hintText: widget.required ? 'Pflichtfeld' : 'Optional',
