@@ -75,10 +75,10 @@ class _CustomLinkInputState extends State<CustomLinkInput> {
         SizedBox(height: 8),
         // Eingabefeld im angepassten Design
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: _errorMessage.isNotEmpty ? Colors.red : Colors.black.withOpacity(0.2),
               width: 1.5,

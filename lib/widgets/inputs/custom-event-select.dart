@@ -85,19 +85,28 @@ class _EventSelectState extends State<EventSelect> {
     }
   }
 
-  // Anzeige der Chips für ausgewählte Events
   Widget _buildSelectedEvents() {
     return Wrap(
       spacing: 8.0,
       children: _selectedEvents.map((event) {
         return Chip(
-          label: Text(event.toString().split('.').last),
-          deleteIcon: Icon(Icons.close),
+          label: Text(
+            event.toString().split('.').last,
+            style: TextStyle(
+              color: Colors.white, // Textfarbe ändern
+            ),
+          ),
+          backgroundColor: Colors.blue, // Hintergrundfarbe des Chips ändern
+          deleteIcon: Icon(
+            Icons.close,
+            color: Colors.white, // Farbe des Lösch-Icons ändern
+          ),
           onDeleted: () => _removeEvent(event), // Entfernen eines Events
         );
       }).toList(),
     );
   }
+
 
   // Öffnen des Popovers mit den Event-Icons
   void _openEventPopover() async {
@@ -109,7 +118,7 @@ class _EventSelectState extends State<EventSelect> {
             builder: (context, setState) {
               return Container(
                 padding: EdgeInsets.all(16),
-                height: 400,
+                height: 450,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -166,7 +175,7 @@ class _EventSelectState extends State<EventSelect> {
                                     eventKey.toString().split('.').last,
                                     // Anzeige des Event-Namens aus dem Enum
                                     style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 12,
                                       color: isSelected
                                           ? Colors.blue
                                           : Colors
@@ -222,7 +231,7 @@ class _EventSelectState extends State<EventSelect> {
               ),
           ],
         ),
-        SizedBox(height: 8),
+
 
         // Anzeige der ausgewählten Events unter dem Label
         if (_selectedEvents.isNotEmpty)

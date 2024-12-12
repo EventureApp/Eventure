@@ -61,21 +61,28 @@ class _CustomDescriptionInputState extends State<CustomDescriptionInput> {
             }
           },
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14), // Weniger Padding für ein schmaleres Design
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4), // Weniger Padding für ein schmaleres Design
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(4), // Abgerundete Ecken
+              borderRadius: BorderRadius.circular(8), // Abgerundete Ecken
               border: Border.all(
                 color: _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2), // Rot, wenn leer
                 width: 1.5,
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                ),
+              ],
             ),
             child: TextFormField(
               controller: _textController,
               readOnly: !widget.editable,
               maxLines: 5, // Mehrzeiliges Textfeld
               decoration: InputDecoration(
-                hintText: widget.required ? 'Pflichtfeld' : 'Optional',
+                hintText: widget.required ? 'Mandatory' : 'Optional',
                 hintStyle: TextStyle(
                   color: Colors.grey.shade600, // Grauer Hinweistext
                   fontSize: 14,
@@ -97,7 +104,7 @@ class _CustomDescriptionInputState extends State<CustomDescriptionInput> {
           Padding(
             padding: const EdgeInsets.only(top: 4),
             child: Text(
-              'Dieses Feld ist erforderlich.',
+              'This field is mandatory.',
               style: TextStyle(
                 color: Colors.red,
                 fontSize: 12,

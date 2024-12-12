@@ -117,11 +117,17 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14), // Weniger Padding für ein schmaleres Design
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(8),
               border: Border.all(
                 color: _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2), // Wenn das Feld leer ist, wird es rot
                 width: 1.5,
+              ),boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 4,
+                offset: Offset(0, 2),
               ),
+            ],
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -129,7 +135,7 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
                 Expanded(
                   child: Text(
                     _dateController.text.isEmpty
-                        ? (widget.required ? "Pflichtfeld" : "Wählen Sie Datum und Uhrzeit")
+                        ? (widget.required ? "Mandatory field" : "Select date and time")
                         : _dateController.text,
                     style: TextStyle(
                       color: Colors.black, // Schwarzer Text für Datum/Uhrzeit
@@ -153,7 +159,7 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
           Padding(
             padding: const EdgeInsets.only(top: 4),
             child: Text(
-              'Dieses Feld ist erforderlich.',
+              'This field is mandatory.',
               style: TextStyle(
                 color: Colors.red,
                 fontSize: 12,

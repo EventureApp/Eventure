@@ -16,7 +16,6 @@ import '../../widgets/inputs/custom-single-select.dart';
 import '../../widgets/inputs/custom_date_time_picker.dart';
 import '../../widgets/inputs/custom_discription_input.dart';
 import '../../widgets/inputs/custom_input_line.dart';
-
 class EventScreen extends StatefulWidget {
   final Event? event;
 
@@ -30,7 +29,6 @@ class _EventScreenState extends State<EventScreen> {
   bool _isEditing = true;
   final _formKey = GlobalKey<FormState>();
 
-  // Felder für die Form-Daten
   late String _title;
   late DateTime _startDate;
   late DateTime _endDate;
@@ -48,7 +46,6 @@ class _EventScreenState extends State<EventScreen> {
   void initState() {
     super.initState();
     if (widget.event != null) {
-      // Felder vorbefüllen, falls Bearbeitung
       _isEditing = false;
       _title = widget.event!.name;
       _startDate = widget.event!.startDate;
@@ -61,7 +58,6 @@ class _EventScreenState extends State<EventScreen> {
       _maxParticipants = widget.event!.maxParticipants;
       _description = widget.event!.description;
     } else {
-      // Felder initialisieren für neues Event
       _title = '';
       _startDate = DateTime.now();
       _endDate = DateTime.now().add(Duration(hours: 1));
@@ -82,20 +78,19 @@ class _EventScreenState extends State<EventScreen> {
           _description != null &&
           _description!.isNotEmpty &&
           _startDate.isBefore(_endDate) &&
-          (_maxParticipants != null && _maxParticipants! > 0);
+          (_location.latitude != 0.0 || _location.longitude != 0.0) &&
+          _visibility != null;
     });
   }
 
   void _saveEvent(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      // Neues Event-Objekt erstellen
       Event newEvent = Event(
         name: _title,
         startDate: _startDate,
         endDate: _endDate,
         location: _location,
         address: '',
-        // Address handling could be added here
         eventType: _eventType,
         icon: _eventIcon,
         visibility: _visibility,
@@ -105,10 +100,8 @@ class _EventScreenState extends State<EventScreen> {
         organizer: AuthenticationProvider().currentUser?.uid,
       );
 
-      // Event über den Provider speichern
       Provider.of<EventProvider>(context, listen: false).addEvent(newEvent);
 
-      // Feedback an den Nutzer und zurück navigieren
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Event successfully saved!")),
       );
@@ -197,7 +190,6 @@ class _EventScreenState extends State<EventScreen> {
                       _validateForm();
                     },
                   ),
-                  SizedBox(height: 16),
                   EventSelect(
                     label: 'Event Type',
                     isEditable: _isEditing,
@@ -227,7 +219,6 @@ class _EventScreenState extends State<EventScreen> {
                       setState(() {
                         _maxParticipants = value;
                       });
-                      _validateForm();
                     },
                   ),
                   SizedBox(height: 16),
@@ -253,14 +244,26 @@ class _EventScreenState extends State<EventScreen> {
                       setState(() {
                         _visibility = eventVisibilityData[value];
                       });
+                      _validateForm();
                     },
                   ),
                   if (widget.event == null) ...[
                     SizedBox(height: 32),
                     ElevatedButton(
-                      onPressed:
-                          _isFormValid ? () => _saveEvent(context) : null,
-                      child: Text("Save"),
+                      onPressed: _isFormValid ? () => _saveEvent(context) : null,
+                      child: Text(
+                        "Save",
+                        style: TextStyle(
+                          color: Colors.white, // White text color
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue, // Blue background color
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12), // Rounded corners
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12), // Adjusting padding
+                      ),
                     ),
                   ],
                 ],

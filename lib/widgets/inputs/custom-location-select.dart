@@ -178,7 +178,7 @@ class LocationSelect extends StatefulWidget {
     required this.label,
     this.initValue,
     required this.onChanged,
-    this.isMandatory = false,
+    this.isMandatory = true,
     this.isEditable = true,
   });
 
@@ -267,7 +267,7 @@ class _LocationSelectState extends State<LocationSelect> {
           children: [
             Expanded(
               child: Text(
-                widget.label,
+                widget.label + (widget.isMandatory ? ' *' : ''), // Add star if mandatory
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
               ),
             ),

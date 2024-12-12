@@ -28,14 +28,14 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
   @override
   void initState() {
     super.initState();
-    _selectedValue = widget.initValue; // Initialen Wert setzen
+    _selectedValue = 'Public'; // Initialen Wert setzen
   }
 
   // Validierungsfunktion
   void _validate() {
     if (widget.required && _selectedValue == null) {
       setState(() {
-        _errorMessage = 'Bitte eine Auswahl treffen!';
+        _errorMessage = 'Select an option!';
       });
     } else {
       setState(() {
@@ -102,10 +102,10 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
             );
           } : null, // Nur wenn editable true ist
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(8),
               border: Border.all(
                 color: Colors.black.withOpacity(0.2), // Schwarz für den Rand
                 width: 1.5,
@@ -123,7 +123,7 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
               children: [
                 Expanded(
                   child: Text(
-                    _selectedValue ?? (widget.required ? 'Pflichtfeld' : 'Select option'),
+                    _selectedValue ?? ('Public'),
                     style: TextStyle(
                       fontSize: 16,
                       color: widget.editable ? Colors.black : Colors.grey, // Textfarbe je nach Bearbeitbarkeit

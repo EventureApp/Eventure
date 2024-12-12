@@ -21,7 +21,7 @@ class CustomInputLine extends StatefulWidget {
 
 class _CustomInputLineState extends State<CustomInputLine> {
   late TextEditingController _textController;
-  bool _isFieldEmpty = false; // Überprüft, ob das Feld leer ist
+  bool _isFieldEmpty = false; // Checks if the field is empty
 
   @override
   void initState() {
@@ -29,13 +29,13 @@ class _CustomInputLineState extends State<CustomInputLine> {
     _textController = TextEditingController(text: widget.initValue ?? '');
   }
 
-  // Validierungslogik
+  // Validation logic
   void _validateField(String value) {
     setState(() {
-      // Wenn das Feld erforderlich ist und leer bleibt, markieren wir es als "leer"
+      // If the field is required and empty, mark it as "empty"
       _isFieldEmpty = widget.required && value.isEmpty;
     });
-    widget.onChanged(value); // Rufe den Callback auf, um den Wert zu aktualisieren
+    widget.onChanged(value); // Call the callback to update the value
   }
 
   @override
@@ -43,23 +43,23 @@ class _CustomInputLineState extends State<CustomInputLine> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Label mit optionalem Sternchen für Pflichtfelder
+        // Label with an optional asterisk for required fields
         Text(
           widget.required ? widget.label + " *" : widget.label,
           style: TextStyle(
             fontWeight: FontWeight.w400,
-            fontSize: 16,
+            fontSize: 16, // Consistent font size
             color: Colors.black,
           ),
         ),
-        SizedBox(height: 8),
+        SizedBox(height: 8), // Make sure the spacing here is consistent with other fields
 
-        // Eingabefeld ohne Icon, aber mit einem sauberen, modernen Design
+        // Input field with clean, modern design
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12), // Weniger Padding
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4), // Consistent padding
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(8),  // Leicht abgerundete Ecken
+            borderRadius: BorderRadius.circular(8),  // Slightly rounded corners
             border: Border.all(
               color: _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2),
               width: 1.5,
@@ -76,7 +76,7 @@ class _CustomInputLineState extends State<CustomInputLine> {
             controller: _textController,
             readOnly: !widget.editable,
             decoration: InputDecoration(
-              hintText: widget.required ? 'Pflichtfeld' : 'Optional',
+              hintText: widget.required ? 'Mandatory' : 'Optional',
               hintStyle: TextStyle(
                 color: Colors.grey.shade600,
                 fontSize: 14,
@@ -87,12 +87,12 @@ class _CustomInputLineState extends State<CustomInputLine> {
           ),
         ),
 
-        // Wenn das Feld erforderlich ist und leer bleibt, Fehlermeldung anzeigen
+        // Error message for required fields if empty
         if (_isFieldEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 4),
             child: Text(
-              'Dieses Feld ist erforderlich.',
+              'This field is mandatory.',
               style: TextStyle(
                 color: Colors.red,
                 fontSize: 12,
