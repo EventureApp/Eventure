@@ -111,8 +111,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                     initValue: context
                         .read<EventProvider>()
                         .filter
-                        .startDate
-                        ?.toString(),
+                        .startDate,
                     onDateChanged: (date) {
                       setState(() {
                         _startDate = date;
@@ -129,8 +128,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                     initValue: context
                         .read<EventProvider>()
                         .filter
-                        .endDate
-                        ?.toString(),
+                        .endDate,
                     onDateChanged: (date) {
                       setState(() {
                         _endDate = date;

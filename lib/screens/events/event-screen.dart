@@ -192,6 +192,7 @@ class _EventScreenState extends State<EventScreen> {
                   CustomDateAndTimePicker(
                     label: "Start Date",
                     required: true,
+                    initValue: _startDate,
                     editable: _isEditing,
                     onDateChanged: (date) {
                       setState(() {
