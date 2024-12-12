@@ -120,29 +120,43 @@ class _EventScreenState extends State<EventScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        title: Row(
-          children: [
-            Icon(Icons.event, color: Colors.white),
-            SizedBox(width: 8),
-            Text(widget.event == null ? "Create Event" : "Edit Event"),
-          ],
-        ),
+        title: Text(widget.event == null ? "Create Event" : "Edit Event"),
         actions: [
           IconButton(
-            icon: const Icon(Icons.done),
-            onPressed: () {
-              if (_isFormValid) {
-                _saveEvent(context);
-              }
-            },
+            icon: Icon(widget.event == null ? Icons.save : Icons.edit),
+            onPressed: _isFormValid
+                ? () {
+                    _saveEvent(context);
+                  }
+                : null,
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Container(
+      body: SingleChildScrollView(
+        child: Column(children: [
+          Container(
+            color: Theme.of(context).primaryColor,
+            width: double.infinity,
+            height: 100,
+            padding: const EdgeInsets.symmetric(vertical: 13),
+            child: Center(
+              child: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Icon(
+                    _eventIcon,
+                    size: 30,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Container(
             padding: EdgeInsets.all(16.0),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -268,7 +282,7 @@ class _EventScreenState extends State<EventScreen> {
               ),
             ),
           ),
-        ),
+        ]),
       ),
     );
   }
