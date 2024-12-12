@@ -24,17 +24,25 @@ class SingleSelectDropdown extends StatefulWidget {
 class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
   String? _selectedValue;
   String _errorMessage = '';
+  late FocusNode _focusNode;
 
   @override
   void initState() {
     super.initState();
     _selectedValue = widget.initValue;
+    _focusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
   }
 
   void _validate() {
     if (widget.required && _selectedValue == null) {
       setState(() {
-        _errorMessage = 'Bitte eine Auswahl treffen!';
+        _errorMessage = 'Please make a selection!';
       });
     } else {
       setState(() {
@@ -45,17 +53,34 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
 
   @override
   Widget build(BuildContext context) {
+    final isValid = _errorMessage.isEmpty;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Label with optional asterisk for required fields
-        Text(
-          widget.required ? "${widget.label} *" : widget.label,
-          style: TextStyle(
-            fontWeight: FontWeight.w400,
-            fontSize: 16,
-            color: Colors.black,
-          ),
+        Row(
+          children: [
+            Text(
+              widget.label.toUpperCase(),
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 16,
+                color: _focusNode.hasFocus
+                    ? Theme.of(context).primaryColor
+                    : Colors.black,
+              ),
+            ),
+            if (widget.required) ...[
+              const Text(
+                ' *',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ],
         ),
         SizedBox(height: 8),
 
@@ -63,53 +88,60 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
         GestureDetector(
           onTap: widget.editable
               ? () async {
-                  await showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text('Select Option'),
-                        content: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: widget.data.keys.map((option) {
-                              return RadioListTile<String>(
-                                title: Text(option),
-                                value: option,
-                                groupValue: _selectedValue,
-                                onChanged: (String? value) {
-                                  setState(() {
-                                    _selectedValue = value;
-                                    _errorMessage = '';
-                                  });
-                                  widget.onChanged(value);
-                                  Navigator.of(context).pop();
-                                },
-                              );
-                            }).toList(),
-                          ),
+            await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Select ${widget.label}'),
+                  content: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: widget.data.keys.map((option) {
+                        return RadioListTile<String>(
+                          activeColor: Theme.of(context).primaryColor,
+                          title: Text(option),
+                          value: option,
+                          groupValue: _selectedValue,
+                          onChanged: (String? value) {
+                            setState(() {
+                              _selectedValue = value;
+                              _errorMessage = '';
+                            });
+                            widget.onChanged(value);
+                            Navigator.of(context).pop();
+                          },
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('Close',
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
                         ),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text('Close'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                }
+                      ),
+
+                    ),
+                  ],
+                );
+              },
+            );
+          }
               : null,
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12.25),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius:
-                  BorderRadius.circular(8), // Match the rounded corners
+              borderRadius: BorderRadius.circular(8),
               border: Border.all(
                 color: _errorMessage.isNotEmpty
                     ? Colors.red
+                    : _focusNode.hasFocus
+                    ? Theme.of(context).primaryColor
                     : Colors.black.withOpacity(0.2),
                 width: 1.5,
               ),
@@ -127,7 +159,7 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
                 Expanded(
                   child: Text(
                     _selectedValue ??
-                        (widget.required ? 'Pflichtfeld' : 'Select option'),
+                        (widget.required ? 'Required field' : 'Select option'),
                     style: TextStyle(
                       fontSize: 16,
                       color: widget.editable ? Colors.black : Colors.grey,
