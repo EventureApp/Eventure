@@ -25,16 +25,22 @@ class CustomNumberInput extends StatefulWidget {
 class _CustomNumberInputState extends State<CustomNumberInput> {
   String _errorMessage = "";
   late TextEditingController _controller;
+  late FocusNode _focusNode; // FocusNode für das Eingabefeld
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController();
+    _focusNode = FocusNode(); // Initialisieren des Fokus-Managements
+    _focusNode.addListener(() {
+      setState(() {}); // UI bei Fokusänderung aktualisieren
+    });
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _focusNode.dispose(); // Fokus-Node freigeben
     super.dispose();
   }
 
@@ -78,50 +84,71 @@ class _CustomNumberInputState extends State<CustomNumberInput> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Label
-        Text(
-          widget.isMandatory! ? '${widget.label} *' : widget.label,
-          style: TextStyle(
-            fontWeight: FontWeight.w400,
-            fontSize: 16,
-            color: Colors.black,
+        // Label mit Sternchen für Pflichtfelder
+        Text.rich(
+          TextSpan(
+            text: widget.label.toUpperCase(), // Label immer in Großbuchstaben
+            style: const TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+              color: Colors.black,
+            ),
+            children: widget.isMandatory!
+                ? [
+              const TextSpan(
+                text: " *", // Sternchen für Pflichtfelder
+                style: TextStyle(
+                  color: Colors.red, // Stern in Rot
+                ),
+              ),
+            ]
+                : [], // Kein Sternchen, wenn nicht erforderlich
           ),
         ),
         SizedBox(height: 8),
-        // Eingabefeld
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8), // Match the rounded corners
-            border: Border.all(
-              color: _errorMessage.isNotEmpty
-                  ? Colors.red
-                  : Colors.black.withOpacity(0.2), // Fehlerfarbe
-              width: 1.5,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 4,
-                offset: Offset(0, 2),
+        // Eingabefeld im angepassten Design
+        GestureDetector(
+          onTap: () {
+            _focusNode.requestFocus(); // Fokus anfordern, wenn das Feld angetippt wird
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4), // Runde Ecken
+              border: Border.all(
+                color: _focusNode.hasFocus
+                    ? Theme.of(context).primaryColor // Blau wenn fokussiert
+                    : _errorMessage.isNotEmpty
+                    ? Colors.red // Rot bei Fehler
+                    : Colors.black.withOpacity(0.2), // Standardfarbe wenn nicht fokussiert
+                width: 1.5,
               ),
-            ],
-          ),
-          child: TextField(
-            controller: _controller,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              hintText: widget.hint ?? 'Enter a number',
-              hintStyle: TextStyle(
-                color: Colors.grey.shade600,
-                fontSize: 14,
-              ),
-              border: InputBorder.none,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                ),
+              ],
             ),
-            onChanged: _onChange,
+            child: TextField(
+              controller: _controller,
+              focusNode: _focusNode, // Fokus-Node für das TextField
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                hintText: widget.hint ?? 'Enter a number',
+                hintStyle: TextStyle(
+                  color: Colors.grey.shade600,
+                  fontSize: 14,
+                ),
+                border: InputBorder.none,
+              ),
+              onChanged: _onChange,
+            ),
           ),
         ),
+        SizedBox(height: 8),
         // Fehlernachricht
         if (_errorMessage.isNotEmpty)
           Padding(
