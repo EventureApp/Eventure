@@ -39,8 +39,8 @@ class Event implements Entity {
 
   factory Event.fromMap(Map<String, dynamic> map, String id) {
     IconData icon = IconData(
-      map['icon'] as int,
-      fontFamily: 'CustomIcons',
+      map['icon']['codePoint'] as int,
+      fontFamily: map['icon']['fontFamily'] as String,
     );
 
     return Event(
@@ -75,7 +75,7 @@ class Event implements Entity {
         'latitude': location.latitude,
         'longitude': location.longitude,
       },
-      'icon': icon.codePoint,
+      'icon': {'fontFamily': icon.fontFamily, 'codePoint': icon.codePoint},
       'eventType': eventType.index,
       'eventLink': eventLink,
       'participants': maxParticipants,
