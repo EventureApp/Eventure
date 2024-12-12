@@ -16,10 +16,11 @@ class AddFriendsScreen extends StatefulWidget {
 
 class _AddFriendsScreenState extends State<AddFriendsScreen> {
   @override
-  void initState(){
+  void initState() {
     super.initState();
     context.read<UserProvider>().fetchUsersStartingWith();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +34,7 @@ class _AddFriendsScreenState extends State<AddFriendsScreen> {
                 required: false,
                 editable: true,
                 onChanged: (text) {
-                  context.read<UserProvider>().queryStartsWith=text;
+                  context.read<UserProvider>().queryStartsWith = text;
                   context.read<UserProvider>().fetchUsersStartingWith();
                 }),
             Consumer<UserProvider>(builder: (context, userProvider, child) {
@@ -41,12 +42,16 @@ class _AddFriendsScreenState extends State<AddFriendsScreen> {
               List<AppUser> usersStartingWith = userProvider.usersStartingWith;
               return Expanded(
                   child: ListView.builder(
+                padding:const EdgeInsets.all(10),
                 itemCount: usersStartingWith.length,
                 itemBuilder: (BuildContext context, int index) {
                   return ListTile(
-                      title: Text("${usersStartingWith[index].firstName} ${usersStartingWith[index].lastName}"),
-                      subtitle: Text("${usersStartingWith[index].username}"),
-                      trailing:StyledButton(onPressed: (){},child: const Text("send friend request")),
+                    title: Text(
+                        "${usersStartingWith[index].firstName} ${usersStartingWith[index].lastName}"),
+                    subtitle: Text("${usersStartingWith[index].username}"),
+                    trailing: StyledButton(
+                        onPressed: () {},
+                        child: const Text("send friend request")),
                   );
                 },
               ));
