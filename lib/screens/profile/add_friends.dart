@@ -51,7 +51,7 @@ class _AddFriendsScreenState extends State<AddFriendsScreen> {
                     subtitle: Text("${usersStartingWith[index].username}"),
                     trailing: StyledButton(
                         onPressed: () {},
-                        child: const Text("send friend request")),
+                        child: const Text("Send friend request")),
                   );
                 },
               ));
