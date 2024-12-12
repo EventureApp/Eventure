@@ -119,6 +119,7 @@ class _EventSelectState extends State<EventSelect> {
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                         color: Colors.black,
+
                       ),
                     ),
                     SizedBox(height: 16),
@@ -158,7 +159,7 @@ class _EventSelectState extends State<EventSelect> {
                                     // Verwendet das Event-Icon aus der Map
                                     size: 40, // Angepasste Größe
                                     color: isSelected
-                                        ? Colors.blue
+                                        ? Theme.of(context).primaryColor
                                         : Colors.grey, // Farbänderung des Icons
                                   ),
                                   SizedBox(height: 8),
@@ -168,7 +169,7 @@ class _EventSelectState extends State<EventSelect> {
                                     style: TextStyle(
                                       fontSize: 14,
                                       color: isSelected
-                                          ? Colors.blue
+                                          ? Theme.of(context).primaryColor
                                           : Colors
                                               .black, // Farbänderung des Texts
                                     ),
@@ -218,7 +219,7 @@ class _EventSelectState extends State<EventSelect> {
               IconButton(
                 icon: Icon(Icons.add),
                 onPressed: _openEventPopover, // Popover öffnen
-                color: Colors.blue,
+                color: Theme.of(context).primaryColor,
               ),
           ],
         ),

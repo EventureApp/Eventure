@@ -11,6 +11,7 @@ import '../../statics/event_visibility.dart';
 import '../../widgets/inputs/custom-event-select.dart';
 import '../../widgets/inputs/custom-link-select.dart';
 import '../../widgets/inputs/custom-location-select.dart';
+import '../../widgets/inputs/custom-multi-select.dart';
 import '../../widgets/inputs/custom-single-select.dart';
 import '../../widgets/inputs/custom_date_time_picker.dart';
 import '../../widgets/inputs/custom_discription_input.dart';

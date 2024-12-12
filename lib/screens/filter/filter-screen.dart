@@ -67,25 +67,45 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        title: Row(
-          children: [
-            Icon(Icons.filter_list, color: Colors.white),
-            SizedBox(width: 8),
-            Text("Filter Events"),
-          ],
-        ),
+        title: Text("Filter"),
         actions: [
-          TextButton(
-            onPressed: _resetFilters,
-            child: Text("Reset"),
-          ),
+          IconButton(
+              icon: Icon(Icons.reset_tv),
+              onPressed: () {
+                _resetFilters();
+              }),
+          IconButton(
+              icon: Icon(Icons.save),
+              onPressed: () {
+                _applyFilters();
+              }),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Container(
+      body: SingleChildScrollView(
+        child: Column(children: [
+          Container(
+            color: Theme.of(context).primaryColor,
+            width: double.infinity,
+            height: 100,
+            padding: const EdgeInsets.symmetric(vertical: 13),
+            child: Center(
+              child: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Icon(
+                    Icons.save,
+                    size: 30,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Container(
             padding: EdgeInsets.all(16.0),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -108,10 +128,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                     label: "Start Date",
                     required: false,
                     editable: true,
-                    initValue: context
-                        .read<EventProvider>()
-                        .filter
-                        .startDate,
+                    initValue: context.read<EventProvider>().filter.startDate,
                     onDateChanged: (date) {
                       setState(() {
                         _startDate = date;
@@ -125,10 +142,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                     label: "End Date",
                     required: false,
                     editable: true,
-                    initValue: context
-                        .read<EventProvider>()
-                        .filter
-                        .endDate,
+                    initValue: context.read<EventProvider>().filter.endDate,
                     onDateChanged: (date) {
                       setState(() {
                         _endDate = date;
@@ -196,12 +210,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
               ),
             ),
           ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _applyFilters,
-        child: Icon(Icons.check),
-        backgroundColor: Theme.of(context).primaryColor,
+        ]),
       ),
     );
   }
