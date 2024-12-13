@@ -63,7 +63,17 @@ class UserService implements DatabaseService<AppUser> {
     final limit =
         strFrontCode + String.fromCharCode(strEndCode.codeUnitAt(0) + 1);
 
-    final snapshot = await _firestore.collection('users').where('username', isGreaterThanOrEqualTo: startingString).where('username', isLessThan: limit).get();
+    final snapshot = await _firestore.collection('users').where(
+      Filter.or(
+        Filter.and(
+          Filter('firstName', isGreaterThanOrEqualTo: startingString),
+          Filter('firstName', isLessThan: limit)
+        ),
+        Filter.and(
+            Filter('lastName', isGreaterThanOrEqualTo: startingString),
+            Filter('lastName', isLessThan: limit)
+        )
+      )).get();
     return snapshot.docs.map((doc) {
       return AppUser.fromMap(doc.data(), doc.id);
     }).toList();

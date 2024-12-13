@@ -58,7 +58,7 @@ class _AddFriendsScreenState extends State<AddFriendsScreen> {
                   return ListTile(
                     title: Text(
                         "${usersStartingWith[index].firstName} ${usersStartingWith[index].lastName}"),
-                    subtitle: Text("${usersStartingWith[index].username}"),
+                    subtitle: Text("${usersStartingWith[index].uni}"),
                     trailing: StyledButton(
                         onPressed: () {},
                         child: const Text("Send friend request")),
