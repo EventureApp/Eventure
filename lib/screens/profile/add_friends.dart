@@ -29,14 +29,24 @@ class _AddFriendsScreenState extends State<AddFriendsScreen> {
         ),
         body: Column(
           children: [
-            CustomInputLine(
-                label: "Enter other user's username",
-                required: false,
-                editable: true,
-                onChanged: (text) {
-                  context.read<UserProvider>().queryStartsWith = text;
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: TextField(
+                decoration: InputDecoration(
+                    hintText: 'Search users...',
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: Colors.white),
+                onChanged: (value) {
+                  context.read<UserProvider>().queryStartsWith = value;
                   context.read<UserProvider>().fetchUsersStartingWith();
-                }),
+                },
+              ),
+            ),
             Consumer<UserProvider>(builder: (context, userProvider, child) {
               userProvider.fetchFriends();
               List<AppUser> usersStartingWith = userProvider.usersStartingWith;
