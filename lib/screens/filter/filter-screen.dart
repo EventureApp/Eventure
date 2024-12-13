@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
+import '../../statics/custom_icons.dart';
 import '../../statics/event_types.dart';
 import '../../statics/event_visibility.dart';
 import '../../widgets/inputs/custom-event-select.dart';
@@ -59,7 +60,11 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
 
   void _resetFilters() {
     context.read<EventProvider>().resetFilter();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Filters reset!")),
+    );
     Navigator.pop(context);
+
   }
 
   @override
@@ -70,8 +75,9 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
         title: Text("Filter"),
         actions: [
           IconButton(
-              icon: Icon(Icons.reset_tv),
+              icon: Icon(Icons.delete_outline),
               onPressed: () {
+                print("rer");
                 _resetFilters();
               }),
           IconButton(
@@ -98,7 +104,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                 ),
                 child: Center(
                   child: Icon(
-                    Icons.save,
+                    CustomIcons.filteroptions,
                     size: 30,
                   ),
                 ),
