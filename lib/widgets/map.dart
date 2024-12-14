@@ -4,6 +4,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
+import '../models/event.dart';
 
 import '../../providers/event_provider.dart';
 
@@ -16,6 +17,39 @@ class MapWidget extends StatefulWidget {
 
 class _MapWidgetState extends State<MapWidget> {
   LatLng? tappedCoordinates;
+
+  List<Marker> _getMarkers(List<Event> events, LatLng currentLocation) {
+    List<Marker> eventMarkers = events.map((event) {
+      return Marker(
+        point: event.location,
+        child: GestureDetector(
+            onTap: () {
+              context.push('/events/${event.id!}');
+            },
+            child: Container(
+                decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.black),
+                child: Padding(
+                  padding: const EdgeInsets.all(1.0),
+                  child: CircleAvatar(
+                    radius: 100,
+                    backgroundColor: Theme.of(context).primaryColor,
+                    child: Icon(
+                        event.icon,
+                        color: Colors.black
+                    ),
+                  ),
+                ))),
+      );
+    }).toList();
+    Marker locationMarker = Marker(point: currentLocation, child: const Icon(
+      Icons.my_location,
+      color: Colors.blueAccent,
+    ));
+
+    return [...eventMarkers, locationMarker];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,30 +92,7 @@ class _MapWidgetState extends State<MapWidget> {
                             subdomains: const ['a', 'b', 'c'],
                           ),
                           MarkerLayer(
-                            markers: eventProvider.filteredEvents.map((event) {
-                              return Marker(
-                                point: event.location,
-                                child: GestureDetector(
-                                    onTap: () {
-                                      context.push('/events/${event.id!}');
-                                    },
-                                    child: Container(
-                                        decoration: const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.black),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(1.0),
-                                          child: CircleAvatar(
-                                            radius: 100,
-                                            backgroundColor: Theme.of(context).primaryColor,
-                                            child: Icon(
-                                              event.icon,
-                                              color: Colors.black
-                                            ),
-                                          ),
-                                        ))),
-                              );
-                            }).toList(),
+                            markers: _getMarkers(eventProvider.filteredEvents, currentLocation),
                           ),
                         ],
                       );
