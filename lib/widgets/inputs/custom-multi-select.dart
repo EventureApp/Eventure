@@ -134,13 +134,6 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
                     : Colors.black.withOpacity(0.2), // Randfarbe
                 width: 1.5,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 4,
-                  offset: Offset(0, 2),
-                ),
-              ],
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

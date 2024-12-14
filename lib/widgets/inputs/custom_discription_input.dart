@@ -94,13 +94,6 @@ class _CustomDescriptionInputState extends State<CustomDescriptionInput> {
                     : Colors.black.withOpacity(0.2), // Standardfarbe wenn nicht fokussiert
                 width: 1.5,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 4,
-                  offset: Offset(0, 2),
-                ),
-              ],
             ),
             child: TextFormField(
               controller: _textController,
