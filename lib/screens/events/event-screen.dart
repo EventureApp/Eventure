@@ -148,6 +148,7 @@ class _EventScreenState extends State<EventScreen> {
                 height: 50,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
+                  color: Colors.white,
                 ),
                 child: Center(
                   child: Icon(

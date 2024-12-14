@@ -5,7 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../statics/custom_icons.dart';
-import '../../widgets/map.dart';
+import 'package:eventure/screens/list/list_screen.dart';
+import 'package:eventure/widgets/map.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -69,9 +70,11 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      body: const Stack(
+      body: Stack(
         children: [
-          MapWidget(),
+          isMapSelected
+              ? const MapWidget() // Karte anzeigen
+              : const ListScreen(), // Liste anzeigen
         ],
       ),
       bottomNavigationBar: SizedBox(
