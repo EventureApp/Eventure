@@ -29,7 +29,9 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
   @override
   void initState() {
     super.initState();
-    _selectedValue = widget.initValue;
+    setState(() {
+      _selectedValue = widget.initValue;
+    });
     _focusNode = FocusNode();
   }
 

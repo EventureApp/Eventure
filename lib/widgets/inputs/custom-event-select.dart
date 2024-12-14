@@ -90,10 +90,9 @@ class _EventSelectState extends State<EventSelect> {
     return Wrap(
       spacing: 8.0,
       children: _selectedEvents.map((event) {
-        return Chip(
-          label: Text(event.toString().split('.').last),
-          deleteIcon: Icon(Icons.close),
-          onDeleted: () => _removeEvent(event), // Entfernen eines Events
+        return Icon(
+          eventTypesWithIcon[event], // Icon aus der Map
+          color: Theme.of(context).primaryColor,
         );
       }).toList(),
     );
