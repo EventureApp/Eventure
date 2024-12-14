@@ -72,10 +72,11 @@ class _MapWidgetState extends State<MapWidget> {
                                         child: Padding(
                                           padding: const EdgeInsets.all(1.0),
                                           child: CircleAvatar(
-                                            radius: 60,
-                                            backgroundColor: Colors.white,
+                                            radius: 100,
+                                            backgroundColor: Theme.of(context).primaryColor,
                                             child: Icon(
                                               event.icon,
+                                              color: Colors.black
                                             ),
                                           ),
                                         ))),
