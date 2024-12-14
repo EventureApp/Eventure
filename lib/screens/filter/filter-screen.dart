@@ -1,15 +1,16 @@
 import 'package:eventure/models/event_filter.dart';
 import 'package:eventure/providers/event_provider.dart';
 import 'package:eventure/providers/location_provider.dart';
+import 'package:eventure/widgets/inputs/custom-number-select.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
+import '../../statics/custom_icons.dart';
 import '../../statics/event_types.dart';
 import '../../statics/event_visibility.dart';
 import '../../widgets/inputs/custom-event-select.dart';
 import '../../widgets/inputs/custom-location-select.dart';
-import '../../widgets/inputs/custom-number-select.dart';
 import '../../widgets/inputs/custom_date_time_picker.dart';
 
 class EventFilterScreen extends StatefulWidget {
@@ -34,7 +35,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
     _startDate = null;
     _endDate = null;
     _visibility = EventVisability.public;
-    _eventType = [EventType.someThingElse];
+    _eventType = [EventType.other];
     _location = context.read<EventProvider>().filter.location;
     _radius = context.read<EventProvider>().filter.range;
   }
@@ -59,39 +60,58 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
 
   void _resetFilters() {
     context.read<EventProvider>().resetFilter();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Filters reset!")),
+    );
     Navigator.pop(context);
+
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Row(
-          children: [
-            Icon(Icons.filter_list, color: Colors.white),
-            SizedBox(width: 8),
-            Text("Filter Events"),
-          ],
-        ),
+        title: Text("Filter"),
+        actions: [
+          IconButton(
+              icon: Icon(Icons.delete_outline),
+              onPressed: () {
+                print("rer");
+                _resetFilters();
+              }),
+          IconButton(
+              icon: Icon(Icons.save),
+              onPressed: () {
+                _applyFilters();
+              }),
+        ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Container(
-            padding: EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 8.0,
-                  offset: Offset(0, 2),
+      body: SingleChildScrollView(
+        child: Column(children: [
+          Container(
+            color: Theme.of(context).primaryColor,
+            width: double.infinity,
+            height: 100,
+            padding: const EdgeInsets.symmetric(vertical: 13),
+            child: Center(
+              child: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
                 ),
-              ],
+                child: Center(
+                  child: Icon(
+                    CustomIcons.filteroptions,
+                    size: 30,
+                  ),
+                ),
+              ),
             ),
+          ),
+          Container(
+            padding: EdgeInsets.all(16.0),
             child: Form(
               key: _formKey,
               child: Column(
@@ -102,11 +122,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                     label: "Start Date",
                     required: false,
                     editable: true,
-                    initValue: context
-                        .read<EventProvider>()
-                        .filter
-                        .startDate
-                        ?.toString(),
+                    initValue: context.read<EventProvider>().filter.startDate,
                     onDateChanged: (date) {
                       setState(() {
                         _startDate = date;
@@ -120,11 +136,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                     label: "End Date",
                     required: false,
                     editable: true,
-                    initValue: context
-                        .read<EventProvider>()
-                        .filter
-                        .endDate
-                        ?.toString(),
+                    initValue: context.read<EventProvider>().filter.endDate,
                     onDateChanged: (date) {
                       setState(() {
                         _endDate = date;
@@ -155,7 +167,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                     initValues:
                         context.read<EventProvider>().filter.eventType ??
                             _eventType,
-                    events: EventTypesWithIcon,
+                    events: eventTypesWithIcon,
                     isMultiSelect: true,
                     onChanged: (selected) {
                       setState(() {
@@ -188,21 +200,11 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                     },
                   ),
                   SizedBox(height: 32),
-
-                  // Filter-Button
-                  ElevatedButton(
-                    onPressed: _applyFilters,
-                    child: Text("Filter"),
-                  ),
-                  ElevatedButton(
-                    onPressed: _resetFilters,
-                    child: Text("Reset"),
-                  ),
                 ],
               ),
             ),
           ),
-        ),
+        ]),
       ),
     );
   }

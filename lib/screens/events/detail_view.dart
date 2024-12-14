@@ -34,7 +34,7 @@ class EventDetailViewScreen extends StatelessWidget {
         body: Column(
           children: [
             Container(
-                color: const Color(0xFFB7CBDD),
+                color: Theme.of(context).primaryColor,
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: CircleAvatar(
