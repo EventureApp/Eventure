@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import 'custom_icons.dart';
 
@@ -12,17 +12,17 @@ enum EventType {
   learning,
   connecting,
   someThingElse,
+  gaming,
 }
 
-
 Map<EventType, IconData> EventTypesWithIcon = {
-  EventType.concert : CustomIcons.beer2,
-  EventType.bar : CustomIcons.beer2,
-  EventType.party : CustomIcons.beer2,
-  EventType.rave : CustomIcons.beer2,
-  EventType.playNight : CustomIcons.beer2,
-  EventType.chilling :CustomIcons.beer2,
-  EventType.learning : CustomIcons.beer2,
-  EventType.connecting : CustomIcons.beer2,
-  EventType.someThingElse : CustomIcons.beer2
+  EventType.concert: Icons.music_note,
+  EventType.bar: Icons.local_bar,
+  EventType.party: Icons.nightlife,
+  EventType.rave: Icons.graphic_eq,
+  EventType.chilling: Icons.weekend,
+  EventType.learning: Icons.book,
+  EventType.connecting: Icons.diversity_3,
+  EventType.someThingElse: Icons.question_mark,
+  EventType.gaming: CustomIcons.gamingcontroller
 };
