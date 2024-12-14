@@ -117,8 +117,6 @@ class _EventSelectState extends State<EventSelect> {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
-                        color: Colors.black,
-
                       ),
                     ),
                     SizedBox(height: 16),

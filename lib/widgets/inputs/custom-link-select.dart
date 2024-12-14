@@ -76,7 +76,6 @@ class _CustomLinkInputState extends State<CustomLinkInput> {
             style: const TextStyle(
               fontWeight: FontWeight.w400,
               fontSize: 16,
-              color: Colors.black,
             ),
             children: widget.isMandatory!
                 ? [
@@ -99,7 +98,6 @@ class _CustomLinkInputState extends State<CustomLinkInput> {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
-              color: Colors.white,
               borderRadius: BorderRadius.circular(4),
               border: Border.all(
                 color: _focusNode.hasFocus

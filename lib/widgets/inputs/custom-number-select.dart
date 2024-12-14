@@ -91,7 +91,6 @@ class _CustomNumberInputState extends State<CustomNumberInput> {
             style: const TextStyle(
               fontWeight: FontWeight.w400,
               fontSize: 16,
-              color: Colors.black,
             ),
             children: widget.isMandatory!
                 ? [
@@ -114,7 +113,6 @@ class _CustomNumberInputState extends State<CustomNumberInput> {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
-              color: Colors.white,
               borderRadius: BorderRadius.circular(4), // Runde Ecken
               border: Border.all(
                 color: _focusNode.hasFocus

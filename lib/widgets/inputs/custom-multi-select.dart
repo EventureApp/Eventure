@@ -57,7 +57,6 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
               style: TextStyle(
                 fontWeight: FontWeight.w400, // Einheitliche Schriftart
                 fontSize: 16,
-                color: Colors.black, // Schwarzer Text für das Label
               ),
             ),
             if (widget.required) ...[
@@ -128,7 +127,6 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
-              color: Colors.white,
               borderRadius: BorderRadius.circular(8), // Abgerundete Ecken
               border: Border.all(
                 color: _errorMessage.isNotEmpty

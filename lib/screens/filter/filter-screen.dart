@@ -70,7 +70,6 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text("Filter"),
         actions: [
@@ -113,17 +112,6 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
           ),
           Container(
             padding: EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 8.0,
-                  offset: Offset(0, 2),
-                ),
-              ],
-            ),
             child: Form(
               key: _formKey,
               child: Column(

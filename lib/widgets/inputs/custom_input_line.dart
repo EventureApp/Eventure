@@ -64,7 +64,6 @@ class _CustomInputLineState extends State<CustomInputLine> {
             style: const TextStyle(
               fontWeight: FontWeight.w400,
               fontSize: 16,
-              color: Colors.black,
             ),
             children: widget.required
                 ? [
@@ -83,7 +82,6 @@ class _CustomInputLineState extends State<CustomInputLine> {
         Container(
           padding: EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
-            color: Colors.white, // Weiß, wenn nicht fokussiert
             borderRadius: BorderRadius.circular(2), // Leicht abgerundete Ecken
             border: Border.all(
               color:_focusNode.hasFocus ? Theme.of(context).primaryColor :  _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2),

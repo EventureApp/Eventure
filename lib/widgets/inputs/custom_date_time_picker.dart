@@ -91,7 +91,6 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
                 hourMinuteColor: const Color(0xFFB7CBDD),
                 dialHandColor: const Color(0xFFB7CBDD),
                 dayPeriodColor: const Color(0xFFB7CBDD),
-                dayPeriodTextColor: Colors.black,
               ),
             ),
             child: child!,
@@ -141,7 +140,6 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
             style: const TextStyle(
               fontWeight: FontWeight.w400,
               fontSize: 16,
-              color: Colors.black,
             ),
             children: widget.required
                 ? [
@@ -166,7 +164,6 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12.25),
             decoration: BoxDecoration(
-              color: Colors.white,
               // Weiß, wenn nicht fokussiert
               borderRadius: BorderRadius.circular(2),
               // Leicht abgerundete Ecken
@@ -190,7 +187,6 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
                             : "Wählen Sie Datum und Uhrzeit")
                         : _dateController.text,
                     style: TextStyle(
-                      color: Colors.black,
                       fontSize: 16,
                     ),
                     overflow: TextOverflow.ellipsis,

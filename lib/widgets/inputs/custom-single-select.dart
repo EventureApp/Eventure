@@ -68,9 +68,6 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
               style: TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 16,
-                color: _focusNode.hasFocus
-                    ? Theme.of(context).primaryColor
-                    : Colors.black,
               ),
             ),
             if (widget.required) ...[
@@ -137,7 +134,6 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12.25),
             decoration: BoxDecoration(
-              color: Colors.white,
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
                 color: _errorMessage.isNotEmpty

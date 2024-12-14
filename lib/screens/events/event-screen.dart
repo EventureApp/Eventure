@@ -119,7 +119,6 @@ class _EventScreenState extends State<EventScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(widget.event == null ? "Create Event" : "Edit Event"),
         actions: [
@@ -148,7 +147,6 @@ class _EventScreenState extends State<EventScreen> {
                 width: 50,
                 height: 50,
                 decoration: BoxDecoration(
-                  color: Colors.white,
                   shape: BoxShape.circle,
                 ),
                 child: Center(
@@ -162,17 +160,6 @@ class _EventScreenState extends State<EventScreen> {
           ),
           Container(
             padding: EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 8.0,
-                  offset: Offset(0, 2),
-                ),
-              ],
-            ),
             child: Form(
               key: _formKey,
               child: Column(

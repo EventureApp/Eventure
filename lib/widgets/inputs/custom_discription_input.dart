@@ -60,7 +60,6 @@ class _CustomDescriptionInputState extends State<CustomDescriptionInput> {
             style: const TextStyle(
               fontWeight: FontWeight.w400,
               fontSize: 16,
-              color: Colors.black,
             ),
             children: widget.required
                 ? [
@@ -86,7 +85,6 @@ class _CustomDescriptionInputState extends State<CustomDescriptionInput> {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
             decoration: BoxDecoration(
-              color: Colors.white,
               borderRadius: BorderRadius.circular(4), // Runde Ecken
               border: Border.all(
                 color: _focusNode.hasFocus
