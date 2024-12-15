@@ -1,5 +1,6 @@
 import 'package:eventure/models/user.dart';
 import 'package:eventure/providers/event_provider.dart';
+import 'package:eventure/providers/location_provider.dart';
 import 'package:eventure/providers/user_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,27 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool isMapSelected = true;
+  bool _locationFetched = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final locationProvider =
+        Provider.of<LocationProvider>(context, listen: false);
+    if (!_locationFetched) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        try {
+          await locationProvider.fetchCurrentLocation();
+          setState(() {
+            _locationFetched = true;
+          });
+        } catch (e) {
+          // Handle location fetching error (e.g., show a dialog or snackbar)
+          print('Error fetching location: $e');
+        }
+      });
+    }
+  }
 
   void _optionsDialog(BuildContext context, AppUser user) {
     showDialog(
@@ -106,14 +128,15 @@ class _HomePageState extends State<HomePage> {
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: TextField(
                         decoration: InputDecoration(
-                            hintText: 'Search...',
-                            prefixIcon: const Icon(Icons.search),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide.none,
-                            ),
-                            filled: true,
-                            fillColor: Colors.white),
+                          hintText: 'Search...',
+                          prefixIcon: const Icon(Icons.search),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide.none,
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                        ),
                         onChanged: (value) {
                           eventProvider.setSearchString(value);
                         },
