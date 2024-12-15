@@ -68,16 +68,6 @@ class ProfileDetailScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              Center(
-                  child: StyledButton(
-                      child: const Text("Search users/Add friends"),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddFriendsScreen()),
-                        );
-                      })),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
