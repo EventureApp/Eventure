@@ -1,8 +1,10 @@
 import 'package:eventure/models/event.dart';
+import 'package:eventure/providers/user_provider.dart';
 import 'package:eventure/utils/string_parser.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class EventDetailViewScreen extends StatelessWidget {
   final Event event;
@@ -32,7 +34,7 @@ class EventDetailViewScreen extends StatelessWidget {
         body: Column(
           children: [
             Container(
-                color: const Color(0xFFB7CBDD),
+                color: Theme.of(context).primaryColor,
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: CircleAvatar(
@@ -99,15 +101,15 @@ class EventDetailViewScreen extends StatelessWidget {
                     ),
                     Container(
                       margin: const EdgeInsets.only(left: 20, top: 10),
-                      child: const Row(
+                      child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.person,
                             size: 40,
                           ),
-                          SizedBox(width: 10),
-                          // Text(event.organizer ?? 'none')
-                          Text('Event Ersteller')
+                          const SizedBox(width: 10),
+                          Text(Provider.of<UserProvider>(context)
+                              .getUserName(event.organizer ?? ""))
                         ],
                       ),
                     ),

@@ -83,7 +83,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
             child: Column(
               children: [
                 Container(
-                  color: const Color(0xFFB7CBDD),
+                  color: Theme.of(context).primaryColor,
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(vertical: 13),
                   child: Column(

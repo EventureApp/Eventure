@@ -10,12 +10,12 @@ class EventService implements DatabaseService<Event> {
 
   @override
   Future<void> create(Event event) async {
-    await _firestore.collection('events').add(event.toMap());
+    await _firestore.collection('NewEvents').add(event.toMap());
   }
 
   @override
   Future<List<Event>> getAll() async {
-    final snapshot = await _firestore.collection('events').get();
+    final snapshot = await _firestore.collection('NewEvents').get();
     return snapshot.docs.map((doc) {
       return Event.fromMap(doc.data(), doc.id);
     }).toList();
@@ -25,7 +25,7 @@ class EventService implements DatabaseService<Event> {
     LatLngBounds bounds = LatLngBounds.fromCenterAndRadius(center, rangeInKm);
 
     final QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('events')
+        .collection('NewEvents')
         .where('location.latitude', isGreaterThanOrEqualTo: bounds.south)
         .where('location.latitude', isLessThanOrEqualTo: bounds.north)
         .where('location.longitude', isGreaterThanOrEqualTo: bounds.west)
@@ -41,11 +41,14 @@ class EventService implements DatabaseService<Event> {
 
   @override
   Future<void> update(Event event) async {
-    await _firestore.collection('events').doc(event.id).update(event.toMap());
+    await _firestore
+        .collection('NewEvents')
+        .doc(event.id)
+        .update(event.toMap());
   }
 
   @override
   Future<void> delete(String id) async {
-    await _firestore.collection('events').doc(id).delete();
+    await _firestore.collection('NewEvents').doc(id).delete();
   }
 }

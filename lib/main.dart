@@ -5,6 +5,7 @@ import 'package:eventure/providers/user_provider.dart';
 import 'package:eventure/screens/events/event-screen.dart';
 import 'package:eventure/screens/events/detail_view.dart';
 import 'package:eventure/screens/filter/filter-screen.dart';
+import 'package:eventure/screens/home/home_page.dart';
 import 'package:eventure/screens/profile/user_profile.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
@@ -16,7 +17,6 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'providers/auth_provider.dart';
 import 'providers/chat_provider.dart';
-import 'screens/home_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,7 +43,7 @@ void main() {
 final _router = GoRouter(
   redirect: (context, state) {
     final authProvider =
-        Provider.of<AuthenticationProvider>(context, listen: false);
+    Provider.of<AuthenticationProvider>(context, listen: false);
     final isLoggingIn = state.uri.toString() == '/sign-in';
 
     if (!authProvider.isLoggedIn && !isLoggingIn) {
@@ -74,7 +74,7 @@ final _router = GoRouter(
                     })),
                     AuthStateChangeAction(((context, state) {
                       final userProvider =
-                          Provider.of<UserProvider>(context, listen: false);
+                      Provider.of<UserProvider>(context, listen: false);
                       final user = switch (state) {
                         SignedIn state => state.user,
                         UserCreated state => state.credential.user,
@@ -119,7 +119,7 @@ final _router = GoRouter(
             builder: (context, state) {
               return Consumer<AuthenticationProvider>(
                   builder: (context, authProvider, _) =>
-                      const ProfileDetailScreen());
+                  const ProfileDetailScreen());
             }),
         GoRoute(
             path: "addEvent",
@@ -143,10 +143,10 @@ final _router = GoRouter(
               return EventScreen(event: event);
             }),
         GoRoute(
-                    path: "addFilter",
-                    builder: (context, state) {
-                      return EventFilterScreen();
-                    }),
+            path: "addFilter",
+            builder: (context, state) {
+              return EventFilterScreen();
+            }),
       ],
     ),
   ],
@@ -161,16 +161,16 @@ class App extends StatelessWidget {
       title: 'Eventure',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        buttonTheme: Theme.of(context).buttonTheme.copyWith(
-              highlightColor: Colors.deepPurple,
-            ),
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        textTheme: GoogleFonts.robotoTextTheme(
-          Theme.of(context).textTheme,
-        ),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+        brightness: Brightness.light,
+        primaryColor: const Color(0xFFB7CBDD),
         useMaterial3: true,
       ),
+      darkTheme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: const Color(0xFFB7CBDD),
+        useMaterial3: true,
+      ),
+      themeMode: ThemeMode.system,
       routerConfig: _router,
     );
   }

@@ -12,11 +12,15 @@ class UserProvider with ChangeNotifier {
   AppUser _user = AppUser(username: '');
   String _queryStartsWith = "";
   List<AppUser> _usersStartingWith = [];
+
   set queryStartsWith(String string){
     _queryStartsWith = string;
   }
+
   AppUser get user => _user;
+
   List<AppUser> get friends => _friends;
+
   List<AppUser> get users => _users;
   List<AppUser> get usersStartingWith => _usersStartingWith;
 
@@ -33,6 +37,17 @@ class UserProvider with ChangeNotifier {
 
   Future<AppUser> getUser(String id) async {
     return await _userService.getSingleUser(id);
+  }
+
+  String getUserName(String id) {
+    print(this);
+    print(id);
+    for (AppUser user in _users) {
+      if (id == user.id) {
+        return user.username;
+      }
+    }
+    return "Ersteller";
   }
 
   Future<void> updateUser(AppUser user) async {
@@ -70,6 +85,4 @@ class UserProvider with ChangeNotifier {
     }
     return users;
   }
-
-
 }
