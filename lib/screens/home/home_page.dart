@@ -59,7 +59,7 @@ class _HomePageState extends State<HomePage> {
               const Divider(),
               ListTile(
                 leading: const Icon(Icons.person),
-                title: const Text('Mein Profil'),
+                title: const Text('My Profile'),
                 onTap: () {
                   Navigator.of(context).pop();
                   context.push('/profile');
@@ -67,16 +67,17 @@ class _HomePageState extends State<HomePage> {
               ),
               ListTile(
                 leading: const Icon(Icons.group),
-                title: const Text('Nutzer'),
+                title: const Text('User'),
                 onTap: () {
                   Navigator.of(context).pop();
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.settings),
-                title: const Text('Einstellungen'),
+                title: const Text('Settings'),
                 onTap: () {
                   Navigator.of(context).pop();
+                  context.push('/settings');
                 },
               ),
             ],
