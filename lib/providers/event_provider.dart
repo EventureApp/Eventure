@@ -43,6 +43,7 @@ class EventProvider with ChangeNotifier {
     _events.add(event);
     resetFilter();
     _applyFilter();
+    _fetchEvents();
     notifyListeners();
   }
 

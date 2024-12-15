@@ -74,6 +74,7 @@ class UserProvider with ChangeNotifier {
   Future<void> addUser(AppUser user) async {
     await _userService.create(user);
     _users.add(user);
+    fetchUsers();
     notifyListeners();
   }
 
