@@ -98,13 +98,15 @@ class MapWidget extends StatelessWidget {
                     bottom: 16.0,
                     right: 16.0,
                     child: FloatingActionButton(
+                      backgroundColor: const Color(0xFFEDEAF4),
                       onPressed: () async {
                         await locationProvider.fetchCurrentLocation();
                         LatLng currentLocation =
                             locationProvider.currentLocation!;
                         _mapController.move(currentLocation, 13.0);
                       },
-                      child: const Icon(Icons.my_location),
+                      child: const Icon(Icons.my_location, color: Color(
+                          0xFF7763AE),),
                     ),
                   )
                 ],
