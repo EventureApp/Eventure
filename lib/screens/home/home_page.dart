@@ -147,7 +147,7 @@ class _HomePageState extends State<HomePage> {
       body: Stack(
         children: [
           isMapSelected
-              ? const MapWidget() // Karte anzeigen
+              ? MapWidget() // Karte anzeigen
               : const ListScreen(), // Liste anzeigen
         ],
       ),
