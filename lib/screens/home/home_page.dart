@@ -180,7 +180,7 @@ class _HomePageState extends State<HomePage> {
                   borderRadius: BorderRadius.circular(20.0),
                   color: Theme.of(context).colorScheme.secondary, // Set the color of the icons
                   selectedColor:
-                    Theme.of(context).colorScheme.primary, // Set the color of the selected icon
+                    Theme.of(context).colorScheme.secondary, // Set the color of the selected icon
                   fillColor: Theme.of(context)
                       .primaryColor, // Set the fill color when selected
                   splashColor: Colors.transparent,
