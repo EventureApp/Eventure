@@ -104,6 +104,12 @@ class _HomePageState extends State<HomePage> {
                     });
                   },
                   borderRadius: BorderRadius.circular(20.0),
+                  color: Colors.black, // Set the color of the icons
+                  selectedColor:
+                      Colors.black, // Set the color of the selected icon
+                  fillColor: Theme.of(context)
+                      .primaryColor, // Set the fill color when selected
+                  splashColor: Colors.transparent,
                   children: const [
                     Icon(CustomIcons.map, size: 24),
                     Icon(Icons.list, size: 24),
