@@ -21,18 +21,29 @@ class CustomDescriptionInput extends StatefulWidget {
 
 class _CustomDescriptionInputState extends State<CustomDescriptionInput> {
   late TextEditingController _textController;
+  late FocusNode _focusNode; // FocusNode für das Eingabefeld
   bool _isFieldEmpty = false;
 
   @override
   void initState() {
     super.initState();
     _textController = TextEditingController(text: widget.initValue ?? '');
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      setState(() {});
+    });
   }
 
-  // Validierungslogik
+  @override
+  void dispose() {
+    _textController.dispose();
+    _focusNode.dispose(); // Fokus-Node freigeben
+    super.dispose();
+  }
+
+  // Validation logic
   void _validateField(String value) {
     setState(() {
-      // Wenn das Feld erforderlich ist und leer bleibt, markieren wir es als "leer"
       _isFieldEmpty = widget.required && value.isEmpty;
     });
   }
@@ -43,12 +54,23 @@ class _CustomDescriptionInputState extends State<CustomDescriptionInput> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Label mit optionalem Sternchen für Pflichtfelder
-        Text(
-          widget.required ? "${widget.label} *" : widget.label,
-          style: TextStyle(
-            fontWeight: FontWeight.w400, // Einheitliche Schriftart
-            fontSize: 16,
-            color: Colors.black, // Schwarzer Text für das Label
+        Text.rich(
+          TextSpan(
+            text: widget.label.toUpperCase(), // Label immer in Großbuchstaben
+            style: const TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+            ),
+            children: widget.required
+                ? [
+              const TextSpan(
+                text: " *", // Sternchen für Pflichtfelder
+                style: TextStyle(
+                  color: Colors.red, // Stern in Rot
+                ),
+              ),
+            ]
+                : [], // Kein Sternchen, wenn nicht erforderlich
           ),
         ),
         SizedBox(height: 8),
@@ -57,47 +79,51 @@ class _CustomDescriptionInputState extends State<CustomDescriptionInput> {
         GestureDetector(
           onTap: () {
             if (widget.editable) {
-              // Hier könnte zusätzliches Verhalten hinzugefügt werden
+              // Zusätzliche Logik, wenn das Feld bearbeitbar ist
             }
           },
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14), // Weniger Padding für ein schmaleres Design
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(4), // Abgerundete Ecken
+              borderRadius: BorderRadius.circular(4), // Runde Ecken
               border: Border.all(
-                color: _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2), // Rot, wenn leer
+                color: _focusNode.hasFocus
+                    ? Theme.of(context).primaryColor // Blau wenn fokussiert
+                    : _isFieldEmpty
+                    ? Colors.red // Rot bei Fehler
+                    : Colors.black.withOpacity(0.2), // Standardfarbe wenn nicht fokussiert
                 width: 1.5,
               ),
             ),
             child: TextFormField(
               controller: _textController,
+              focusNode: _focusNode, // Fokus-Node für das TextField
               readOnly: !widget.editable,
               maxLines: 5, // Mehrzeiliges Textfeld
               decoration: InputDecoration(
-                hintText: widget.required ? 'Pflichtfeld' : 'Optional',
+                hintText: widget.required ? 'Madatory' : 'Optional',
                 hintStyle: TextStyle(
-                  color: Colors.grey.shade600, // Grauer Hinweistext
+                  color: Colors.grey.shade600,
                   fontSize: 14,
                 ),
-                border: InputBorder.none, // Kein Border von InputDecoration
+                border: InputBorder.none,
               ),
               onChanged: widget.editable
                   ? (value) {
-                widget.onChanged(value); // Callback nur bei Editierbarkeit
-                _validateField(value); // Validierung durchführen
+                widget.onChanged(value);
+                _validateField(value);
               }
                   : null,
             ),
           ),
         ),
 
-        // Fehlertext anzeigen, wenn das Feld leer ist und als "required" markiert
+        // Fehlernachricht, wenn das Feld erforderlich und leer ist
         if (_isFieldEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 4),
             child: Text(
-              'Dieses Feld ist erforderlich.',
+              'This field is mandatory.',
               style: TextStyle(
                 color: Colors.red,
                 fontSize: 12,

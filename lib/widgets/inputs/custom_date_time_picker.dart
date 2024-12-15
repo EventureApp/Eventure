@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../utils/string_parser.dart';
+
 class CustomDateAndTimePicker extends StatefulWidget {
   final String label;
-  final String? initValue;
-  final Function(DateTime) onDateChanged; // Callback für ausgewähltes Datum/Uhrzeit
+  final DateTime? initValue;
+  final Function(DateTime) onDateChanged;
   final bool required;
   final bool editable;
 
@@ -24,50 +26,80 @@ class CustomDateAndTimePicker extends StatefulWidget {
 class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
   late TextEditingController _dateController;
   late DateTime _selectedDateTime;
-  bool _isFieldEmpty = false;
+  late FocusNode _focusNode; // Fokus-Node zum Überwachen des Fokus
+  bool _isFieldEmpty = false; // Überprüft, ob das Feld leer ist
 
   @override
   void initState() {
     super.initState();
-    // Wenn initValue vorhanden ist, verwenden wir es, andernfalls das aktuelle Datum
-    _selectedDateTime = widget.initValue != null
-        ? DateFormat('yyyy-MM-dd HH:mm').parse(widget.initValue!)
-        : DateTime.now();
+    _selectedDateTime = widget.initValue ?? DateTime.now();
     _dateController = TextEditingController(
-      text: DateFormat('yyyy-MM-dd HH:mm').format(_selectedDateTime),
+      text: parseDateForEvents(_selectedDateTime),
     );
+    _focusNode = FocusNode(); // Fokus-Node initialisieren
+
+    // Fokus-Listener hinzufügen
+    _focusNode.addListener(() {
+      setState(() {}); // UI bei Fokusänderungen aktualisieren
+    });
   }
 
-  // Funktion, um den PopOver zu öffnen und Datum und Uhrzeit auszuwählen
+  // Methode zum Öffnen des DateTime Pickers
   void _showDateTimePicker(BuildContext context) async {
-    // Datumsauswahl
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: _selectedDateTime,
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
+      helpText: 'Select ${widget.label}',
+      cancelText: 'Close',
+      confirmText: 'Select',
+      fieldHintText: 'Month/Day/Year',
+      fieldLabelText: '${widget.label}',
+      errorInvalidText: 'Please enter a valid date',
+      errorFormatText: 'This is not the correct format',
       builder: (context, child) {
         return Theme(
-          data: ThemeData.light().copyWith(
-            primaryColor: Colors.black,
-            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.accent),
-            dialogBackgroundColor: Colors.white, // Weißer Hintergrund
+          data : ThemeData(
+          colorScheme: const ColorScheme.light(primary: const Color(0xFFB7CBDD)),
+          datePickerTheme: const DatePickerThemeData(
+            backgroundColor: Colors.white,
+            dividerColor: const Color(0xFFB7CBDD),
+            headerBackgroundColor: const Color(0xFFB7CBDD),
+            headerForegroundColor: Colors.white,
           ),
+        ),
           child: child!,
         );
       },
     );
 
     if (pickedDate != null) {
-      // Zeit-Auswahl
       TimeOfDay? pickedTime = await showTimePicker(
         context: context,
+        helpText: 'Select ${widget.label}-Time',
+        cancelText: 'Close',
+        confirmText: 'Select',
+        errorInvalidText: 'Please enter a valid date',
         initialTime: TimeOfDay.fromDateTime(_selectedDateTime),
+        builder: (context, child) {
+          return Theme(
+            data : ThemeData(
+              colorScheme: const ColorScheme.light(primary: const Color(0xFFB7CBDD)),
+              timePickerTheme: const TimePickerThemeData(
+                backgroundColor: Colors.white,
+                hourMinuteColor: const Color(0xFFB7CBDD),
+                dialHandColor: const Color(0xFFB7CBDD),
+                dayPeriodColor: const Color(0xFFB7CBDD),
+              ),
+            ),
+            child: child!,
+          );
+        },
       );
 
       if (pickedTime != null) {
         setState(() {
-          // Kombiniere Datum und Uhrzeit
           _selectedDateTime = DateTime(
             pickedDate.year,
             pickedDate.month,
@@ -75,7 +107,7 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
             pickedTime.hour,
             pickedTime.minute,
           );
-          _dateController.text = DateFormat('yyyy-MM-dd HH:mm').format(_selectedDateTime);
+          _dateController.text = parseDateForEvents(_selectedDateTime);
         });
         widget.onDateChanged(_selectedDateTime);
       }
@@ -85,9 +117,15 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
   // Validierungslogik
   void _validateField(String value) {
     setState(() {
-      // Wenn das Feld erforderlich ist und leer bleibt, markieren wir es als "leer"
       _isFieldEmpty = widget.required && value.isEmpty;
     });
+  }
+
+  @override
+  void dispose() {
+    _dateController.dispose();
+    _focusNode.dispose(); // Fokus-Node entladen
+    super.dispose();
   }
 
   @override
@@ -96,17 +134,27 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Label mit optionalem Sternchen für Pflichtfelder
-        Text(
-          widget.required ? widget.label + " *" : widget.label,
-          style: TextStyle(
-            fontWeight: FontWeight.w400, // Einfache, klare Schriftart
-            fontSize: 16,
-            color: Colors.black, // Schwarzer Text für das Label
+        Text.rich(
+          TextSpan(
+            text: widget.label.toUpperCase(), // Label immer in Großbuchstaben
+            style: const TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+            ),
+            children: widget.required
+                ? [
+                    const TextSpan(
+                      text: " *", // Stern hinzufügen, wenn erforderlich
+                      style: TextStyle(
+                        color: Colors.red, // Stern in Rot
+                      ),
+                    ),
+                  ]
+                : [], // Kein Stern, wenn nicht erforderlich
           ),
         ),
         SizedBox(height: 8),
-
-        // Eingabefeld für Datum und Uhrzeit
+        // Container für den DateTime Picker
         GestureDetector(
           onTap: () {
             if (widget.editable) {
@@ -114,12 +162,17 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
             }
           },
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14), // Weniger Padding für ein schmaleres Design
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12.25),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(4),
+              // Weiß, wenn nicht fokussiert
+              borderRadius: BorderRadius.circular(2),
+              // Leicht abgerundete Ecken
               border: Border.all(
-                color: _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2), // Wenn das Feld leer ist, wird es rot
+                color: _focusNode.hasFocus
+                    ? Theme.of(context).primaryColor
+                    : _isFieldEmpty
+                        ? Colors.red
+                        : Colors.black.withOpacity(0.2),
                 width: 1.5,
               ),
             ),
@@ -129,10 +182,11 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
                 Expanded(
                   child: Text(
                     _dateController.text.isEmpty
-                        ? (widget.required ? "Pflichtfeld" : "Wählen Sie Datum und Uhrzeit")
+                        ? (widget.required
+                            ? "Pflichtfeld"
+                            : "Wählen Sie Datum und Uhrzeit")
                         : _dateController.text,
                     style: TextStyle(
-                      color: Colors.black, // Schwarzer Text für Datum/Uhrzeit
                       fontSize: 16,
                     ),
                     overflow: TextOverflow.ellipsis,
@@ -140,15 +194,14 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
                 ),
                 Icon(
                   Icons.calendar_today,
-                  color: Colors.black.withOpacity(0.3), // Subtiles Icon
+                  color: Colors.black.withOpacity(0.3),
                   size: 20,
                 ),
               ],
             ),
           ),
         ),
-
-        // Fehlertext anzeigen, wenn das Feld leer ist und als "required" markiert
+        // Fehlermeldung anzeigen, wenn das Feld erforderlich ist und leer bleibt
         if (_isFieldEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 4),

@@ -1,4 +1,5 @@
 import 'package:eventure/models/event.dart';
+import 'package:eventure/widgets/inputs/custom-number-select.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
@@ -10,7 +11,7 @@ import '../../statics/event_visibility.dart';
 import '../../widgets/inputs/custom-event-select.dart';
 import '../../widgets/inputs/custom-link-select.dart';
 import '../../widgets/inputs/custom-location-select.dart';
-import '../../widgets/inputs/custom-number-select.dart';
+import '../../widgets/inputs/custom-multi-select.dart';
 import '../../widgets/inputs/custom-single-select.dart';
 import '../../widgets/inputs/custom_date_time_picker.dart';
 import '../../widgets/inputs/custom_discription_input.dart';
@@ -65,7 +66,7 @@ class _EventScreenState extends State<EventScreen> {
       _startDate = DateTime.now();
       _endDate = DateTime.now().add(Duration(hours: 1));
       _location = LatLng(0.0, 0.0);
-      _eventType = EventType.someThingElse;
+      _eventType = EventType.other;
       _eventIcon = Icons.event;
       _visibility = EventVisability.public;
       _link = null;
@@ -118,33 +119,48 @@ class _EventScreenState extends State<EventScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Row(
-          children: [
-            Icon(Icons.event, color: Colors.white),
-            SizedBox(width: 8),
-            Text(widget.event == null ? "Create Event" : "Edit Event"),
-          ],
-        ),
+        title: Text(widget.event == null ? "Create Event" : "Edit Event"),
+        actions: [
+          IconButton(
+            icon: Icon(widget.event == null || _isEditing ? Icons.save : Icons.edit),
+            onPressed: _isFormValid
+                ? () {
+              _saveEvent(context);
+            } : _isEditing == false ? () {
+              setState(() {
+                _isEditing = true;
+              });
+            }: null,
+          ),
+        ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Container(
-            padding: EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 8.0,
-                  offset: Offset(0, 2),
+      body: SingleChildScrollView(
+        child: Column(children: [
+          Container(
+            color: Theme.of(context).primaryColor,
+            width: double.infinity,
+            height: 100,
+            padding: const EdgeInsets.symmetric(vertical: 13),
+            child: Center(
+              child: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
                 ),
-              ],
+                child: Center(
+                  child: Icon(
+                    _eventIcon,
+                    size: 30,
+                  ),
+                ),
+              ),
             ),
+          ),
+          Container(
+            padding: EdgeInsets.all(16.0),
             child: Form(
               key: _formKey,
               child: Column(
@@ -165,6 +181,7 @@ class _EventScreenState extends State<EventScreen> {
                   CustomDateAndTimePicker(
                     label: "Start Date",
                     required: true,
+                    initValue: _startDate,
                     editable: _isEditing,
                     onDateChanged: (date) {
                       setState(() {
@@ -201,12 +218,12 @@ class _EventScreenState extends State<EventScreen> {
                     label: 'Event Type',
                     isEditable: _isEditing,
                     initValues: [_eventType],
-                    events: EventTypesWithIcon,
+                    events: eventTypesWithIcon,
                     isMultiSelect: false,
                     onChanged: (selected) {
                       setState(() {
                         _eventType = selected[0];
-                        _eventIcon = EventTypesWithIcon[selected[0]]!;
+                        _eventIcon = eventTypesWithIcon[selected[0]]!;
                       });
                     },
                   ),
@@ -254,19 +271,11 @@ class _EventScreenState extends State<EventScreen> {
                       });
                     },
                   ),
-                  if (widget.event == null) ...[
-                    SizedBox(height: 32),
-                    ElevatedButton(
-                      onPressed:
-                          _isFormValid ? () => _saveEvent(context) : null,
-                      child: Text("Save"),
-                    ),
-                  ],
                 ],
               ),
             ),
           ),
-        ),
+        ]),
       ),
     );
   }

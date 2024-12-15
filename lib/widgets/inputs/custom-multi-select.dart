@@ -50,13 +50,25 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Label mit optionalem Sternchen für Pflichtfelder
-        Text(
-          widget.required ? "${widget.label} *" : widget.label,
-          style: TextStyle(
-            fontWeight: FontWeight.w400, // Einheitliche Schriftart
-            fontSize: 16,
-            color: Colors.black, // Schwarzer Text für das Label
-          ),
+        Row(
+          children: [
+            Text(
+              widget.label.toUpperCase(),
+              style: TextStyle(
+                fontWeight: FontWeight.w400, // Einheitliche Schriftart
+                fontSize: 16,
+              ),
+            ),
+            if (widget.required) ...[
+              const Text(
+                ' *',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ],
         ),
         SizedBox(height: 8),
 
@@ -68,7 +80,7 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: Text('Select Options'),
+                  title: Text('Select ${widget.label}'),
                   content: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,6 +88,7 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
                         return StatefulBuilder(
                           builder: (context, setState) {
                             return CheckboxListTile(
+                              activeColor: Theme.of(context).primaryColor,
                               title: Text(option),
                               value: selectedValues.contains(option),
                               onChanged: widget.editable ? (bool? value) {
@@ -99,7 +112,12 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: Text('Close'),
+                      child: Text(
+                        'Close',
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
                     ),
                   ],
                 );
@@ -109,26 +127,22 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(8), // Abgerundete Ecken
               border: Border.all(
-                color: Colors.black.withOpacity(0.2), // Schwarz für den Rand
+                color: _errorMessage.isNotEmpty
+                    ? Colors.red
+                    : Colors.black.withOpacity(0.2), // Randfarbe
                 width: 1.5,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 4,
-                  offset: Offset(0, 2),
-                ),
-              ],
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: Text(
-                    selectedValues.isEmpty ? (widget.required ? 'Pflichtfeld' : 'Select option') : selectedValues.join(', '),
+                    selectedValues.isEmpty ?
+                    (widget.required ? 'Pflichtfeld' : 'Select option') :
+                    selectedValues.join(', '),
                     style: TextStyle(
                       fontSize: 16,
                       color: widget.editable ? Colors.black : Colors.grey, // Textfarbe je nach Bearbeitbarkeit
@@ -138,7 +152,7 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
                 ),
                 Icon(
                   Icons.arrow_drop_down,
-                  color: widget.editable ? Colors.black.withOpacity(0.3) : Colors.grey, // Blau für aktive Dropdowns
+                  color: widget.editable ? Colors.black.withOpacity(0.3) : Colors.grey, // Icon Farbe
                 ),
               ],
             ),

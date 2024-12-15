@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../models/event.dart';
@@ -27,7 +26,6 @@ class EventProvider with ChangeNotifier {
     _fetchEvents();
   }
 
-
   Event getEventFromId(String id) {
     return events.firstWhere((event) => event.id == id);
   }
@@ -45,6 +43,7 @@ class EventProvider with ChangeNotifier {
     _events.add(event);
     resetFilter();
     _applyFilter();
+    _fetchEvents();
     notifyListeners();
   }
 

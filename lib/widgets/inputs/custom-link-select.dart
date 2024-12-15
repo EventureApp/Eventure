@@ -22,16 +22,22 @@ class CustomLinkInput extends StatefulWidget {
 class _CustomLinkInputState extends State<CustomLinkInput> {
   String _errorMessage = "";
   late TextEditingController _controller;
+  late FocusNode _focusNode; // FocusNode für das Eingabefeld
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController();
+    _focusNode = FocusNode(); // Initialisieren des Fokus-Managements
+    _focusNode.addListener(() {
+      setState(() {}); // Aktualisieren der UI bei Fokusänderungen
+    });
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _focusNode.dispose(); // Fokus-Node freigeben
     super.dispose();
   }
 
@@ -64,44 +70,57 @@ class _CustomLinkInputState extends State<CustomLinkInput> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Label mit Sternchen für Pflichtfelder
-        Text(
-          widget.isMandatory! ? '${widget.label} *' : widget.label,
-          style: TextStyle(
-            fontWeight: FontWeight.w400,
-            fontSize: 16,
-            color: Colors.black,
+        Text.rich(
+          TextSpan(
+            text: widget.label.toUpperCase(), // Label immer in Großbuchstaben
+            style: const TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+            ),
+            children: widget.isMandatory!
+                ? [
+              const TextSpan(
+                text: " *", // Sternchen für Pflichtfelder
+                style: TextStyle(
+                  color: Colors.red, // Stern in Rot
+                ),
+              ),
+            ]
+                : [], // Kein Sternchen, wenn nicht erforderlich
           ),
         ),
         SizedBox(height: 8),
         // Eingabefeld im angepassten Design
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(
-              color: _errorMessage.isNotEmpty ? Colors.red : Colors.black.withOpacity(0.2),
-              width: 1.5,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 4,
-                offset: Offset(0, 2),
+        GestureDetector(
+          onTap: () {
+            _focusNode.requestFocus(); // Fokus anfordern, wenn das Feld angetippt wird
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(
+                color: _focusNode.hasFocus
+                    ? Theme.of(context).primaryColor // Blau wenn fokussiert
+                    : _errorMessage.isNotEmpty
+                    ? Colors.red // Rot bei Fehler
+                    : Colors.black.withOpacity(0.2), // Standardfarbe wenn nicht fokussiert
+                width: 1.5,
               ),
-            ],
-          ),
-          child: TextField(
-            controller: _controller,
-            decoration: InputDecoration(
-              hintText: widget.hint ?? 'Enter a link',
-              hintStyle: TextStyle(
-                color: Colors.grey.shade600,
-                fontSize: 14,
-              ),
-              border: InputBorder.none,
             ),
-            onChanged: _onChange,
+            child: TextField(
+              controller: _controller,
+              focusNode: _focusNode, // Fokus-Node für das TextField
+              decoration: InputDecoration(
+                hintText: widget.hint ?? 'Enter a link',
+                hintStyle: TextStyle(
+                  color: Colors.grey.shade600,
+                  fontSize: 14,
+                ),
+                border: InputBorder.none,
+              ),
+              onChanged: _onChange,
+            ),
           ),
         ),
         SizedBox(height: 8),

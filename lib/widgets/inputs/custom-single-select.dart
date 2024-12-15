@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 
 class SingleSelectDropdown extends StatefulWidget {
   final String label;
-  final String? initValue; // Initialer Wert
-  final Map<String, dynamic> data; // Die verfügbaren Optionen
-  final Function(String?) onChanged; // Callback für Änderungen
-  final bool required; // Hinzugefügte required-Option
-  final bool editable; // Hinzugefügte editable-Option
+  final String? initValue;
+  final Map<String, dynamic> data;
+  final Function(String?) onChanged;
+  final bool required;
+  final bool editable;
 
   SingleSelectDropdown({
     required this.label,
     this.initValue,
     required this.data,
     required this.onChanged,
-    required this.required, // Pflichtfeld
-    required this.editable, // Bearbeitbarkeit
+    required this.required,
+    required this.editable,
   });
 
   @override
@@ -23,67 +23,91 @@ class SingleSelectDropdown extends StatefulWidget {
 
 class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
   String? _selectedValue;
-  String _errorMessage = ''; // Validierungsnachricht
+  String _errorMessage = '';
+  late FocusNode _focusNode;
 
   @override
   void initState() {
     super.initState();
-    _selectedValue = widget.initValue; // Initialen Wert setzen
+    setState(() {
+      _selectedValue = widget.initValue;
+    });
+    _focusNode = FocusNode();
   }
 
-  // Validierungsfunktion
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
   void _validate() {
     if (widget.required && _selectedValue == null) {
       setState(() {
-        _errorMessage = 'Bitte eine Auswahl treffen!';
+        _errorMessage = 'Please make a selection!';
       });
     } else {
       setState(() {
-        _errorMessage = ''; // Fehler zurücksetzen, wenn gültig
+        _errorMessage = '';
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isValid = _errorMessage.isEmpty;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Label mit optionalem Sternchen für Pflichtfelder
-        Text(
-          widget.required ? "${widget.label} *" : widget.label,
-          style: TextStyle(
-            fontWeight: FontWeight.w400,
-            fontSize: 16,
-            color: Colors.black, // Schwarz für das Label
-          ),
+        // Label with optional asterisk for required fields
+        Row(
+          children: [
+            Text(
+              widget.label.toUpperCase(),
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 16,
+              ),
+            ),
+            if (widget.required) ...[
+              const Text(
+                ' *',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ],
         ),
         SizedBox(height: 8),
 
-        // Dropdown-Eingabefeld
+        // Dropdown input field
         GestureDetector(
-          onTap: widget.editable ? () async {
-            // Anzeigen eines modalen Dialogs mit den Auswahlmöglichkeiten
+          onTap: widget.editable
+              ? () async {
             await showDialog(
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: Text('Select Option'),
+                  title: Text('Select ${widget.label}'),
                   content: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: widget.data.keys.map((option) {
                         return RadioListTile<String>(
+                          activeColor: Theme.of(context).primaryColor,
                           title: Text(option),
                           value: option,
                           groupValue: _selectedValue,
                           onChanged: (String? value) {
                             setState(() {
                               _selectedValue = value;
-                              _errorMessage = ''; // Fehler zurücksetzen
+                              _errorMessage = '';
                             });
-                            widget.onChanged(value); // Rückgabe des neuen Wertes
-                            Navigator.of(context).pop(); // Dialog schließen
+                            widget.onChanged(value);
+                            Navigator.of(context).pop();
                           },
                         );
                       }).toList(),
@@ -92,61 +116,65 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
                   actions: <Widget>[
                     TextButton(
                       onPressed: () {
-                        Navigator.of(context).pop(); // Dialog schließen ohne Auswahl
+                        Navigator.of(context).pop();
                       },
-                      child: Text('Close'),
+                      child: Text('Close',
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+
                     ),
                   ],
                 );
               },
             );
-          } : null, // Nur wenn editable true ist
+          }
+              : null,
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12.25),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(8),
               border: Border.all(
-                color: Colors.black.withOpacity(0.2), // Schwarz für den Rand
+                color: _errorMessage.isNotEmpty
+                    ? Colors.red
+                    : _focusNode.hasFocus
+                    ? Theme.of(context).primaryColor
+                    : Colors.black.withOpacity(0.2),
                 width: 1.5,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 4,
-                  offset: Offset(0, 2),
-                ),
-              ],
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: Text(
-                    _selectedValue ?? (widget.required ? 'Pflichtfeld' : 'Select option'),
+                    _selectedValue ??
+                        (widget.required ? 'Required field' : 'Select option'),
                     style: TextStyle(
                       fontSize: 16,
-                      color: widget.editable ? Colors.black : Colors.grey, // Textfarbe je nach Bearbeitbarkeit
+                      color: widget.editable ? Colors.black : Colors.grey,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 Icon(
                   Icons.arrow_drop_down,
-                  color: widget.editable ? Colors.black.withOpacity(0.3) : Colors.grey, // Blau für aktive Dropdowns
+                  color: widget.editable
+                      ? Colors.black.withOpacity(0.3)
+                      : Colors.grey,
                 ),
               ],
             ),
           ),
         ),
-        // Fehlernachricht
         if (_errorMessage.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 4),
             child: Text(
               _errorMessage,
               style: TextStyle(
-                color: Colors.red, // Rote Farbe für Fehlermeldungen
+                color: Colors.red,
                 fontSize: 12,
               ),
             ),

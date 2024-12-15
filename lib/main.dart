@@ -5,6 +5,7 @@ import 'package:eventure/providers/user_provider.dart';
 import 'package:eventure/screens/events/event-screen.dart';
 import 'package:eventure/screens/events/detail_view.dart';
 import 'package:eventure/screens/filter/filter-screen.dart';
+import 'package:eventure/screens/home/home_page.dart';
 import 'package:eventure/screens/profile/user_profile.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
@@ -16,7 +17,6 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'providers/auth_provider.dart';
 import 'providers/chat_provider.dart';
-import 'screens/home_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -96,6 +96,7 @@ final _router = GoRouter(
                                 'Please check your email to verify your email address'));
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       }
+                      userProvider.getCurrentUser(user.uid);
                       context.go('/');
                     })),
                   ],
@@ -143,10 +144,10 @@ final _router = GoRouter(
               return EventScreen(event: event);
             }),
         GoRoute(
-                    path: "addFilter",
-                    builder: (context, state) {
-                      return EventFilterScreen();
-                    }),
+            path: "addFilter",
+            builder: (context, state) {
+              return EventFilterScreen();
+            }),
       ],
     ),
   ],
@@ -161,16 +162,16 @@ class App extends StatelessWidget {
       title: 'Eventure',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        buttonTheme: Theme.of(context).buttonTheme.copyWith(
-              highlightColor: Colors.deepPurple,
-            ),
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        textTheme: GoogleFonts.robotoTextTheme(
-          Theme.of(context).textTheme,
-        ),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+        brightness: Brightness.light,
+        primaryColor: const Color(0xFFB7CBDD),
         useMaterial3: true,
       ),
+      darkTheme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: const Color(0xFFB7CBDD),
+        useMaterial3: true,
+      ),
+      themeMode: ThemeMode.system,
       routerConfig: _router,
     );
   }

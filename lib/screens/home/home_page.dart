@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../statics/custom_icons.dart';
-import '../widgets/map.dart';
+import '../../statics/custom_icons.dart';
+import 'package:eventure/screens/list/list_screen.dart';
+import 'package:eventure/widgets/map.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -142,9 +143,11 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      body: const Stack(
+      body: Stack(
         children: [
-          MapWidget(),
+          isMapSelected
+              ? const MapWidget() // Karte anzeigen
+              : const ListScreen(), // Liste anzeigen
         ],
       ),
       bottomNavigationBar: SizedBox(
@@ -174,6 +177,12 @@ class _HomePageState extends State<HomePage> {
                     });
                   },
                   borderRadius: BorderRadius.circular(20.0),
+                  color: Colors.black, // Set the color of the icons
+                  selectedColor:
+                      Colors.black, // Set the color of the selected icon
+                  fillColor: Theme.of(context)
+                      .primaryColor, // Set the fill color when selected
+                  splashColor: Colors.transparent,
                   children: const [
                     Icon(CustomIcons.map, size: 24),
                     Icon(Icons.list, size: 24),
