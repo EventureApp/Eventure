@@ -25,7 +25,7 @@ class _AddFriendsScreenState extends State<AddFriendsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Search users, add friends"),
+          title: const Text("User list"),
         ),
         body: Column(
           children: [
@@ -55,14 +55,29 @@ class _AddFriendsScreenState extends State<AddFriendsScreen> {
                 padding:const EdgeInsets.all(10),
                 itemCount: usersStartingWith.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.02),
+                          offset: const Offset(0, 4),
+                          blurRadius: 4,
+                        ),
+                      ],
+                      color: Colors.white,
+                    ),
+                    child:ListTile(
+                    tileColor: Colors.white,
+                    shape:const RoundedRectangleBorder(borderRadius: BorderRadius.horizontal(right:Radius.circular(50),left:Radius.circular(50))),
                     title: Text(
                         "${usersStartingWith[index].firstName} ${usersStartingWith[index].lastName}"),
                     subtitle: Text("${usersStartingWith[index].uni}"),
                     trailing: StyledButton(
                         onPressed: () {},
                         child: const Text("Send friend request")),
-                  );
+                  ));
                 },
               ));
             }),
