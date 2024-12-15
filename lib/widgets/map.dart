@@ -8,17 +8,10 @@ import '../models/event.dart';
 
 import '../../providers/event_provider.dart';
 
-class MapWidget extends StatefulWidget {
+class MapWidget extends StatelessWidget {
   const MapWidget({super.key});
 
-  @override
-  _MapWidgetState createState() => _MapWidgetState();
-}
-
-class _MapWidgetState extends State<MapWidget> {
-  LatLng? tappedCoordinates;
-
-  List<Marker> _getMarkers(List<Event> events, LatLng currentLocation) {
+  List<Marker> _getMarkers(List<Event> events, LatLng currentLocation, BuildContext context) {
     List<Marker> eventMarkers = events.map((event) {
       return Marker(
         point: event.location,
@@ -88,11 +81,11 @@ class _MapWidgetState extends State<MapWidget> {
                         children: [
                           TileLayer(
                             urlTemplate:
-                                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                             subdomains: const ['a', 'b', 'c'],
                           ),
                           MarkerLayer(
-                            markers: _getMarkers(eventProvider.filteredEvents, currentLocation),
+                            markers: _getMarkers(eventProvider.filteredEvents, currentLocation, context),
                           ),
                         ],
                       );
