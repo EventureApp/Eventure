@@ -43,7 +43,7 @@ void main() {
 final _router = GoRouter(
   redirect: (context, state) {
     final authProvider =
-    Provider.of<AuthenticationProvider>(context, listen: false);
+        Provider.of<AuthenticationProvider>(context, listen: false);
     final isLoggingIn = state.uri.toString() == '/sign-in';
 
     if (!authProvider.isLoggedIn && !isLoggingIn) {
@@ -74,7 +74,7 @@ final _router = GoRouter(
                     })),
                     AuthStateChangeAction(((context, state) {
                       final userProvider =
-                      Provider.of<UserProvider>(context, listen: false);
+                          Provider.of<UserProvider>(context, listen: false);
                       final user = switch (state) {
                         SignedIn state => state.user,
                         UserCreated state => state.credential.user,
@@ -96,6 +96,7 @@ final _router = GoRouter(
                                 'Please check your email to verify your email address'));
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       }
+                      userProvider.getCurrentUser(user.uid);
                       context.go('/');
                     })),
                   ],
@@ -119,7 +120,7 @@ final _router = GoRouter(
             builder: (context, state) {
               return Consumer<AuthenticationProvider>(
                   builder: (context, authProvider, _) =>
-                  const ProfileDetailScreen());
+                      const ProfileDetailScreen());
             }),
         GoRoute(
             path: "addEvent",
