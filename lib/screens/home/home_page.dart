@@ -113,7 +113,7 @@ class _HomePageState extends State<HomePage> {
                               borderSide: BorderSide.none,
                             ),
                             filled: true,
-                            fillColor: Colors.white),
+                            fillColor: Theme.of(context).colorScheme.primary),
                         onChanged: (value) {
                           eventProvider.setSearchString(value);
                         },
@@ -154,7 +154,7 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: SizedBox(
         height: 90,
         child: BottomAppBar(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.primary,
           elevation: 4,
           child: Center(
             child: Row(
@@ -178,9 +178,9 @@ class _HomePageState extends State<HomePage> {
                     });
                   },
                   borderRadius: BorderRadius.circular(20.0),
-                  color: Colors.black, // Set the color of the icons
+                  color: Theme.of(context).colorScheme.secondary, // Set the color of the icons
                   selectedColor:
-                      Colors.black, // Set the color of the selected icon
+                    Theme.of(context).colorScheme.primary, // Set the color of the selected icon
                   fillColor: Theme.of(context)
                       .primaryColor, // Set the fill color when selected
                   splashColor: Colors.transparent,

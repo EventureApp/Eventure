@@ -15,7 +15,7 @@ class SettingsScreen extends StatelessWidget {
             Navigator.of(context).pop();
           },
         ),
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -33,14 +33,22 @@ class SettingsScreen extends StatelessWidget {
             Consumer<ThemeProvider>(
               builder: (context, themeProvider, child) {
                 return SwitchListTile(
-                  title: const Text('Dark Mode'),
+                  title: Text(
+                    'Dark Mode',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.secondary
+                    ),
+                  ),
                   value: themeProvider.isDarkMode,
                   onChanged: (bool value) {
                     themeProvider.toggleTheme();
                   },
+                  activeColor: Theme.of(context).primaryColor, // Color when switch is on (active)
+                  inactiveThumbColor: Theme.of(context).unselectedWidgetColor, // Color when switch is off (inactive)
                 );
               },
-            ),
+            )
+
           ],
         ),
       ),

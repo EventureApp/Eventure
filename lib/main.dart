@@ -176,11 +176,21 @@ class App extends StatelessWidget {
             brightness: Brightness.light,
             primaryColor: const Color(0xFFB7CBDD),
             useMaterial3: true,
+            colorScheme: const ColorScheme.light(
+              primary: Colors.white,
+              secondary: Colors.black,
+              error: Colors.red,
+            ),
           ),
           darkTheme: ThemeData(
             brightness: Brightness.dark, // Set the dark theme
             primaryColor: const Color(0xFFB7CBDD),
             useMaterial3: true,
+            colorScheme: const ColorScheme.dark(
+              primary: Colors.black,
+              secondary: Colors.white,
+              error: Colors.red,
+            ),
           ),
           themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
           routerConfig: _router,
