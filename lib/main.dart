@@ -177,8 +177,10 @@ class App extends StatelessWidget {
             primaryColor: const Color(0xFFB7CBDD),
             useMaterial3: true,
             colorScheme: const ColorScheme.light(
-              primary: Colors.white,
+              primary: Color(0xFFF7F8F9),
               secondary: Colors.black,
+              surface: Color(0xFFF1F2F4),
+              background: Color(0xFFDCDFE4),
               error: Colors.red,
             ),
           ),
@@ -187,8 +189,10 @@ class App extends StatelessWidget {
             primaryColor: const Color(0xFFB7CBDD),
             useMaterial3: true,
             colorScheme: const ColorScheme.dark(
-              primary: Colors.black,
+              primary: const Color(0xFF10151B),
               secondary: Colors.white,
+              surface: Color(0xFF1B2936),
+              background: Color(0xFF121212),
               error: Colors.red,
             ),
           ),

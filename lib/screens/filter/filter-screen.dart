@@ -72,6 +72,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Filter"),
+        backgroundColor: Theme.of(context).colorScheme.primary,
         actions: [
           IconButton(
               icon: Icon(Icons.delete_outline),

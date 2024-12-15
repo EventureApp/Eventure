@@ -120,6 +120,7 @@ class _EventScreenState extends State<EventScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(widget.event == null ? "Create Event" : "Edit Event"),
         actions: [
           IconButton(

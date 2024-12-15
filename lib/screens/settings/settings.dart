@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:eventure/providers/theme_provider.dart';
+
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -10,14 +12,15 @@ class SettingsScreen extends StatelessWidget {
         title: const Text('Settings'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          color: Theme.of(context).iconTheme.color, // Adjust color based on the brightness
+          color: Theme.of(context).iconTheme.color,
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
-      body: Padding(
+      body: Container(
+        color: Theme.of(context).colorScheme.background,
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,19 +39,18 @@ class SettingsScreen extends StatelessWidget {
                   title: Text(
                     'Dark Mode',
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.secondary
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                   ),
                   value: themeProvider.isDarkMode,
                   onChanged: (bool value) {
                     themeProvider.toggleTheme();
                   },
-                  activeColor: Theme.of(context).primaryColor, // Color when switch is on (active)
-                  inactiveThumbColor: Theme.of(context).unselectedWidgetColor, // Color when switch is off (inactive)
+                  activeColor: Theme.of(context).primaryColor,
+                  inactiveThumbColor: Theme.of(context).unselectedWidgetColor,
                 );
               },
-            )
-
+            ),
           ],
         ),
       ),

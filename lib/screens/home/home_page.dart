@@ -28,6 +28,7 @@ class _HomePageState extends State<HomePage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
+          backgroundColor: Theme.of(context).colorScheme.background,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

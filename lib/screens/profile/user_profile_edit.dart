@@ -55,7 +55,9 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     return Consumer<UserProvider>(
       builder: (context, userProvider, child) {
         return Scaffold(
+          backgroundColor: Theme.of(context).colorScheme.background,
           appBar: AppBar(
+            backgroundColor: Theme.of(context).colorScheme.primary,
             title: const Text('Edit Profile'),
             actions: [
               IconButton(
@@ -83,7 +85,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
             child: Column(
               children: [
                 Container(
-                  color: Theme.of(context).primaryColor,
+                  color: Theme.of(context).colorScheme.surface,
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(vertical: 13),
                   child: Column(
@@ -101,7 +103,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                       TextButton(
                         onPressed: _pickImage,
                         style: TextButton.styleFrom(
-                          foregroundColor: Colors.white,
+                          foregroundColor: Theme.of(context).colorScheme.secondary,
                           textStyle: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,

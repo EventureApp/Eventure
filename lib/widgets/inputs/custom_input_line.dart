@@ -84,7 +84,7 @@ class _CustomInputLineState extends State<CustomInputLine> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(2), // Leicht abgerundete Ecken
             border: Border.all(
-              color:_focusNode.hasFocus ? Theme.of(context).primaryColor :  _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2),
+              color:_focusNode.hasFocus ? Theme.of(context).colorScheme.secondary :  _isFieldEmpty ? Colors.red : Theme.of(context).colorScheme.secondary.withOpacity(0.7),
               width: 1.5,
             ),
           ),
