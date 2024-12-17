@@ -28,6 +28,7 @@ class UserProvider with ChangeNotifier {
 
   void initializeUser() {
     if (_firebaseAuth.currentUser != null) {
+      fetchUsers();
       getCurrentUser(_firebaseAuth.currentUser?.uid);
       fetchFriends();
     }
