@@ -37,8 +37,7 @@ class _MapWidgetState extends State<MapWidget> {
   @override
   void dispose() {
     // Remove the listener from the LocationProvider
-    Provider.of<LocationProvider>(context, listen: false)
-        .removeListener(_onLocationChanged);
+
     super.dispose();
   }
 
