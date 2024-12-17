@@ -4,8 +4,10 @@ import 'package:latlong2/latlong.dart';
 
 class LocationProvider with ChangeNotifier {
   LatLng? _currentLocation;
+  LatLng? _currentSelectedLocation;
 
   LatLng? get currentLocation => _currentLocation;
+  LatLng? get currentSelectedLocation => _currentSelectedLocation;
 
   Future<void> fetchCurrentLocation() async {
     try {
@@ -44,7 +46,7 @@ class LocationProvider with ChangeNotifier {
   }
 
   void setLocation(LatLng location) {
-    _currentLocation = location;
+    _currentSelectedLocation = location;
     notifyListeners();
   }
 }
