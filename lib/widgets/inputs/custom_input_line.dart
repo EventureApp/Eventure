@@ -6,14 +6,19 @@ class CustomInputLine extends StatefulWidget {
   final bool required;
   final bool editable;
   final Function(String) onChanged;
+  final IconData? prefixIcon; // Optionaler Icon-Parameter
+  final String? hintText;
 
-  CustomInputLine({
+  const CustomInputLine({
+    Key? key,
     required this.label,
     this.initValue,
     required this.required,
     required this.editable,
     required this.onChanged,
-  });
+    this.prefixIcon,
+    this.hintText,
+  }) : super(key: key);
 
   @override
   _CustomInputLineState createState() => _CustomInputLineState();
@@ -21,97 +26,97 @@ class CustomInputLine extends StatefulWidget {
 
 class _CustomInputLineState extends State<CustomInputLine> {
   late TextEditingController _textController;
-  late FocusNode _focusNode; // Fokus-Node zum Überwachen des Fokus
-  bool _isFieldEmpty = false; // Überprüft, ob das Feld leer ist
+  late FocusNode _focusNode;
+  bool _isFieldEmpty = false;
 
   @override
   void initState() {
     super.initState();
     _textController = TextEditingController(text: widget.initValue ?? '');
-    _focusNode = FocusNode(); // Fokus-Node initialisieren
+    _focusNode = FocusNode();
 
-    // Fokus-Listener hinzufügen
     _focusNode.addListener(() {
-      setState(() {}); // UI bei Fokusänderungen aktualisieren
+      setState(() {});
     });
   }
 
-  // Validierungslogik
   void _validateField(String value) {
     setState(() {
-      // Wenn das Feld erforderlich ist und leer bleibt, markieren wir es als "leer"
       _isFieldEmpty = widget.required && value.isEmpty;
     });
-    widget.onChanged(value); // Rufe den Callback auf, um den Wert zu aktualisieren
+    widget.onChanged(value);
   }
 
   @override
   void dispose() {
     _textController.dispose();
-    _focusNode.dispose(); // Fokus-Node entladen
+    _focusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    const primaryColor = Color(0xFF1976D2);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Label mit optionalem Sternchen für Pflichtfelder
-        Text.rich(
-          TextSpan(
-            text: widget.label.toUpperCase(), // Label immer in Großbuchstaben
-            style: const TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 16,
+        const SizedBox(height: 8),
+        TextField(
+          controller: _textController,
+          focusNode: _focusNode,
+          readOnly: !widget.editable,
+          onChanged: widget.editable ? _validateField : null,
+          decoration: InputDecoration(
+            labelText: widget.label,
+            labelStyle: TextStyle(
+              color: _focusNode.hasFocus ? primaryColor : Colors.black54,
+              fontWeight: FontWeight.w500,
             ),
-            children: widget.required
-                ? [
-              const TextSpan(
-                text: " *", // Stern hinzufügen, wenn erforderlich
-                style: TextStyle(
-                  color: Colors.red, // Stern in Rot
-                ),
+            hintText:
+                widget.hintText ?? (widget.required ? 'Mandatory' : 'Optional'),
+            hintStyle: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+            prefixIcon: widget.prefixIcon != null
+                ? Icon(widget.prefixIcon,
+                    color: _focusNode.hasFocus ? primaryColor : Colors.grey)
+                : null,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: Colors.black.withOpacity(0.2),
+                width: 1.5,
               ),
-            ]
-                : [], // Kein Stern, wenn nicht erforderlich
-          ),
-        ),
-        SizedBox(height: 5),
-        // Eingabefeld ohne Icon, aber mit einem sauberen, modernen Design
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(2), // Leicht abgerundete Ecken
-            border: Border.all(
-              color:_focusNode.hasFocus ? Theme.of(context).primaryColor :  _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2),
-              width: 1.5,
             ),
-          ),
-          child: TextField(
-            controller: _textController,
-            focusNode: _focusNode, // Fokus-Node an das Textfeld binden
-            readOnly: !widget.editable,
-            decoration: InputDecoration(
-              hintText: widget.required ? 'Mandatory' : 'Optional',
-              hintStyle: TextStyle(
-                color: Colors.grey.shade600,
-                fontSize: 14,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color:
+                    _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2),
+                width: 1.5,
               ),
-              border: InputBorder.none,
             ),
-            onChanged: widget.editable ? _validateField : null,
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: primaryColor,
+                width: 1.5,
+              ),
+            ),
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
         ),
-
-        // Wenn das Feld erforderlich ist und leer bleibt, Fehlermeldung anzeigen
         if (_isFieldEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 4),
             child: Text(
               'This field is required.',
               style: TextStyle(
-                color: Colors.red,
+                color: Colors.red.shade700,
                 fontSize: 12,
               ),
             ),

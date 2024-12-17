@@ -28,7 +28,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    Provider.of<LocationProvider>(context, listen: false).fetchCurrentLocation();
+    Provider.of<LocationProvider>(context, listen: false)
+        .fetchCurrentLocation();
   }
 
   void _optionsDialog(BuildContext context, AppUser user) {
@@ -312,11 +313,10 @@ class _HomePageState extends State<HomePage> {
 
               return isMapSelected
                   ? MapWidget(
-                currentLocation:
-                locationProvider.currentLocation!,
-                currentSelectedLocation:
-                locationProvider.currentSelectedLocation,
-              )
+                      currentLocation: locationProvider.currentLocation!,
+                      currentSelectedLocation:
+                          locationProvider.currentSelectedLocation,
+                    )
                   : const ListScreen();
             },
           ),

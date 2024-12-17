@@ -2,20 +2,21 @@ import 'package:flutter/material.dart';
 
 class MultiSelectDropdown extends StatefulWidget {
   final String label;
-  final List<String> initValues; // Initial ausgewählte Werte
-  final Map<String, dynamic> data; // Die verfügbaren Optionen
-  final Function(List<String>) onChanged; // Callback für Änderungen
-  final bool required; // Hinzugefügte required-Option
-  final bool editable; // Hinzugefügte editable-Option
+  final List<String> initValues; // Initially selected values
+  final Map<String, dynamic> data; // The available options
+  final Function(List<String>) onChanged; // Callback for changes
+  final bool required; // Mandatory field
+  final bool editable; // Whether it's editable or not
 
-  MultiSelectDropdown({
+  const MultiSelectDropdown({
+    Key? key,
     required this.label,
     required this.initValues,
     required this.data,
     required this.onChanged,
-    required this.required, // Pflichtfeld
-    required this.editable, // Bearbeitbarkeit
-  });
+    required this.required,
+    required this.editable,
+  }) : super(key: key);
 
   @override
   _MultiSelectDropdownState createState() => _MultiSelectDropdownState();
@@ -23,149 +24,170 @@ class MultiSelectDropdown extends StatefulWidget {
 
 class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
   late List<String> selectedValues;
-  String _errorMessage = ''; // Validierungsnachricht
+  bool _hasAttemptedSubmit = false;
+  late FocusNode _focusNode;
+
+  bool get _hasError {
+    return widget.required && selectedValues.isEmpty && _hasAttemptedSubmit;
+  }
 
   @override
   void initState() {
     super.initState();
-    selectedValues = List.from(widget.initValues); // Kopiere die initialen Werte
+    selectedValues = List.from(widget.initValues);
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      setState(() {});
+    });
   }
 
-  // Validierungsfunktion
-  void _validate() {
-    if (widget.required && selectedValues.isEmpty) {
-      setState(() {
-        _errorMessage = 'Bitte mindestens eine Auswahl treffen!';
-      });
-    } else {
-      setState(() {
-        _errorMessage = ''; // Fehler zurücksetzen, wenn gültig
-      });
-    }
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  Future<void> _openSelectionDialog() async {
+    if (!widget.editable) return;
+
+    // Temporary copy of selection to allow canceling changes
+    List<String> tempSelection = List.from(selectedValues);
+
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          title: Text('Select ${widget.label}'),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: widget.data.keys.map((option) {
+                return StatefulBuilder(
+                  builder: (context, setStateDialog) {
+                    final isSelected = tempSelection.contains(option);
+                    return CheckboxListTile(
+                      activeColor: Theme.of(context).primaryColor,
+                      title: Text(option),
+                      value: isSelected,
+                      onChanged: widget.editable
+                          ? (bool? value) {
+                              setStateDialog(() {
+                                if (value == true) {
+                                  tempSelection.add(option);
+                                } else {
+                                  tempSelection.remove(option);
+                                }
+                              });
+                            }
+                          : null,
+                    );
+                  },
+                );
+              }).toList(),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Theme.of(context).primaryColor),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Confirm selection
+                setState(() {
+                  selectedValues = tempSelection;
+                });
+                widget.onChanged(selectedValues);
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+              ),
+              child: const Text('Done'),
+            ),
+          ],
+        );
+      },
+    );
+
+    setState(() {}); // Refresh UI after dialog is closed
   }
 
   @override
   Widget build(BuildContext context) {
+    const primaryColor = Color(0xFF1976D2);
+    final isFocused = _focusNode.hasFocus;
+
+    // If empty and mandatory, show "Mandatory" hint, else "Optional"
+    final hintText = widget.required ? 'Mandatory' : 'Optional';
+
+    // Display either the selected values or the hint
+    final displayText =
+        selectedValues.isEmpty ? hintText : selectedValues.join(', ');
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Label mit optionalem Sternchen für Pflichtfelder
-        Row(
-          children: [
-            Text(
-              widget.label.toUpperCase(),
-              style: TextStyle(
-                fontWeight: FontWeight.w400, // Einheitliche Schriftart
-                fontSize: 16,
-              ),
+        TextField(
+          readOnly: true,
+          focusNode: _focusNode,
+          onTap: () async {
+            await _openSelectionDialog();
+            setState(() {
+              _hasAttemptedSubmit = true;
+            });
+          },
+          decoration: InputDecoration(
+            labelText: widget.required ? '${widget.label} *' : widget.label,
+            labelStyle: TextStyle(
+              color: isFocused ? primaryColor : Colors.black54,
+              fontWeight: FontWeight.w500,
             ),
-            if (widget.required) ...[
-              const Text(
-                ' *',
-                style: TextStyle(
-                  color: Colors.red,
-                  fontSize: 16,
-                ),
-              ),
-            ],
-          ],
-        ),
-        SizedBox(height: 8),
-
-        // Eingabefeld für die Auswahl
-        GestureDetector(
-          onTap: widget.editable ? () async {
-            // Anzeigen eines modalen Dialogs mit den Auswahlmöglichkeiten
-            await showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text('Select ${widget.label}'),
-                  content: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: widget.data.keys.map((option) {
-                        return StatefulBuilder(
-                          builder: (context, setState) {
-                            return CheckboxListTile(
-                              activeColor: Theme.of(context).primaryColor,
-                              title: Text(option),
-                              value: selectedValues.contains(option),
-                              onChanged: widget.editable ? (bool? value) {
-                                setState(() {
-                                  if (value == true) {
-                                    selectedValues.add(option);
-                                  } else {
-                                    selectedValues.remove(option);
-                                  }
-                                });
-                                widget.onChanged(selectedValues);
-                              } : null,
-                            );
-                          },
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(
-                        'Close',
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            );
-          } : null,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8), // Abgerundete Ecken
-              border: Border.all(
-                color: _errorMessage.isNotEmpty
-                    ? Colors.red
-                    : Colors.black.withOpacity(0.2), // Randfarbe
+            hintText: hintText,
+            hintStyle: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+            suffixIcon: Icon(
+              Icons.arrow_drop_down,
+              color: isFocused ? primaryColor : Colors.grey,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Colors.black26, width: 1.5),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: _hasError ? Colors.red : Colors.black.withOpacity(0.2),
                 width: 1.5,
               ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    selectedValues.isEmpty ?
-                    (widget.required ? 'Pflichtfeld' : 'Select option') :
-                    selectedValues.join(', '),
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: widget.editable ? Colors.black : Colors.grey, // Textfarbe je nach Bearbeitbarkeit
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                Icon(
-                  Icons.arrow_drop_down,
-                  color: widget.editable ? Colors.black.withOpacity(0.3) : Colors.grey, // Icon Farbe
-                ),
-              ],
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: _hasError ? Colors.red : primaryColor,
+                width: 1.5,
+              ),
             ),
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
+          controller: TextEditingController(text: displayText),
         ),
-        // Fehlernachricht
-        if (_errorMessage.isNotEmpty)
+        if (_hasError)
           Padding(
             padding: const EdgeInsets.only(top: 4),
             child: Text(
-              _errorMessage,
+              'At least one selection is required.',
               style: TextStyle(
-                color: Colors.red, // Rote Farbe für Fehlermeldungen
+                color: Colors.red.shade700,
                 fontSize: 12,
               ),
             ),
