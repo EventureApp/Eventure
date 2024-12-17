@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 
 class MapWidget extends StatefulWidget {
   final Function(LatLng) onTap;
@@ -23,12 +23,14 @@ class MapWidget extends StatefulWidget {
 
 class _MapWidgetState extends State<MapWidget> {
   late LatLng _currentLocation;
+  late LatLng _currentSelectedLocation;
   late MapController _mapController;
 
   @override
   void initState() {
     super.initState();
     _currentLocation = widget.initialLocation;
+    _currentSelectedLocation = widget.initialLocation;
     _mapController = MapController();
   }
 
@@ -37,9 +39,9 @@ class _MapWidgetState extends State<MapWidget> {
     super.didUpdateWidget(oldWidget);
     if (widget.initialLocation != oldWidget.initialLocation) {
       setState(() {
-        _currentLocation = widget.initialLocation;
+        _currentSelectedLocation = widget.initialLocation;
       });
-      _mapController.move(_currentLocation, 13.0);
+      _mapController.move(_currentSelectedLocation, _mapController.camera.zoom);
     }
   }
 
@@ -48,17 +50,16 @@ class _MapWidgetState extends State<MapWidget> {
     return FlutterMap(
       mapController: _mapController,
       options: MapOptions(
-        initialCenter: _currentLocation,
+        initialCenter: _currentSelectedLocation,
         initialZoom: 13.0,
-        minZoom: 13.0,
         maxZoom: 100.0,
         interactionOptions: widget.isEditable
-            ? InteractionOptions(flags: InteractiveFlag.all)
-            : InteractionOptions(flags: InteractiveFlag.none),
+            ? const InteractionOptions(flags: InteractiveFlag.all)
+            : const InteractionOptions(flags: InteractiveFlag.none),
         onTap: widget.isEditable
             ? (tapPosition, point) {
-          widget.onTap(point);
-        }
+                widget.onTap(point);
+              }
             : null,
       ),
       children: [
@@ -72,12 +73,18 @@ class _MapWidgetState extends State<MapWidget> {
               point: _currentLocation,
               width: 50,
               height: 50,
-              child: Icon(
-                Icons.location_on,
-                size: 50,
-                color: Colors.blue,
+              child: const Icon(
+                Icons.my_location,
+                color: Colors.blueAccent,
               ),
             ),
+            if (_currentSelectedLocation != _currentLocation)
+              Marker(
+                  point: _currentSelectedLocation,
+                  width: 50,
+                  height: 50,
+                  child:
+                      const Icon(Icons.location_on, color: Colors.blueAccent))
           ],
         ),
       ],
@@ -120,7 +127,7 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
       widget.onChanged(_selectedLocation);
       Navigator.pop(context);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Please select a location!'),
         backgroundColor: Colors.red,
       ));
@@ -139,7 +146,7 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
             Align(
               alignment: Alignment.topLeft,
               child: IconButton(
-                icon: Icon(Icons.close),
+                icon: const Icon(Icons.close),
                 onPressed: () {
                   Navigator.pop(context);
                 },
@@ -149,16 +156,16 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
               width: double.infinity,
               height: 400, // Karte größer anzeigen
               child: MapWidget(
-                initialLocation: _selectedLocation ?? LatLng(0.0, 0.0),
+                initialLocation: _selectedLocation ?? const LatLng(0.0, 0.0),
                 onTap: _updateLocation,
                 isEditable: true,
                 isMandatory: true,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _submitLocation,
-              child: Text('Submit'),
+              child: const Text('Submit'),
             ),
           ],
         ),
@@ -221,9 +228,11 @@ class _LocationSelectState extends State<LocationSelect> {
         _isLoading = false;
       });
       return;
-    } else if (permission == LocationPermission.denied || permission == LocationPermission.whileInUse) {
+    } else if (permission == LocationPermission.denied ||
+        permission == LocationPermission.whileInUse) {
       permission = await Geolocator.requestPermission();
-      if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
+      if (permission != LocationPermission.whileInUse &&
+          permission != LocationPermission.always) {
         setState(() {
           _isLoading = false;
         });
@@ -231,7 +240,8 @@ class _LocationSelectState extends State<LocationSelect> {
       }
     }
 
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
     setState(() {
       _selectedLocation = LatLng(position.latitude, position.longitude);
       _isLoading = false;
@@ -268,7 +278,8 @@ class _LocationSelectState extends State<LocationSelect> {
             Expanded(
               child: Text(
                 widget.label,
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+                style:
+                    const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
               ),
             ),
             GestureDetector(
@@ -281,7 +292,7 @@ class _LocationSelectState extends State<LocationSelect> {
             ),
           ],
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Container(
           width: double.infinity,
           height: 300, // Größe der Karte hier angepasst
@@ -295,17 +306,17 @@ class _LocationSelectState extends State<LocationSelect> {
             ),
           ),
           child: _isLoading
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : MapWidget(
-            initialLocation: _selectedLocation ?? LatLng(0.0, 0.0),
-            isEditable: false,
-            onTap: (LatLng) {
-              _openLocationPopover();
-            },
-            isMandatory: widget.isMandatory,
-          ),
+                  initialLocation: _selectedLocation ?? const LatLng(0.0, 0.0),
+                  isEditable: false,
+                  onTap: (LatLng ll) {
+                    _openLocationPopover();
+                  },
+                  isMandatory: widget.isMandatory,
+                ),
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
       ],
     );
   }

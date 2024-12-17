@@ -1,10 +1,13 @@
 import 'package:eventure/models/user.dart';
 import 'package:eventure/providers/event_provider.dart';
 import 'package:eventure/providers/location_provider.dart';
+import 'package:eventure/screens/list/list_screen.dart';
+import 'package:eventure/widgets/map.dart';
 import 'package:eventure/providers/user_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
 import '../../statics/custom_icons.dart';
@@ -20,26 +23,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool isMapSelected = true;
-  bool _locationFetched = false;
 
   @override
   void initState() {
     super.initState();
-    final locationProvider =
-        Provider.of<LocationProvider>(context, listen: false);
-    if (!_locationFetched) {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        try {
-          await locationProvider.fetchCurrentLocation();
-          setState(() {
-            _locationFetched = true;
-          });
-        } catch (e) {
-          // Handle location fetching error (e.g., show a dialog or snackbar)
-          print('Error fetching location: $e');
-        }
-      });
-    }
+    Provider.of<LocationProvider>(context, listen: false).fetchCurrentLocation();
   }
 
   void _optionsDialog(BuildContext context, AppUser user) {
@@ -169,9 +157,24 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Stack(
         children: [
-          isMapSelected
-              ? MapWidget() // Karte anzeigen
-              : const ListScreen(), // Liste anzeigen
+          Consumer<LocationProvider>(
+            builder: (context, locationProvider, child) {
+              if (locationProvider.currentLocation == null) {
+                return const Center(
+                  child: CircularProgressIndicator(), // Loading state
+                );
+              }
+
+              return isMapSelected
+                  ? MapWidget(
+                currentLocation:
+                locationProvider.currentLocation!,
+                currentSelectedLocation:
+                locationProvider.currentSelectedLocation,
+              )
+                  : const ListScreen();
+            },
+          ),
         ],
       ),
       bottomNavigationBar: SizedBox(
