@@ -6,6 +6,7 @@ import 'package:eventure/screens/auth/elegant_signin_screen.dart';
 import 'package:eventure/screens/auth/elegant_signup_screen.dart';
 import 'package:eventure/screens/chat/chat_view.dart';
 import 'package:eventure/screens/events/event-screen.dart';
+import 'package:eventure/screens/events/create-event-screen.dart';
 import 'package:eventure/screens/events/detail_view.dart';
 import 'package:eventure/screens/filter/filter-screen.dart';
 import 'package:eventure/screens/home/home_page.dart';

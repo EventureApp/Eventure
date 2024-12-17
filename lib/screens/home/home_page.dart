@@ -168,12 +168,12 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          EventFilter newFilter = eventProvider.filter;
-                          if (eventProvider.filter.startDate != DateTime(
+                          EventFilter newFilter = eventProvider.filter!;
+                          if (eventProvider.filter!.startDate != DateTime(
                             DateTime.now().year,
                             DateTime.now().month,
                             DateTime.now().day,
-                          ) && eventProvider.filter.endDate != DateTime(
+                          ) && eventProvider.filter!.endDate != DateTime(
                             DateTime.now().year,
                             DateTime.now().month,
                             DateTime.now().day + 1,
@@ -218,12 +218,12 @@ class _HomePageState extends State<HomePage> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          EventFilter newFilter = eventProvider.filter;
-                          if (eventProvider.filter.startDate != DateTime(
+                          EventFilter newFilter = eventProvider.filter!;
+                          if (eventProvider.filter!.startDate != DateTime(
                             DateTime.now().year,
                             DateTime.now().month,
                             DateTime.now().day + 1,
-                          ) && eventProvider.filter.endDate != DateTime(
+                          ) && eventProvider.filter!.endDate != DateTime(
                             DateTime.now().year,
                             DateTime.now().month,
                             DateTime.now().day + 2,
@@ -268,12 +268,12 @@ class _HomePageState extends State<HomePage> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          EventFilter newFilter = eventProvider.filter;
-                          if (eventProvider.filter.startDate != DateTime(
+                          EventFilter newFilter = eventProvider.filter!;
+                          if (eventProvider.filter!.startDate != DateTime(
                             DateTime.now().year,
                             DateTime.now().month,
                             DateTime.now().day,
-                          ) && eventProvider.filter.endDate != DateTime(
+                          ) && eventProvider.filter!.endDate != DateTime(
                             DateTime.now().year,
                             DateTime.now().month,
                             DateTime.now().day + 7,

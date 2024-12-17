@@ -24,20 +24,21 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
   late DateTime? _startDate;
   late DateTime? _endDate;
   late EventVisability _visibility;
-  late List<EventType> _eventType;
-  late LatLng _location;
-  late double _radius;
+  late List<EventType>? _eventType;
+  late LatLng? _location;
+  late double? _radius;
 
   @override
   void initState() {
     super.initState();
+    EventFilter eventFilter = context.read<EventProvider>().filter!;
 
-    _startDate = null;
-    _endDate = null;
+    _startDate = eventFilter.startDate;
+    _endDate = eventFilter.endDate;
     _visibility = EventVisability.public;
-    _eventType = [];
-    _location = context.read<EventProvider>().filter.location;
-    _radius = context.read<EventProvider>().filter.range;
+    _eventType = eventFilter.eventType;
+    _location = eventFilter.location;
+    _radius = eventFilter.range;
   }
 
   void _applyFilters() {
@@ -76,13 +77,18 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
           IconButton(
               icon: const Icon(Icons.delete_outline),
               onPressed: () {
-                print("rer");
                 _resetFilters();
               }),
           IconButton(
               icon: const Icon(Icons.save),
               onPressed: () {
-                _applyFilters();
+                (_radius == null &&
+                        _location == null &&
+                        _endDate == null &&
+                        _startDate == null &&
+                        _eventType == null)
+                    ? null
+                    : _applyFilters();
               }),
         ],
       ),
@@ -124,7 +130,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                     label: "Start Date",
                     required: false,
                     editable: true,
-                    initValue: context.read<EventProvider>().filter.startDate,
+                    initValue: _startDate,
                     onDateChanged: (date) {
                       setState(() {
                         _startDate = date;
@@ -138,7 +144,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                     label: "End Date",
                     required: false,
                     editable: true,
-                    initValue: context.read<EventProvider>().filter.endDate,
+                    initValue: _endDate,
                     onDateChanged: (date) {
                       setState(() {
                         _endDate = date;
@@ -166,9 +172,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                   EventSelect(
                     label: 'Event Type',
                     isEditable: true,
-                    initValues:
-                        context.read<EventProvider>().filter.eventType ??
-                            _eventType,
+                    initValues: _eventType ?? [],
                     events: eventTypesWithIcon,
                     isMultiSelect: true,
                     onChanged: (selected) {
@@ -180,21 +184,33 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                   const SizedBox(height: 16),
 
                   // Standort
-                  LocationSelect(
-                    label: "Location",
-                    isEditable: true,
-                    onChanged: (location) {
-                      setState(() {
-                        _location = location!;
-                      });
-                    },
-                  ),
+                  Consumer<LocationProvider>(
+                      builder: (context, locationProvider, child) {
+                        if (locationProvider.currentLocation == null) {
+                          return const Center(
+                            child: CircularProgressIndicator(), // Loading state
+                          );
+                        }
+
+                        return LocationSelect(
+                          label: "Location",
+                          isEditable: true,
+                          initValue: _location,
+                          userLocation: locationProvider.currentLocation!,
+                          onChanged: (location) {
+                            setState(() {
+                              _location = location!;
+                            });
+                          },
+                        );
+                      }),
                   const SizedBox(height: 16),
 
                   // Radius
                   CustomNumberInput(
                     label: "Radius (km)",
-                    hint: context.read<EventProvider>().filter.range.toString(),
+                    initValue:
+                        _radius.toString() == 'null' ? '' : _radius.toString(),
                     onChanged: (value) {
                       setState(() {
                         _radius = value!.toDouble();

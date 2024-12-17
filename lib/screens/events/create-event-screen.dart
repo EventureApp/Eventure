@@ -1,4 +1,5 @@
 import 'package:eventure/models/event.dart';
+import 'package:eventure/providers/location_provider.dart';
 import 'package:eventure/widgets/inputs/custom-number-select.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -207,12 +208,26 @@ class _EventScreenState extends State<EventScreen> {
                           },
                         ),
                         const SizedBox(height: 16),
-                        LocationSelect(
-                          label: "Location",
-                          isEditable: true,
-                          onChanged: (location) {
-                            setState(() => _location = location!);
-                          },
+
+                        Consumer<LocationProvider>(
+                            builder: (context, locationProvider, child) {
+                              if (locationProvider.currentLocation == null) {
+                                return const Center(
+                                  child: CircularProgressIndicator(), // Loading state
+                                );
+                              }
+
+                              return LocationSelect(
+                                label: "Location",
+                                isEditable: true,
+                                userLocation: locationProvider.currentLocation!,
+                                onChanged: (location) {
+                                  setState(() {
+                                    _location = location!;
+                                  });
+                                },
+                              );
+                            }
                         ),
                         const SizedBox(height: 16),
                         EventSelect(
