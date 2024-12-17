@@ -52,7 +52,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
           ));
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Filters applied!")),
+        const SnackBar(content: Text("Filters applied!")),
       );
       Navigator.pop(context);
     }
@@ -61,26 +61,25 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
   void _resetFilters() {
     context.read<EventProvider>().resetFilter();
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Filters reset!")),
+      const SnackBar(content: Text("Filters reset!")),
     );
     Navigator.pop(context);
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Filter"),
+        title: const Text("Filter"),
         actions: [
           IconButton(
-              icon: Icon(Icons.delete_outline),
+              icon: const Icon(Icons.delete_outline),
               onPressed: () {
                 print("rer");
                 _resetFilters();
               }),
           IconButton(
-              icon: Icon(Icons.save),
+              icon: const Icon(Icons.save),
               onPressed: () {
                 _applyFilters();
               }),
@@ -97,11 +96,11 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
               child: Container(
                 width: 50,
                 height: 50,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   shape: BoxShape.circle,
                 ),
-                child: Center(
+                child: const Center(
                   child: Icon(
                     CustomIcons.filteroptions,
                     size: 30,
@@ -111,7 +110,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
             ),
           ),
           Container(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Form(
               key: _formKey,
               child: Column(
@@ -129,7 +128,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                       });
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
                   // Enddatum
                   CustomDateAndTimePicker(
@@ -158,7 +157,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                   // //     });
                   // //   },
                   // // ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
                   // Event-Typ (Einzelauswahl)
                   EventSelect(
@@ -175,7 +174,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                       });
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
                   // Standort
                   LocationSelect(
@@ -187,7 +186,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                       });
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
                   // Radius
                   CustomNumberInput(
@@ -199,7 +198,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                       });
                     },
                   ),
-                  SizedBox(height: 32),
+                  const SizedBox(height: 32),
                 ],
               ),
             ),
