@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import '../../statics/custom_icons.dart';
 import '../../statics/event_types.dart';
 import '../../statics/event_visibility.dart';
-import '../../widgets/inputs/custom-event-select.dart';
+import '../../widgets/inputs/custom-event-type-select.dart';
 import '../../widgets/inputs/custom-location-select.dart';
 import '../../widgets/inputs/custom_date_time_picker.dart';
 

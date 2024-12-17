@@ -8,7 +8,7 @@ import 'package:provider/provider.dart'; // Provider importieren
 import '../../providers/event_provider.dart'; // Dein EventProvider
 import '../../statics/event_types.dart';
 import '../../statics/event_visibility.dart';
-import '../../widgets/inputs/custom-event-select.dart';
+import '../../widgets/inputs/custom-event-type-select.dart';
 import '../../widgets/inputs/custom-link-select.dart';
 import '../../widgets/inputs/custom-location-select.dart';
 import '../../widgets/inputs/custom-multi-select.dart';
