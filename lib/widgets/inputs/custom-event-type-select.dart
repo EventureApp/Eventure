@@ -172,7 +172,8 @@ class _EventSelectState extends State<EventSelect> {
                   const SizedBox(height: 16),
 
                   // Event Grid
-                  Expanded(
+                  Container(
+                    height: 300, // Adjust as needed
                     child: filteredEvents.isEmpty
                         ? Center(
                             child: Text(
@@ -316,87 +317,74 @@ class _EventSelectState extends State<EventSelect> {
     final isError = _hasError;
     final borderColor = isError ? Colors.red : Colors.black.withOpacity(0.2);
 
-    final displayText = _selectedEvents.isEmpty
-        ? (widget.isMandatory ? 'Mandatory' : 'Select event(s)')
-        : "${_selectedEvents.length} event(s) selected";
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextField(
-          readOnly: true,
-          focusNode: _focusNode,
-          onTap: widget.isEditable ? _openEventPopover : null,
-          decoration: InputDecoration(
-            labelText: widget.isMandatory ? '${widget.label} *' : widget.label,
-            labelStyle: TextStyle(
-              color: isFocused ? primaryColor : Colors.black54,
-              fontWeight: FontWeight.w500,
-            ),
-            hintText: widget.isMandatory ? 'Mandatory' : 'Optional',
-            hintStyle: TextStyle(color: Colors.grey.shade600, fontSize: 14),
-            suffixIcon: widget.isEditable
-                ? Icon(
-                    Icons.arrow_drop_down,
-                    color: isFocused ? primaryColor : Colors.grey,
-                  )
-                : null,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: borderColor, width: 1.5),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: borderColor, width: 1.5),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: primaryColor, width: 1.5),
-            ),
-            filled: true,
-            fillColor: Colors.white,
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-          ),
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
-          controller: TextEditingController(text: displayText),
+    return GestureDetector(
+      onTap: widget.isEditable ? _openEventPopover : null,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: borderColor, width: 1.5),
+          color: Colors.white,
         ),
-        if (isError)
-          Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: Text(
-              'At least one event must be selected.',
-              style: TextStyle(
-                color: Colors.red.shade700,
-                fontSize: 12,
+        child: Row(
+          children: [
+            // Expanded Wrap to hold chips and placeholder
+            Expanded(
+              child: Wrap(
+                spacing: 8.0,
+                runSpacing: 8.0,
+                children: [
+                  // Display selected event chips
+                  ..._selectedEvents.map((event) {
+                    final icon = widget.events[event];
+                    return Chip(
+                      avatar: Icon(
+                        icon,
+                        size: 20,
+                        color: primaryColor,
+                      ),
+                      backgroundColor: primaryColor.withOpacity(0.1),
+                      label: Text(
+                        event.toString().split('.').last,
+                        style: TextStyle(
+                            color: primaryColor, fontWeight: FontWeight.w500),
+                      ),
+                      deleteIcon: widget.isEditable
+                          ? Icon(
+                              Icons.close,
+                              size: 18,
+                              color: primaryColor,
+                            )
+                          : null,
+                      onDeleted: widget.isEditable
+                          ? () {
+                              _toggleEventSelection(event);
+                            }
+                          : null,
+                    );
+                  }).toList(),
+
+                  // Placeholder or prompt
+                  if (_selectedEvents.isEmpty)
+                    Text(
+                      widget.isMandatory ? 'Mandatory' : 'Select event(s)',
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontSize: 14,
+                      ),
+                    ),
+                ],
               ),
             ),
-          ),
-        if (_selectedEvents.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Wrap(
-              spacing: 8.0,
-              runSpacing: 8.0,
-              children: _selectedEvents.map((event) {
-                final icon = widget.events[event];
-                return Chip(
-                  avatar: Icon(
-                    icon,
-                    size: 20,
-                    color: primaryColor,
-                  ),
-                  backgroundColor: primaryColor.withOpacity(0.1),
-                  label: Text(
-                    event.toString().split('.').last,
-                    style: TextStyle(
-                        color: primaryColor, fontWeight: FontWeight.w500),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-      ],
+            // Dropdown Icon
+            if (widget.isEditable)
+              Icon(
+                Icons.arrow_drop_down,
+                color: isFocused ? primaryColor : Colors.grey,
+              ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -34,13 +34,6 @@ class _MapWidgetState extends State<MapWidget> {
         .addListener(_onLocationChanged);
   }
 
-  @override
-  void dispose() {
-    // Remove the listener from the LocationProvider
-
-    super.dispose();
-  }
-
   void _onLocationChanged() {
     final newLocation = Provider.of<LocationProvider>(context, listen: false)
         .currentSelectedLocation;
@@ -126,7 +119,7 @@ class _MapWidgetState extends State<MapWidget> {
               _mapController.move(_currentLocation, 13.0);
             },
             child: const Icon(
-              Icons.my_location,
+              Icons.near_me,
               color: Color(0xFF7763AE),
             ),
           ),

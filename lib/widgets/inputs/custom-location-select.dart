@@ -24,13 +24,13 @@ class MapWidget extends StatefulWidget {
 }
 
 class _MapWidgetState extends State<MapWidget> {
-  late LatLng _currentLocation;
+  late LatLng _currentSelectedLocation;
   late MapController _mapController;
 
   @override
   void initState() {
     super.initState();
-    _currentLocation = widget.initialLocation;
+    _currentSelectedLocation = widget.initialLocation;
     _mapController = MapController();
   }
 
@@ -39,9 +39,9 @@ class _MapWidgetState extends State<MapWidget> {
     super.didUpdateWidget(oldWidget);
     if (widget.initialLocation != oldWidget.initialLocation) {
       setState(() {
-        _currentLocation = widget.initialLocation;
+        _currentSelectedLocation = widget.initialLocation;
       });
-      _mapController.move(_currentLocation, 13.0);
+      _mapController.move(_currentSelectedLocation, 13.0);
     }
   }
 
@@ -49,54 +49,72 @@ class _MapWidgetState extends State<MapWidget> {
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    return FlutterMap(
-      mapController: _mapController,
-      options: MapOptions(
-        initialCenter: _currentLocation,
-        initialZoom: 13.0,
-        minZoom: 13.0,
-        maxZoom: 100.0,
-        onTap: widget.isEditable
-            ? (tapPosition, point) {
-                widget.onTap(point);
-              }
-            : null,
+    return Stack(children: [
+      FlutterMap(
+        mapController: _mapController,
+        options: MapOptions(
+          initialCenter: _currentSelectedLocation,
+          initialZoom: 13.0,
+          minZoom: 13.0,
+          maxZoom: 100.0,
+          onTap: widget.isEditable
+              ? (tapPosition, point) {
+                  widget.onTap(point);
+                }
+              : null,
+        ),
+        children: [
+          TileLayer(
+            urlTemplate: isDarkMode
+                ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            subdomains: const ['a', 'b', 'c'],
+          ),
+          MarkerLayer(
+            markers: [
+              // Falls userLocation vorhanden ist, zeige blauen Marker für den Nutzerstandort
+              if (widget.userLocation != null)
+                Marker(
+                  point: widget.userLocation!,
+                  child: const Icon(
+                    Icons.my_location,
+                    color: Colors.blueAccent,
+                  ),
+                ),
+              // Ausgewählte Location (rot), nur anzeigen falls sie != userLocation ist
+              if (widget.userLocation == null ||
+                  _currentSelectedLocation != widget.userLocation)
+                Marker(
+                  point: _currentSelectedLocation,
+                  width: 50,
+                  height: 50,
+                  child: Icon(
+                    Icons.location_on,
+                    size: 40,
+                    color: Colors.redAccent,
+                  ),
+                ),
+            ],
+          ),
+        ],
       ),
-      children: [
-        TileLayer(
-          urlTemplate: isDarkMode
-              ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-              : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-          subdomains: const ['a', 'b', 'c'],
-        ),
-        MarkerLayer(
-          markers: [
-            // Falls userLocation vorhanden ist, zeige blauen Marker für den Nutzerstandort
-            if (widget.userLocation != null)
-              Marker(
-                point: widget.userLocation!,
+      widget.isEditable
+          ? Positioned(
+              bottom: 16.0,
+              right: 16.0,
+              child: FloatingActionButton(
+                backgroundColor: const Color(0xFFEDEAF4),
+                onPressed: () async {
+                  _mapController.move(_currentSelectedLocation, 13.0);
+                },
                 child: const Icon(
-                  Icons.my_location,
-                  color: Colors.blueAccent,
+                  Icons.near_me,
+                  color: Color(0xFF7763AE),
                 ),
               ),
-            // Ausgewählte Location (rot), nur anzeigen falls sie != userLocation ist
-            if (widget.userLocation == null ||
-                _currentLocation != widget.userLocation)
-              Marker(
-                point: _currentLocation,
-                width: 50,
-                height: 50,
-                child: Icon(
-                  Icons.location_on,
-                  size: 40,
-                  color: Colors.redAccent,
-                ),
-              ),
-          ],
-        ),
-      ],
-    );
+            )
+          : const SizedBox.shrink()
+    ]);
   }
 }
 
