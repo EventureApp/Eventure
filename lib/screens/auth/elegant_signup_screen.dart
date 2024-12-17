@@ -120,9 +120,10 @@ class _ElegantSignUpScreenState extends State<ElegantSignUpScreen> {
   @override
   Widget build(BuildContext context) {
     // Adjust these colors/fonts as needed
-    const primaryColor = Color(0xFF1976D2);
-    const backgroundColor = Color(0xFFF5F5F5);
     final theme = Theme.of(context);
+
+    var primaryColor = theme.primaryColor;
+    const backgroundColor = Color(0xFFF5F5F5);
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -131,9 +132,9 @@ class _ElegantSignUpScreenState extends State<ElegantSignUpScreen> {
           children: [
             // Background gradient
             Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color(0xFFDCE9F5), Color(0xFFF5F5F5)],
+                  colors: [theme.primaryColor, const Color(0xFFF5F5F5)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -147,13 +148,6 @@ class _ElegantSignUpScreenState extends State<ElegantSignUpScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 40),
                     child: Column(
                       children: [
-                        // If you have a logo or hero illustration, place it here
-                        // For example, a network image or an asset:
-                        Image.asset(
-                          'assets/images/hero_image.png',
-                          height: 120,
-                          fit: BoxFit.contain,
-                        ),
                         const SizedBox(height: 20),
                         Text(
                           'Create Account',
