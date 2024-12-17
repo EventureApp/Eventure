@@ -1,25 +1,25 @@
-import 'package:eventure/statics/event_types.dart';
 import 'package:flutter/material.dart';
+import 'package:eventure/statics/event_types.dart';
 
 class EventSelect extends StatefulWidget {
   final String label;
-  final List<EventType>
-      initValues; // Initial ausgewählte Werte (EventType-Enum)
-  final Map<EventType, IconData> events; // Map von Event-Keys zu Event-Icons
-  final Function(List<EventType>) onChanged; // Callback für Änderungen
-  final bool isMultiSelect; // True für MultiSelect, False für SingleSelect
-  final bool isMandatory; // Gibt an, ob das Feld Pflicht ist
-  final bool isEditable; // Gibt an, ob das Feld bearbeitbar ist
+  final List<EventType> initValues;
+  final Map<EventType, IconData> events;
+  final Function(List<EventType>) onChanged;
+  final bool isMultiSelect;
+  final bool isMandatory;
+  final bool isEditable;
 
-  EventSelect({
+  const EventSelect({
+    Key? key,
     required this.label,
     required this.initValues,
     required this.events,
     required this.onChanged,
-    this.isMultiSelect = true, // Standardmäßig MultiSelect aktiv
-    this.isMandatory = false, // Standardmäßig kein Pflichtfeld
-    this.isEditable = true, // Standardmäßig bearbeitbar
-  });
+    this.isMultiSelect = true,
+    this.isMandatory = false,
+    this.isEditable = true,
+  }) : super(key: key);
 
   @override
   _EventSelectState createState() => _EventSelectState();
@@ -27,215 +27,373 @@ class EventSelect extends StatefulWidget {
 
 class _EventSelectState extends State<EventSelect> {
   late List<EventType> _selectedEvents;
-  String _errorMessage = "";
+  bool _hasAttemptedSubmit = false;
+  late FocusNode _focusNode;
 
   @override
   void initState() {
     super.initState();
-    _selectedEvents = List.from(widget.initValues); // Initialwerte setzen
+    _selectedEvents = List.from(widget.initValues);
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      setState(() {});
+    });
   }
 
-  // Methode zum Auswählen eines Events im MultiSelect-Modus
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  bool get _hasError {
+    return widget.isMandatory && _selectedEvents.isEmpty && _hasAttemptedSubmit;
+  }
+
   void _toggleEventSelection(EventType event) {
-    if (!widget.isEditable) return; // Keine Änderungen, wenn nicht bearbeitbar
+    if (!widget.isEditable) return;
 
     setState(() {
       if (widget.isMultiSelect) {
         if (_selectedEvents.contains(event)) {
-          _selectedEvents.remove(event); // Abwählen
+          _selectedEvents.remove(event);
         } else {
-          _selectedEvents.add(event); // Auswählen
+          _selectedEvents.add(event);
         }
       } else {
-        _selectedEvents = [
-          event
-        ]; // Nur das ausgewählte Event im SingleSelect-Modus
+        _selectedEvents = [event];
       }
     });
-    widget.onChanged(_selectedEvents); // Rückgabe der ausgewählten Events
+    widget.onChanged(_selectedEvents);
   }
 
-  // Methode zum Entfernen eines Events
-  void _removeEvent(EventType event) {
-    setState(() {
-      _selectedEvents.remove(event);
-      widget.onChanged(_selectedEvents); // Rückgabe der neuen Liste
-    });
-
-    // Validierung auslösen, wenn SingleSelect und Pflichtfeld
-    if (!widget.isMultiSelect &&
-        widget.isMandatory &&
-        _selectedEvents.isEmpty) {
-      setState(() {
-        _errorMessage = "At least one event must be selected.";
-      });
-    }
-  }
-
-  // Validierung für Pflichtfelder
-  void _validateSelection() {
-    if (widget.isMandatory && _selectedEvents.isEmpty) {
-      setState(() {
-        _errorMessage = "At least one event must be selected.";
-      });
-    } else {
-      setState(() {
-        _errorMessage = "";
-      });
-    }
-  }
-
-  // Anzeige der Chips für ausgewählte Events
-  Widget _buildSelectedEvents() {
-    return Wrap(
-      spacing: 8.0,
-      children: _selectedEvents.map((event) {
-        return Icon(
-          eventTypesWithIcon[event], // Icon aus der Map
-          color: Theme.of(context).primaryColor,
-        );
-      }).toList(),
-    );
-  }
-
-  // Öffnen des Popovers mit den Event-Icons
   void _openEventPopover() async {
+    if (!widget.isEditable) return;
+
+    List<EventType> tempSelection = List.from(_selectedEvents);
+    String searchQuery = '';
+
     await showDialog(
       context: context,
       builder: (BuildContext context) {
-        return Dialog(
-          child: StatefulBuilder(
-            builder: (context, setState) {
-              return Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
-                height: 400,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Select Events',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
+        const primaryColor = Color(0xFF1976D2);
+        final isMandatory = widget.isMandatory;
+
+        return StatefulBuilder(builder: (context, setStateDialog) {
+          bool dialogHasError =
+              isMandatory && tempSelection.isEmpty && _hasAttemptedSubmit;
+
+          void applySearch(String query) {
+            setStateDialog(() {
+              searchQuery = query;
+            });
+          }
+
+          // Compute filtered events based on the current searchQuery
+          List<EventType> filteredEvents = widget.events.keys
+              .where((e) => e
+                  .toString()
+                  .split('.')
+                  .last
+                  .toLowerCase()
+                  .contains(searchQuery.toLowerCase()))
+              .toList();
+
+          return Dialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            child: Container(
+              padding: const EdgeInsets.only(
+                  top: 16, left: 16, right: 16, bottom: 16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Header Row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        widget.isMultiSelect ? 'Select Events' : 'Select Event',
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Tap on an event to ${widget.isMultiSelect ? "toggle selection" : "select it"}.',
+                    style: TextStyle(color: Colors.grey[700], fontSize: 14),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Search Bar
+                  TextField(
+                    onChanged: applySearch,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.search),
+                      hintText: 'Search events...',
+                      hintStyle:
+                          TextStyle(color: Colors.grey.shade600, fontSize: 14),
+                      fillColor: Colors.grey[100],
+                      filled: true,
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 16),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: Colors.black.withOpacity(0.1),
+                          width: 1.0,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: Colors.black.withOpacity(0.1),
+                          width: 1.0,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: primaryColor,
+                          width: 1.0,
+                        ),
                       ),
                     ),
-                    SizedBox(height: 16),
-                    Expanded(
-                      child: GridView.builder(
-                        itemCount: widget.events.length,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3, // 3 Icons pro Reihe
-                          crossAxisSpacing: 10.0, // Abstand zwischen den Icons
-                          mainAxisSpacing: 10.0, // Abstand zwischen den Reihen
-                        ),
-                        itemBuilder: (context, index) {
-                          EventType eventKey =
-                              widget.events.keys.elementAt(index);
-                          IconData eventIcon = widget.events[eventKey]!;
+                  ),
+                  const SizedBox(height: 16),
 
-                          bool isSelected = _selectedEvents.contains(
-                              eventKey); // Überprüfen, ob das Event ausgewählt wurde
+                  // Event Grid
+                  Expanded(
+                    child: filteredEvents.isEmpty
+                        ? Center(
+                            child: Text(
+                              'No events found.',
+                              style: TextStyle(
+                                  color: Colors.grey[600], fontSize: 14),
+                            ),
+                          )
+                        : GridView.builder(
+                            itemCount: filteredEvents.length,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 10.0,
+                              mainAxisSpacing: 10.0,
+                            ),
+                            itemBuilder: (context, index) {
+                              final eventKey = filteredEvents[index];
+                              final eventIcon = widget.events[eventKey]!;
+                              final isSelected =
+                                  tempSelection.contains(eventKey);
 
-                          return GestureDetector(
-                            onTap: widget.isEditable
-                                ? () {
-                                    setState(() {
-                                      _toggleEventSelection(eventKey);
-                                    });
-                                  }
-                                : null,
-                            // Deaktivieren der Tap-Funktion, wenn nicht bearbeitbar
-                            child: Opacity(
-                              opacity: widget.isEditable ? 1.0 : 0.5,
-                              // Reduzierte Sichtbarkeit, wenn nicht bearbeitbar
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    eventIcon,
-                                    // Verwendet das Event-Icon aus der Map
-                                    size: 40, // Angepasste Größe
+                              return InkWell(
+                                borderRadius: BorderRadius.circular(12),
+                                onTap: widget.isEditable
+                                    ? () {
+                                        setStateDialog(() {
+                                          if (widget.isMultiSelect) {
+                                            if (tempSelection
+                                                .contains(eventKey)) {
+                                              tempSelection.remove(eventKey);
+                                            } else {
+                                              tempSelection.add(eventKey);
+                                            }
+                                          } else {
+                                            tempSelection = [eventKey];
+                                          }
+                                        });
+                                      }
+                                    : null,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
                                     color: isSelected
-                                        ? Theme.of(context).primaryColor
-                                        : Colors.grey, // Farbänderung des Icons
-                                  ),
-                                  SizedBox(height: 8),
-                                  Text(
-                                    eventKey.toString().split('.').last,
-                                    // Anzeige des Event-Namens aus dem Enum
-                                    style: TextStyle(
-                                      fontSize: 14,
+                                        ? primaryColor.withOpacity(0.15)
+                                        : Colors.white,
+                                    border: Border.all(
                                       color: isSelected
-                                          ? Theme.of(context).primaryColor
-                                          : Colors
-                                              .black, // Farbänderung des Texts
+                                          ? primaryColor
+                                          : Colors.black.withOpacity(0.1),
+                                      width: 1.0,
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        eventIcon,
+                                        size: 40,
+                                        color: isSelected
+                                            ? primaryColor
+                                            : Colors.grey[700],
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        eventKey.toString().split('.').last,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: isSelected
+                                              ? primaryColor
+                                              : Colors.black87,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: isMandatory && tempSelection.isEmpty
+                        ? null
+                        : () {
+                            setState(() {
+                              _hasAttemptedSubmit = true;
+                            });
+                            if (!(widget.isMandatory &&
+                                tempSelection.isEmpty)) {
+                              _selectedEvents = tempSelection;
+                              widget.onChanged(_selectedEvents);
+                              Navigator.of(context).pop();
+                            }
+                          },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 14, horizontal: 24),
+                      backgroundColor: (isMandatory && tempSelection.isEmpty)
+                          ? Colors.grey
+                          : primaryColor,
+                    ),
+                    child: Text(
+                      'Done',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: (isMandatory && tempSelection.isEmpty)
+                            ? Colors.white70
+                            : Colors.white,
                       ),
                     ),
-                    SizedBox(height: 16),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(); // Dialog schließen
-                      },
-                      child: Text('Close'),
+                  ),
+                  if (dialogHasError)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(
+                        'At least one event must be selected.',
+                        style: TextStyle(color: Colors.red[700], fontSize: 12),
+                      ),
                     ),
-                  ],
-                ),
-              );
-            },
-          ),
-        );
+                ],
+              ),
+            ),
+          );
+        });
       },
     );
+
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    const primaryColor = Color(0xFF1976D2);
+    final isFocused = _focusNode.hasFocus;
+    final isError = _hasError;
+    final borderColor = isError ? Colors.red : Colors.black.withOpacity(0.2);
+
+    final displayText = _selectedEvents.isEmpty
+        ? (widget.isMandatory ? 'Mandatory' : 'Select event(s)')
+        : "${_selectedEvents.length} event(s) selected";
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Label mit optionalem Sternchen für Pflichtfelder und dem + Button
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              widget.isMandatory ? '${widget.label} *' : widget.label,
+        TextField(
+          readOnly: true,
+          focusNode: _focusNode,
+          onTap: widget.isEditable ? _openEventPopover : null,
+          decoration: InputDecoration(
+            labelText: widget.isMandatory ? '${widget.label} *' : widget.label,
+            labelStyle: TextStyle(
+              color: isFocused ? primaryColor : Colors.black54,
+              fontWeight: FontWeight.w500,
+            ),
+            hintText: widget.isMandatory ? 'Mandatory' : 'Optional',
+            hintStyle: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+            suffixIcon: widget.isEditable
+                ? Icon(
+                    Icons.arrow_drop_down,
+                    color: isFocused ? primaryColor : Colors.grey,
+                  )
+                : null,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: borderColor, width: 1.5),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: borderColor, width: 1.5),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: primaryColor, width: 1.5),
+            ),
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
+          controller: TextEditingController(text: displayText),
+        ),
+        if (isError)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              'At least one event must be selected.',
               style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 16,
-                color: Colors.black,
+                color: Colors.red.shade700,
+                fontSize: 12,
               ),
             ),
-            if (widget.isEditable)
-              IconButton(
-                icon: Icon(Icons.add),
-                onPressed: _openEventPopover, // Popover öffnen
-                color: Theme.of(context).primaryColor,
-              ),
-          ],
-        ),
-        SizedBox(height: 8),
-
-        // Anzeige der ausgewählten Events unter dem Label
+          ),
         if (_selectedEvents.isNotEmpty)
           Padding(
-            padding: EdgeInsets.only(bottom: 8),
-            child: _buildSelectedEvents(),
-          ),
-
-        // Fehlermeldung für Pflichtfelder
-        if (_errorMessage.isNotEmpty)
-          Text(
-            _errorMessage,
-            style: TextStyle(
-              color: Colors.red,
-              fontSize: 12,
+            padding: const EdgeInsets.only(top: 8),
+            child: Wrap(
+              spacing: 8.0,
+              runSpacing: 8.0,
+              children: _selectedEvents.map((event) {
+                final icon = widget.events[event];
+                return Chip(
+                  avatar: Icon(
+                    icon,
+                    size: 20,
+                    color: primaryColor,
+                  ),
+                  backgroundColor: primaryColor.withOpacity(0.1),
+                  label: Text(
+                    event.toString().split('.').last,
+                    style: TextStyle(
+                        color: primaryColor, fontWeight: FontWeight.w500),
+                  ),
+                );
+              }).toList(),
             ),
           ),
       ],

@@ -57,8 +57,8 @@ class _MapWidgetState extends State<MapWidget> {
             : InteractionOptions(flags: InteractiveFlag.none),
         onTap: widget.isEditable
             ? (tapPosition, point) {
-          widget.onTap(point);
-        }
+                widget.onTap(point);
+              }
             : null,
       ),
       children: [
@@ -72,7 +72,7 @@ class _MapWidgetState extends State<MapWidget> {
               point: _currentLocation,
               width: 50,
               height: 50,
-              child: Icon(
+              child: const Icon(
                 Icons.location_on,
                 size: 50,
                 color: Colors.blue,
@@ -90,11 +90,12 @@ class LocationSelectPopover extends StatefulWidget {
   final Function(LatLng?) onChanged;
   final bool isMandatory;
 
-  LocationSelectPopover({
+  const LocationSelectPopover({
+    Key? key,
     required this.onChanged,
     this.initValue,
     this.isMandatory = false,
-  });
+  }) : super(key: key);
 
   @override
   _LocationSelectPopoverState createState() => _LocationSelectPopoverState();
@@ -102,6 +103,7 @@ class LocationSelectPopover extends StatefulWidget {
 
 class _LocationSelectPopoverState extends State<LocationSelectPopover> {
   LatLng? _selectedLocation;
+  bool _hasAttemptedSubmit = false;
 
   @override
   void initState() {
@@ -116,49 +118,90 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
   }
 
   void _submitLocation() {
+    setState(() {
+      _hasAttemptedSubmit = true;
+    });
     if (_selectedLocation != null || !widget.isMandatory) {
       widget.onChanged(_selectedLocation);
       Navigator.pop(context);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Please select a location!'),
-        backgroundColor: Colors.red,
-      ));
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    bool isError =
+        widget.isMandatory && _selectedLocation == null && _hasAttemptedSubmit;
+
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
+      child: Container(
+        padding: const EdgeInsets.only(top: 8, left: 16, right: 16, bottom: 16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.white,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Align(
-              alignment: Alignment.topLeft,
-              child: IconButton(
-                icon: Icon(Icons.close),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
+            // Header Row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Wähle einen Standort',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
             ),
-            SizedBox(
+            const SizedBox(height: 8),
+            Text(
+              'Tippe auf die Karte, um einen Standort festzulegen.',
+              style: TextStyle(color: Colors.grey[700], fontSize: 14),
+            ),
+            const SizedBox(height: 16),
+            Container(
               width: double.infinity,
-              height: 400, // Karte größer anzeigen
-              child: MapWidget(
-                initialLocation: _selectedLocation ?? LatLng(0.0, 0.0),
-                onTap: _updateLocation,
-                isEditable: true,
-                isMandatory: true,
+              height: 400,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: isError ? Colors.red : Colors.grey.withOpacity(0.3),
+                  width: 1.5,
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: MapWidget(
+                  initialLocation: _selectedLocation ?? LatLng(0.0, 0.0),
+                  onTap: _updateLocation,
+                  isEditable: true,
+                  isMandatory: widget.isMandatory,
+                ),
               ),
             ),
-            SizedBox(height: 16),
+            if (isError)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  'Bitte wähle einen Standort aus.',
+                  style: TextStyle(color: Colors.red[700], fontSize: 12),
+                ),
+              ),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _submitLocation,
-              child: Text('Submit'),
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+              ),
+              child: const Text('Fertig',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             ),
           ],
         ),
@@ -174,13 +217,14 @@ class LocationSelect extends StatefulWidget {
   final bool isMandatory;
   final bool isEditable;
 
-  LocationSelect({
+  const LocationSelect({
+    Key? key,
     required this.label,
     this.initValue,
     required this.onChanged,
     this.isMandatory = false,
     this.isEditable = true,
-  });
+  }) : super(key: key);
 
   @override
   _LocationSelectState createState() => _LocationSelectState();
@@ -204,10 +248,7 @@ class _LocationSelectState extends State<LocationSelect> {
       _isLoading = true;
     });
 
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       setState(() {
         _isLoading = false;
@@ -215,15 +256,17 @@ class _LocationSelectState extends State<LocationSelect> {
       return;
     }
 
-    permission = await Geolocator.checkPermission();
+    LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.deniedForever) {
       setState(() {
         _isLoading = false;
       });
       return;
-    } else if (permission == LocationPermission.denied || permission == LocationPermission.whileInUse) {
+    } else if (permission == LocationPermission.denied ||
+        permission == LocationPermission.whileInUse) {
       permission = await Geolocator.requestPermission();
-      if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
+      if (permission != LocationPermission.whileInUse &&
+          permission != LocationPermission.always) {
         setState(() {
           _isLoading = false;
         });
@@ -231,7 +274,8 @@ class _LocationSelectState extends State<LocationSelect> {
       }
     }
 
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
     setState(() {
       _selectedLocation = LatLng(position.latitude, position.longitude);
       _isLoading = false;
@@ -260,52 +304,83 @@ class _LocationSelectState extends State<LocationSelect> {
 
   @override
   Widget build(BuildContext context) {
+    bool showError = widget.isMandatory && _selectedLocation == null;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                widget.label,
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-              ),
-            ),
-            GestureDetector(
-              onTap: widget.isEditable ? _openLocationPopover : null,
-              child: Icon(
-                Icons.map,
-                size: 24,
-                color: widget.isEditable ? Colors.blue : Colors.grey,
-              ),
-            ),
-          ],
+        Text.rich(
+          TextSpan(
+            text: widget.label,
+            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+            children: widget.isMandatory
+                ? [
+                    TextSpan(
+                      text: " *",
+                      style: TextStyle(
+                        color: Colors.red[700],
+                      ),
+                    ),
+                  ]
+                : [],
+          ),
         ),
-        SizedBox(height: 8),
-        Container(
+        const SizedBox(height: 8),
+        // Use a Stack so we can overlay a transparent InkWell on top of the map
+        SizedBox(
           width: double.infinity,
-          height: 300, // Größe der Karte hier angepasst
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: widget.isMandatory && _selectedLocation == null
-                  ? Colors.red
-                  : Colors.black.withOpacity(0.2),
-              width: 1.5,
-            ),
-          ),
-          child: _isLoading
-              ? Center(child: CircularProgressIndicator())
-              : MapWidget(
-            initialLocation: _selectedLocation ?? LatLng(0.0, 0.0),
-            isEditable: false,
-            onTap: (LatLng) {
-              _openLocationPopover();
-            },
-            isMandatory: widget.isMandatory,
+          height: 300,
+          child: Stack(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color:
+                        showError ? Colors.red : Colors.black.withOpacity(0.2),
+                    width: 1.5,
+                  ),
+                  color: Colors.grey[100],
+                ),
+                child: _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: MapWidget(
+                          initialLocation:
+                              _selectedLocation ?? LatLng(0.0, 0.0),
+                          isEditable: false,
+                          onTap: (LatLng) {
+                            _openLocationPopover();
+                          },
+                          isMandatory: widget.isMandatory,
+                        ),
+                      ),
+              ),
+              // Transparent overlay that catches taps and opens the popover
+              Positioned.fill(
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: _openLocationPopover,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
-        SizedBox(height: 16),
+        if (showError)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              'Ein Standort ist erforderlich.',
+              style: TextStyle(
+                color: Colors.red[700],
+                fontSize: 12,
+              ),
+            ),
+          ),
+        const SizedBox(height: 16),
       ],
     );
   }

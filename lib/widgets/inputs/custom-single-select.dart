@@ -8,14 +8,15 @@ class SingleSelectDropdown extends StatefulWidget {
   final bool required;
   final bool editable;
 
-  SingleSelectDropdown({
+  const SingleSelectDropdown({
+    Key? key,
     required this.label,
     this.initValue,
     required this.data,
     required this.onChanged,
     required this.required,
     required this.editable,
-  });
+  }) : super(key: key);
 
   @override
   _SingleSelectDropdownState createState() => _SingleSelectDropdownState();
@@ -23,16 +24,18 @@ class SingleSelectDropdown extends StatefulWidget {
 
 class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
   String? _selectedValue;
-  String _errorMessage = '';
+  bool _isFieldEmpty = false; // Similar to CustomInputLine
   late FocusNode _focusNode;
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      _selectedValue = widget.initValue;
-    });
+    _selectedValue = widget.initValue;
     _focusNode = FocusNode();
+
+    _focusNode.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -41,140 +44,124 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
     super.dispose();
   }
 
-  void _validate() {
-    if (widget.required && _selectedValue == null) {
-      setState(() {
-        _errorMessage = 'Please make a selection!';
-      });
-    } else {
-      setState(() {
-        _errorMessage = '';
-      });
-    }
+  void _openSelectionDialog() async {
+    if (!widget.editable) return;
+
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select ${widget.label}'),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: widget.data.keys.map((option) {
+                return RadioListTile<String>(
+                  activeColor: Theme.of(context).primaryColor,
+                  title: Text(option),
+                  value: option,
+                  groupValue: _selectedValue,
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedValue = value;
+                      _isFieldEmpty =
+                          widget.required && (value == null || value.isEmpty);
+                    });
+                    widget.onChanged(value);
+                    Navigator.of(context).pop();
+                  },
+                );
+              }).toList(),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'Close',
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final isValid = _errorMessage.isEmpty;
+    const primaryColor = Color(0xFF1976D2);
 
+    String displayText = _selectedValue ??
+        (widget.required ? 'Required field' : 'Select option');
+
+    // Similar styling to CustomInputLine
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Label with optional asterisk for required fields
-        Row(
-          children: [
-            Text(
-              widget.label.toUpperCase(),
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 16,
-              ),
+        // If you want the label above the field (like CustomInputLine uses labelText), you can remove this Text.
+        // However, CustomInputLine uses labelText in the InputDecoration. We'll mimic that exactly by using labelText below:
+        // and remove this label widget entirely. If you want asterisks or additional styling, you could re-add it.
+
+        // SizedBox(height: 8) - If you'd like some spacing before the field
+
+        TextField(
+          readOnly: true,
+          focusNode: _focusNode,
+          onTap: widget.editable ? _openSelectionDialog : null,
+          decoration: InputDecoration(
+            labelText: widget.label,
+            labelStyle: TextStyle(
+              color: _focusNode.hasFocus ? primaryColor : Colors.black54,
+              fontWeight: FontWeight.w500,
             ),
-            if (widget.required) ...[
-              const Text(
-                ' *',
-                style: TextStyle(
-                  color: Colors.red,
-                  fontSize: 16,
-                ),
-              ),
-            ],
-          ],
-        ),
-        SizedBox(height: 8),
-
-        // Dropdown input field
-        GestureDetector(
-          onTap: widget.editable
-              ? () async {
-            await showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text('Select ${widget.label}'),
-                  content: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: widget.data.keys.map((option) {
-                        return RadioListTile<String>(
-                          activeColor: Theme.of(context).primaryColor,
-                          title: Text(option),
-                          value: option,
-                          groupValue: _selectedValue,
-                          onChanged: (String? value) {
-                            setState(() {
-                              _selectedValue = value;
-                              _errorMessage = '';
-                            });
-                            widget.onChanged(value);
-                            Navigator.of(context).pop();
-                          },
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text('Close',
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-
-                    ),
-                  ],
-                );
-              },
-            );
-          }
-              : null,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12.25),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: _errorMessage.isNotEmpty
-                    ? Colors.red
-                    : _focusNode.hasFocus
-                    ? Theme.of(context).primaryColor
-                    : Colors.black.withOpacity(0.2),
+            hintText: widget.required ? 'Mandatory' : 'Optional',
+            hintStyle: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+            suffixIcon: Icon(
+              Icons.arrow_drop_down,
+              color: _focusNode.hasFocus ? primaryColor : Colors.grey,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: Colors.black.withOpacity(0.2),
                 width: 1.5,
               ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    _selectedValue ??
-                        (widget.required ? 'Required field' : 'Select option'),
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: widget.editable ? Colors.black : Colors.grey,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                Icon(
-                  Icons.arrow_drop_down,
-                  color: widget.editable
-                      ? Colors.black.withOpacity(0.3)
-                      : Colors.grey,
-                ),
-              ],
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color:
+                    _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2),
+                width: 1.5,
+              ),
             ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: primaryColor,
+                width: 1.5,
+              ),
+            ),
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
+          controller: TextEditingController(text: displayText),
         ),
-        if (_errorMessage.isNotEmpty)
+        if (_isFieldEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 4),
             child: Text(
-              _errorMessage,
+              'This field is required.',
               style: TextStyle(
-                color: Colors.red,
+                color: Colors.red.shade700,
                 fontSize: 12,
               ),
             ),

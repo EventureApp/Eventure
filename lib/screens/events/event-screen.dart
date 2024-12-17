@@ -123,15 +123,19 @@ class _EventScreenState extends State<EventScreen> {
         title: Text(widget.event == null ? "Create Event" : "Edit Event"),
         actions: [
           IconButton(
-            icon: Icon(widget.event == null || _isEditing ? Icons.save : Icons.edit),
+            icon: Icon(
+                widget.event == null || _isEditing ? Icons.save : Icons.edit),
             onPressed: _isFormValid
                 ? () {
-              _saveEvent(context);
-            } : _isEditing == false ? () {
-              setState(() {
-                _isEditing = true;
-              });
-            }: null,
+                    _saveEvent(context);
+                  }
+                : _isEditing == false
+                    ? () {
+                        setState(() {
+                          _isEditing = true;
+                        });
+                      }
+                    : null,
           ),
         ],
       ),
@@ -205,12 +209,11 @@ class _EventScreenState extends State<EventScreen> {
                   SizedBox(height: 16),
                   LocationSelect(
                     label: "Location",
-                    isEditable: _isEditing,
+                    isEditable: true,
                     onChanged: (location) {
                       setState(() {
                         _location = location!;
                       });
-                      _validateForm();
                     },
                   ),
                   SizedBox(height: 16),

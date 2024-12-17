@@ -22,36 +22,43 @@ class CustomLinkInput extends StatefulWidget {
 class _CustomLinkInputState extends State<CustomLinkInput> {
   String _errorMessage = "";
   late TextEditingController _controller;
-  late FocusNode _focusNode; // FocusNode für das Eingabefeld
+  late FocusNode _focusNode;
+
+  bool get _isEmpty => _controller.text.isEmpty;
+  bool get _hasError => _errorMessage.isNotEmpty;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController();
-    _focusNode = FocusNode(); // Initialisieren des Fokus-Managements
+    _focusNode = FocusNode();
     _focusNode.addListener(() {
-      setState(() {}); // Aktualisieren der UI bei Fokusänderungen
+      setState(() {});
     });
   }
 
   @override
   void dispose() {
     _controller.dispose();
-    _focusNode.dispose(); // Fokus-Node freigeben
+    _focusNode.dispose();
     super.dispose();
   }
 
   void _onChange(String value) {
     if (value.isEmpty) {
+      // Empty value
       widget.onChanged(null);
       setState(() {
-        _errorMessage = widget.isMandatory! ? 'This field is mandatory.' : '';
+        _errorMessage = widget.isMandatory! ? 'This field is required.' : '';
       });
       return;
     }
 
-    final isValidUrl = Uri.tryParse(value)?.hasAbsolutePath ?? false;
-    if (isValidUrl) {
+    // Validate URL format
+    final uri = Uri.tryParse(value);
+    if (uri != null &&
+        uri.hasScheme &&
+        (uri.scheme == 'http' || uri.scheme == 'https')) {
       setState(() {
         _errorMessage = '';
       });
@@ -64,98 +71,94 @@ class _CustomLinkInputState extends State<CustomLinkInput> {
     }
   }
 
+  Future<void> _openLink() async {
+    final url = _controller.text.trim();
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      setState(() {
+        _errorMessage = 'Could not launch $url';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    const primaryColor = Color(0xFF1976D2);
+    final isFocused = _focusNode.hasFocus;
+    final isError = _hasError;
+
+    // Determine hint text: If user provided a hint, use it, otherwise show Mandatory/Optional
+    final hintText =
+        widget.hint ?? (widget.isMandatory == true ? 'Mandatory' : 'Optional');
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Label mit Sternchen für Pflichtfelder
-        Text.rich(
-          TextSpan(
-            text: widget.label.toUpperCase(), // Label immer in Großbuchstaben
-            style: const TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 16,
+        TextField(
+          controller: _controller,
+          focusNode: _focusNode,
+          onChanged: _onChange,
+          decoration: InputDecoration(
+            labelText:
+                widget.isMandatory == true ? '${widget.label} *' : widget.label,
+            labelStyle: TextStyle(
+              color: isFocused ? primaryColor : Colors.black54,
+              fontWeight: FontWeight.w500,
             ),
-            children: widget.isMandatory!
-                ? [
-              const TextSpan(
-                text: " *", // Sternchen für Pflichtfelder
-                style: TextStyle(
-                  color: Colors.red, // Stern in Rot
-                ),
-              ),
-            ]
-                : [], // Kein Sternchen, wenn nicht erforderlich
-          ),
-        ),
-        SizedBox(height: 8),
-        // Eingabefeld im angepassten Design
-        GestureDetector(
-          onTap: () {
-            _focusNode.requestFocus(); // Fokus anfordern, wenn das Feld angetippt wird
-          },
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              border: Border.all(
-                color: _focusNode.hasFocus
-                    ? Theme.of(context).primaryColor // Blau wenn fokussiert
-                    : _errorMessage.isNotEmpty
-                    ? Colors.red // Rot bei Fehler
-                    : Colors.black.withOpacity(0.2), // Standardfarbe wenn nicht fokussiert
+            hintText: hintText,
+            hintStyle: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(
+                color: Colors.black26,
                 width: 1.5,
               ),
             ),
-            child: TextField(
-              controller: _controller,
-              focusNode: _focusNode, // Fokus-Node für das TextField
-              decoration: InputDecoration(
-                hintText: widget.hint ?? 'Enter a link',
-                hintStyle: TextStyle(
-                  color: Colors.grey.shade600,
-                  fontSize: 14,
-                ),
-                border: InputBorder.none,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: isError ? Colors.red : Colors.black.withOpacity(0.2),
+                width: 1.5,
               ),
-              onChanged: _onChange,
             ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: isError ? Colors.red : primaryColor,
+                width: 1.5,
+              ),
+            ),
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
         ),
-        SizedBox(height: 8),
-        // Fehlernachricht
-        if (_errorMessage.isNotEmpty)
+        if (isError)
           Padding(
             padding: const EdgeInsets.only(top: 4),
             child: Text(
               _errorMessage,
               style: TextStyle(
-                color: Colors.red,
+                color: Colors.red.shade700,
                 fontSize: 12,
               ),
             ),
           ),
-        // Link öffnen
-        if (_errorMessage.isEmpty && _controller.text.isNotEmpty)
+        // Show the "Open link" option if there's no error, not empty, and a valid URL entered
+        if (!_isEmpty && !isError)
           GestureDetector(
-            onTap: () async {
-              final url = _controller.text;
-              if (await canLaunch(url)) {
-                await launch(url);
-              } else {
-                setState(() {
-                  _errorMessage = 'Could not launch $url';
-                });
-              }
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(top: 4),
+            onTap: _openLink,
+            child: const Padding(
+              padding: EdgeInsets.only(top: 4),
               child: Text(
                 'Open link',
                 style: TextStyle(
-                  color: Colors.blue,
+                  color: primaryColor,
                   decoration: TextDecoration.underline,
+                  fontSize: 14,
                 ),
               ),
             ),
