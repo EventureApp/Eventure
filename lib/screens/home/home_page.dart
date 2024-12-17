@@ -1,3 +1,4 @@
+import 'package:eventure/models/event_filter.dart';
 import 'package:eventure/models/user.dart';
 import 'package:eventure/providers/event_provider.dart';
 import 'package:eventure/providers/location_provider.dart';
@@ -107,52 +108,197 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        toolbarHeight: 80,
+        toolbarHeight: 140,
         title: Padding(
           padding: const EdgeInsets.only(top: 0),
-          child: Row(
+          child: Column(
             children: [
-              Expanded(
-                child: Consumer<EventProvider>(
-                  builder: (context, eventProvider, child) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                            hintText: 'Search...',
-                            prefixIcon: const Icon(Icons.search),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide.none,
+              Row(
+                children: [
+                  Expanded(
+                    child: Consumer<EventProvider>(
+                      builder: (context, eventProvider, child) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: 'Search...',
+                              prefixIcon: const Icon(Icons.search),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide.none,
+                              ),
+                              filled: true,
+                              fillColor: Theme.of(context).colorScheme.primary),
                             ),
-                            filled: true,
-                            fillColor: Theme.of(context).colorScheme.primary),
-                        onChanged: (value) {
-                          eventProvider.setSearchString(value);
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Consumer<UserProvider>(
-                builder: (context, userProvider, child) {
-                  final user = userProvider.user;
-                  return IconButton(
-                    icon: CircleAvatar(
-                      radius: 20,
-                      backgroundImage: NetworkImage(
-                        user.profilePicture as String? ??
-                            'https://i.pravatar.cc/300',
-                      ),
+                            onChanged: (value) {
+                              eventProvider.setSearchString(value);
+                            },
+                          ),
+                        );
+                      },
                     ),
-                    onPressed: () {
-                      _optionsDialog(context, user);
+                  ),
+                  Consumer<UserProvider>(
+                    builder: (context, userProvider, child) {
+                      final user = userProvider.user;
+                      return IconButton(
+                        icon: CircleAvatar(
+                          radius: 20,
+                          backgroundImage: NetworkImage(
+                            user.profilePicture as String? ??
+                                'https://i.pravatar.cc/300',
+                          ),
+                        ),
+                        onPressed: () {
+                          _optionsDialog(context, user);
+                        },
+                      );
                     },
+                  ),
+                  const SizedBox(width: 10),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Consumer<EventProvider>(
+                builder: (context, eventProvider, child) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          EventFilter newFilter = eventProvider.filter;
+                          if (eventProvider.filter.startDate != DateTime(
+                            DateTime.now().year,
+                            DateTime.now().month,
+                            DateTime.now().day,
+                          ) && eventProvider.filter.endDate != DateTime(
+                            DateTime.now().year,
+                            DateTime.now().month,
+                            DateTime.now().day + 1,
+                          )) {
+                            newFilter.startDate = DateTime(
+                              DateTime
+                                  .now()
+                                  .year,
+                              DateTime
+                                  .now()
+                                  .month,
+                              DateTime
+                                  .now()
+                                  .day,
+                            );
+                            newFilter.endDate = DateTime(
+                              DateTime
+                                  .now()
+                                  .year,
+                              DateTime
+                                  .now()
+                                  .month,
+                              DateTime
+                                  .now()
+                                  .day + 1,
+                            );
+                            eventProvider.setFilter(newFilter);
+                          } else {
+                            newFilter.startDate = null;
+                            newFilter.endDate = null;
+                            eventProvider.setFilter(newFilter);
+                          }
+                        },
+                        child: const Text('Today'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          EventFilter newFilter = eventProvider.filter;
+                          if (eventProvider.filter.startDate != DateTime(
+                            DateTime.now().year,
+                            DateTime.now().month,
+                            DateTime.now().day + 1,
+                          ) && eventProvider.filter.endDate != DateTime(
+                            DateTime.now().year,
+                            DateTime.now().month,
+                            DateTime.now().day + 2,
+                          )) {
+                            newFilter.startDate = DateTime(
+                              DateTime
+                                  .now()
+                                  .year,
+                              DateTime
+                                  .now()
+                                  .month,
+                              DateTime
+                                  .now()
+                                  .day + 1,
+                            );
+                            newFilter.endDate = DateTime(
+                              DateTime
+                                  .now()
+                                  .year,
+                              DateTime
+                                  .now()
+                                  .month,
+                              DateTime
+                                  .now()
+                                  .day + 2,
+                            );
+                            eventProvider.setFilter(newFilter);
+                          } else {
+                            newFilter.startDate = null;
+                            newFilter.endDate = null;
+                            eventProvider.setFilter(newFilter);
+                          }
+                        },
+                        child: const Text('Tomorrow'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          EventFilter newFilter = eventProvider.filter;
+                          if (eventProvider.filter.startDate != DateTime(
+                            DateTime.now().year,
+                            DateTime.now().month,
+                            DateTime.now().day,
+                          ) && eventProvider.filter.endDate != DateTime(
+                            DateTime.now().year,
+                            DateTime.now().month,
+                            DateTime.now().day + 7,
+                          )) {
+                            newFilter.startDate = DateTime(
+                              DateTime
+                                  .now()
+                                  .year,
+                              DateTime
+                                  .now()
+                                  .month,
+                              DateTime
+                                  .now()
+                                  .day,
+                            );
+                            newFilter.endDate = DateTime(
+                              DateTime
+                                  .now()
+                                  .year,
+                              DateTime
+                                  .now()
+                                  .month,
+                              DateTime
+                                  .now()
+                                  .day + 7,
+                            );
+                            eventProvider.setFilter(newFilter);
+                          } else {
+                            newFilter.startDate = null;
+                            newFilter.endDate = null;
+                            eventProvider.setFilter(newFilter);
+                          }
+                        },
+                        child: const Text('One Week'),
+                      ),
+                    ],
                   );
                 },
               ),
-              const SizedBox(width: 10),
+
             ],
           ),
         ),

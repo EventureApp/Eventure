@@ -35,7 +35,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
     _startDate = null;
     _endDate = null;
     _visibility = EventVisability.public;
-    _eventType = [EventType.other];
+    _eventType = [];
     _location = context.read<EventProvider>().filter.location;
     _radius = context.read<EventProvider>().filter.range;
   }
