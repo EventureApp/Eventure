@@ -76,7 +76,6 @@ class _EventSelectState extends State<EventSelect> {
     await showDialog(
       context: context,
       builder: (BuildContext context) {
-        const primaryColor = Color(0xFF1976D2);
         final isMandatory = widget.isMandatory;
 
         return StatefulBuilder(builder: (context, setStateDialog) {
@@ -107,7 +106,7 @@ class _EventSelectState extends State<EventSelect> {
                   top: 16, left: 16, right: 16, bottom: 16),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.background,
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -142,7 +141,7 @@ class _EventSelectState extends State<EventSelect> {
                       hintText: 'Search events...',
                       hintStyle:
                           TextStyle(color: Colors.grey.shade600, fontSize: 14),
-                      fillColor: Colors.grey[100],
+                      fillColor: Theme.of(context).colorScheme.surface,
                       filled: true,
                       contentPadding: const EdgeInsets.symmetric(
                           vertical: 12, horizontal: 16),
@@ -163,7 +162,7 @@ class _EventSelectState extends State<EventSelect> {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: primaryColor,
+                          color: Theme.of(context).colorScheme.primary,
                           width: 1.0,
                         ),
                       ),
@@ -218,11 +217,16 @@ class _EventSelectState extends State<EventSelect> {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12),
                                     color: isSelected
-                                        ? primaryColor.withOpacity(0.15)
-                                        : Colors.white,
+                                        ? Theme.of(context)
+                                            .colorScheme
+                                            .primary
+                                            .withOpacity(0.15)
+                                        : Theme.of(context).colorScheme.surface,
                                     border: Border.all(
                                       color: isSelected
-                                          ? primaryColor
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .primary
                                           : Colors.black.withOpacity(0.1),
                                       width: 1.0,
                                     ),
@@ -230,13 +234,11 @@ class _EventSelectState extends State<EventSelect> {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Icon(
-                                        eventIcon,
-                                        size: 40,
-                                        color: isSelected
-                                            ? primaryColor
-                                            : Colors.grey[700],
-                                      ),
+                                      Icon(eventIcon,
+                                          size: 40,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary),
                                       const SizedBox(height: 8),
                                       Text(
                                         eventKey.toString().split('.').last,
@@ -244,9 +246,7 @@ class _EventSelectState extends State<EventSelect> {
                                         style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500,
-                                          color: isSelected
-                                              ? primaryColor
-                                              : Colors.black87,
+                                          color: Theme.of(context).colorScheme.secondary,
                                         ),
                                       ),
                                     ],
@@ -278,7 +278,7 @@ class _EventSelectState extends State<EventSelect> {
                           vertical: 14, horizontal: 24),
                       backgroundColor: (isMandatory && tempSelection.isEmpty)
                           ? Colors.grey
-                          : primaryColor,
+                          : Theme.of(context).colorScheme.primary,
                     ),
                     child: Text(
                       'Done',
@@ -312,7 +312,6 @@ class _EventSelectState extends State<EventSelect> {
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFF1976D2);
     final isFocused = _focusNode.hasFocus;
     final isError = _hasError;
     final borderColor = isError ? Colors.red : Colors.black.withOpacity(0.2);
@@ -324,7 +323,7 @@ class _EventSelectState extends State<EventSelect> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: borderColor, width: 1.5),
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
         ),
         child: Row(
           children: [
@@ -341,19 +340,19 @@ class _EventSelectState extends State<EventSelect> {
                       avatar: Icon(
                         icon,
                         size: 20,
-                        color: primaryColor,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
-                      backgroundColor: primaryColor.withOpacity(0.1),
                       label: Text(
                         event.toString().split('.').last,
                         style: TextStyle(
-                            color: primaryColor, fontWeight: FontWeight.w500),
+                            color: Theme.of(context).colorScheme.secondary,
+                            fontWeight: FontWeight.w500),
                       ),
                       deleteIcon: widget.isEditable
                           ? Icon(
                               Icons.close,
                               size: 18,
-                              color: primaryColor,
+                              color: Theme.of(context).colorScheme.secondary,
                             )
                           : null,
                       onDeleted: widget.isEditable
@@ -380,7 +379,9 @@ class _EventSelectState extends State<EventSelect> {
             if (widget.isEditable)
               Icon(
                 Icons.arrow_drop_down,
-                color: isFocused ? primaryColor : Colors.grey,
+                color: isFocused
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.grey,
               ),
           ],
         ),

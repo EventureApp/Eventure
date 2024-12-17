@@ -103,13 +103,13 @@ class _MapWidgetState extends State<MapWidget> {
               bottom: 16.0,
               right: 16.0,
               child: FloatingActionButton(
-                backgroundColor: const Color(0xFFEDEAF4),
+                backgroundColor: Theme.of(context).colorScheme.secondary,
                 onPressed: () async {
                   _mapController.move(_currentSelectedLocation, 13.0);
                 },
-                child: const Icon(
+                child: Icon(
                   Icons.near_me,
-                  color: Color(0xFF7763AE),
+                  color: Theme.of(context).colorScheme.surface,
                 ),
               ),
             )
@@ -199,7 +199,7 @@ class _LocationSelectBottomSheetState extends State<LocationSelectBottomSheet> {
               children: [
                 Expanded(
                   child: Text(
-                    "Standort auswählen",
+                    "Pick a location",
                     style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -218,7 +218,7 @@ class _LocationSelectBottomSheetState extends State<LocationSelectBottomSheet> {
             ),
             const SizedBox(height: 8),
             Text(
-              "Tippe auf die Karte, um einen Standort festzulegen.",
+              "Click on the map to select a location.",
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
               ),
@@ -241,7 +241,7 @@ class _LocationSelectBottomSheetState extends State<LocationSelectBottomSheet> {
               Padding(
                 padding: const EdgeInsets.only(top: 8),
                 child: Text(
-                  'Bitte wähle einen Standort aus.',
+                  'Please choose a location.',
                   style: TextStyle(color: Colors.red[700], fontSize: 12),
                 ),
               ),
@@ -262,12 +262,12 @@ class _LocationSelectBottomSheetState extends State<LocationSelectBottomSheet> {
                 padding:
                     const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
               ),
-              child: const Text(
-                'Fertig',
+              child: Text(
+                'Done',
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white),
+                    color: Theme.of(context).colorScheme.secondary),
               ),
             ),
           ],

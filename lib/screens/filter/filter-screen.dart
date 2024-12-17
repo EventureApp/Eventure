@@ -97,20 +97,22 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
               child: Container(
                 width: 50,
                 height: 50,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.secondary,
                   shape: BoxShape.circle,
                 ),
-                child: const Center(
+                child: Center(
                   child: Icon(
                     CustomIcons.filteroptions,
                     size: 30,
+                    color: Theme.of(context).colorScheme.primary
                   ),
                 ),
               ),
             ),
           ),
           Container(
+            color: Theme.of(context).colorScheme.background,
             padding: const EdgeInsets.all(16.0),
             child: Form(
               key: _formKey,

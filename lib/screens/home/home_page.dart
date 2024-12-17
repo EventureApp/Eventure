@@ -129,7 +129,8 @@ class _HomePageState extends State<HomePage> {
                                 borderSide: BorderSide.none,
                               ),
                               filled: true,
-                              fillColor: Theme.of(context).colorScheme.primary),
+                              fillColor: (Theme.of(context).colorScheme.surface),
+
                             ),
                             onChanged: (value) {
                               eventProvider.setSearchString(value);
@@ -206,6 +207,13 @@ class _HomePageState extends State<HomePage> {
                             eventProvider.setFilter(newFilter);
                           }
                         },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Theme.of(context).colorScheme.secondary, // Text color
+                          backgroundColor: Theme.of(context).colorScheme.surface, // Button background color
+                          textStyle: const TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
                         child: const Text('Today'),
                       ),
                       ElevatedButton(
@@ -249,6 +257,13 @@ class _HomePageState extends State<HomePage> {
                             eventProvider.setFilter(newFilter);
                           }
                         },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Theme.of(context).colorScheme.secondary, // Text color
+                          backgroundColor: Theme.of(context).colorScheme.surface, // Button background color
+                          textStyle: const TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
                         child: const Text('Tomorrow'),
                       ),
                       ElevatedButton(
@@ -292,6 +307,13 @@ class _HomePageState extends State<HomePage> {
                             eventProvider.setFilter(newFilter);
                           }
                         },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Theme.of(context).colorScheme.secondary, // Text color
+                          backgroundColor: Theme.of(context).colorScheme.surface, // Button background color
+                          textStyle: const TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
                         child: const Text('One Week'),
                       ),
                     ],

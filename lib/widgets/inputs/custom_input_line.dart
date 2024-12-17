@@ -71,7 +71,7 @@ class _CustomInputLineState extends State<CustomInputLine> {
           decoration: InputDecoration(
             labelText: widget.label,
             labelStyle: TextStyle(
-              color: _focusNode.hasFocus ? primaryColor : Colors.black54,
+              color: _focusNode.hasFocus ? Colors.white : Theme.of(context).colorScheme.secondary,
               fontWeight: FontWeight.w500,
             ),
             hintText:
@@ -99,16 +99,16 @@ class _CustomInputLineState extends State<CustomInputLine> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: primaryColor,
+                color: Theme.of(context).colorScheme.secondary,
                 width: 1.5,
               ),
             ),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: Theme.of(context).colorScheme.surface,
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           ),
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal,color: Theme.of(context).colorScheme.secondary),
         ),
         if (_isFieldEmpty)
           Padding(

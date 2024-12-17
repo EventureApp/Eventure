@@ -72,19 +72,42 @@ class _AddFriendsScreenState extends State<AddFriendsScreen> {
                         ],
                         color: Theme.of(context).colorScheme.surface,
                       ),
-                      child: ListTile(
-                        tileColor: Theme.of(context).colorScheme.surface,
-                        shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.horizontal(
-                                right: Radius.circular(50),
-                                left: Radius.circular(50))),
-                        title: Text(
-                            "${usersStartingWith[index].firstName} ${usersStartingWith[index].lastName}"),
-                        subtitle: Text("${usersStartingWith[index].uni}"),
-                        trailing: StyledButton(
-                            onPressed: () {},
-                            child: const Text("Send friend request")),
-                      ));
+                    child: ListTile(
+                      tileColor: Theme.of(context).colorScheme.surface,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.horizontal(
+                          right: Radius.circular(50),
+                          left: Radius.circular(50),
+                        ),
+                      ),
+                      title: Text(
+                        "${usersStartingWith[index].firstName} ${usersStartingWith[index].lastName}",
+                      ),
+                      subtitle: Text("${usersStartingWith[index].uni}"),
+                      trailing: InkWell( // Replace StyledButton if no direct control over styling
+                        onTap: () {}, // Your action here
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.white, // White border
+                              width: 2, // Border width
+                            ),
+                            borderRadius: BorderRadius.circular(12), // Rounded corners
+                            color: Colors.transparent, // Transparent background
+                          ),
+                          child: const Text(
+                            "Send friend request",
+                            style: TextStyle(
+                              color: Colors.white, // Text color
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                  );
                 },
               ));
             }),

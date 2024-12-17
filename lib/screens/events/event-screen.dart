@@ -190,7 +190,6 @@ class _EventScreenState extends State<EventScreen> {
                         CustomDateAndTimePicker(
                           label: "Start Date",
                           required: true,
-                          initValue: _startDate,
                           editable: _isEditing,
                           onDateChanged: (date) {
                             setState(() => _startDate = date);
@@ -239,6 +238,7 @@ class _EventScreenState extends State<EventScreen> {
                         const SizedBox(height: 16),
                         CustomNumberInput(
                           label: "Max Participants",
+                          isMandatory: true,
                           onChanged: (value) {
                             setState(() => _maxParticipants = value);
                             _validateForm();
