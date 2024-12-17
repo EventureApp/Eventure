@@ -106,7 +106,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        toolbarHeight: 140, // Increased height to accommodate buttons
+        toolbarHeight: 140,
         title: Padding(
           padding: const EdgeInsets.only(top: 0),
           child: Column(
