@@ -31,7 +31,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
   @override
   void initState() {
     super.initState();
-    EventFilter eventFilter = context.read<EventProvider>().filter!;
+    EventFilter eventFilter = context.read<EventProvider>().filter;
 
     _startDate = eventFilter.startDate;
     _endDate = eventFilter.endDate;
