@@ -47,46 +47,65 @@ class _MapWidgetState extends State<MapWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return FlutterMap(
-      mapController: _mapController,
-      options: MapOptions(
-        initialCenter: _currentSelectedLocation,
-        initialZoom: 13.0,
-        maxZoom: 100.0,
-        interactionOptions: widget.isEditable
-            ? const InteractionOptions(flags: InteractiveFlag.all)
-            : const InteractionOptions(flags: InteractiveFlag.none),
-        onTap: widget.isEditable
-            ? (tapPosition, point) {
-                widget.onTap(point);
-              }
-            : null,
-      ),
+    return Stack(
       children: [
-        TileLayer(
-          urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-          subdomains: const ['a', 'b', 'c'],
-        ),
-        MarkerLayer(
-          markers: [
-            Marker(
-              point: _currentLocation,
-              width: 50,
-              height: 50,
-              child: const Icon(
-                Icons.my_location,
-                color: Colors.blueAccent,
-              ),
+        FlutterMap(
+          mapController: _mapController,
+          options: MapOptions(
+            initialCenter: _currentSelectedLocation,
+            initialZoom: 13.0,
+            maxZoom: 100.0,
+            interactionOptions: widget.isEditable
+                ? const InteractionOptions(flags: InteractiveFlag.all)
+                : const InteractionOptions(flags: InteractiveFlag.none),
+            onTap: widget.isEditable
+                ? (tapPosition, point) {
+                    widget.onTap(point);
+                  }
+                : null,
+          ),
+          children: [
+            TileLayer(
+              urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+              subdomains: const ['a', 'b', 'c'],
             ),
-            if (_currentSelectedLocation != _currentLocation)
-              Marker(
-                  point: _currentSelectedLocation,
+            MarkerLayer(
+              markers: [
+                Marker(
+                  point: _currentLocation,
                   width: 50,
                   height: 50,
-                  child:
-                      const Icon(Icons.location_on, color: Colors.blueAccent))
+                  child: const Icon(
+                    Icons.my_location,
+                    color: Colors.blueAccent,
+                  ),
+                ),
+                if (_currentSelectedLocation != _currentLocation)
+                  Marker(
+                      point: _currentSelectedLocation,
+                      width: 50,
+                      height: 50,
+                      child: const Icon(Icons.location_on,
+                          color: Colors.blueAccent))
+              ],
+            ),
           ],
         ),
+        widget.isEditable ?
+        Positioned(
+          bottom: 16.0,
+          right: 16.0,
+          child: FloatingActionButton(
+            backgroundColor: const Color(0xFFEDEAF4),
+            onPressed: () async {
+              _mapController.move(_currentLocation, 13.0);
+            },
+            child: const Icon(
+              Icons.my_location,
+              color: Color(0xFF7763AE),
+            ),
+          ),
+        ) : const SizedBox.shrink()
       ],
     );
   }
