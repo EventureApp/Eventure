@@ -2,6 +2,9 @@ import 'package:eventure/models/user.dart';
 import 'package:eventure/providers/event_provider.dart';
 import 'package:eventure/providers/location_provider.dart';
 import 'package:eventure/providers/user_provider.dart';
+import 'package:eventure/providers/user_provider.dart';
+import 'package:eventure/screens/auth/elegant_signin_screen.dart';
+import 'package:eventure/screens/auth/elegant_signup_screen.dart';
 import 'package:eventure/screens/events/event-screen.dart';
 import 'package:eventure/screens/events/detail_view.dart';
 import 'package:eventure/screens/filter/filter-screen.dart';
@@ -45,9 +48,12 @@ final _router = GoRouter(
   redirect: (context, state) {
     final authProvider =
         Provider.of<AuthenticationProvider>(context, listen: false);
-    final isLoggingIn = state.uri.toString() == '/sign-in';
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    userProvider.initializeUser();
+    final isOnAuthPage = state.uri.toString() == '/sign-in' ||
+        state.uri.toString() == '/sign-up';
 
-    if (!authProvider.isLoggedIn && !isLoggingIn) {
+    if (!authProvider.isLoggedIn && !isOnAuthPage) {
       return '/sign-in';
     }
     return null;
@@ -59,62 +65,12 @@ final _router = GoRouter(
       routes: [
         GoRoute(
           path: 'sign-in',
-          builder: (context, state) {
-            return PopScope(
-                canPop: false,
-                child: SignInScreen(
-                  actions: [
-                    ForgotPasswordAction(((context, email) {
-                      final uri = Uri(
-                        path: '/sign-in/forgot-password',
-                        queryParameters: <String, String?>{
-                          'email': email,
-                        },
-                      );
-                      context.push(uri.toString());
-                    })),
-                    AuthStateChangeAction(((context, state) {
-                      final userProvider =
-                          Provider.of<UserProvider>(context, listen: false);
-                      final user = switch (state) {
-                        SignedIn state => state.user,
-                        UserCreated state => state.credential.user,
-                        _ => null
-                      };
-                      if (user == null) {
-                        return;
-                      }
-                      if (state is UserCreated) {
-                        user.updateDisplayName(user.email!.split('@')[0]);
-                        AppUser appUser = AppUser(
-                            id: user.uid, username: user.email!.split('@')[0]);
-                        userProvider.addUser(appUser);
-                      }
-                      if (!user.emailVerified) {
-                        user.sendEmailVerification();
-                        const snackBar = SnackBar(
-                            content: Text(
-                                'Please check your email to verify your email address'));
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      }
-                      userProvider.getCurrentUser(user.uid);
-                      context.go('/');
-                    })),
-                  ],
-                ));
-          },
-          routes: [
-            GoRoute(
-              path: 'forgot-password',
-              builder: (context, state) {
-                final arguments = state.uri.queryParameters;
-                return ForgotPasswordScreen(
-                  email: arguments['email'],
-                  headerMaxExtent: 200,
-                );
-              },
-            ),
-          ],
+          builder: (context, state) =>
+              PopScope(canPop: false, child: const ElegantSignInScreen()),
+        ),
+        GoRoute(
+          path: '/sign-up', // <- Hier ist der Fehler: führender Slash
+          builder: (context, state) => const ElegantSignUpScreen(),
         ),
         GoRoute(
             path: 'profile',
@@ -124,8 +80,8 @@ final _router = GoRouter(
                       const ProfileDetailScreen());
             }),
         GoRoute(
-            path:"userList",
-            builder: (context,state){
+            path: "userList",
+            builder: (context, state) {
               return AddFriendsScreen();
             }),
         GoRoute(
