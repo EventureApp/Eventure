@@ -25,9 +25,10 @@ class UserProvider with ChangeNotifier {
   List<AppUser> get usersStartingWith => _usersStartingWith;
 
   UserProvider() {
-    fetchUsers();
-    getCurrentUser(_firebaseAuth.currentUser?.uid);
-    fetchFriends();
+    if (_firebaseAuth.currentUser != null) {
+      getCurrentUser(_firebaseAuth.currentUser?.uid);
+      fetchFriends();
+    }
   }
 
   Future<void> getCurrentUser(String? id) async {
