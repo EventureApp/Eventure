@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CustomNumberInput extends StatefulWidget {
   final String label;
   final String? hint;
-  final bool required; // Changed isMandatory to required
+  final bool? isMandatory;
   final int? minValue;
   final int? maxValue;
   final Function(int?) onChanged;
@@ -12,7 +12,7 @@ class CustomNumberInput extends StatefulWidget {
     Key? key,
     required this.label,
     this.hint,
-    this.required = false, // Default value remains false
+    this.isMandatory = false,
     this.minValue,
     this.maxValue,
     required this.onChanged,
@@ -25,7 +25,7 @@ class CustomNumberInput extends StatefulWidget {
 class _CustomNumberInputState extends State<CustomNumberInput> {
   String _errorMessage = "";
   late TextEditingController _controller;
-  late FocusNode _focusNode; // FocusNode for managing focus
+  late FocusNode _focusNode;
 
   @override
   void initState() {
@@ -33,14 +33,14 @@ class _CustomNumberInputState extends State<CustomNumberInput> {
     _controller = TextEditingController();
     _focusNode = FocusNode();
     _focusNode.addListener(() {
-      setState(() {}); // Update UI when focus changes
+      setState(() {}); // Refresh UI on focus changes
     });
   }
 
   @override
   void dispose() {
     _controller.dispose();
-    _focusNode.dispose(); // Clean up focus node
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -48,109 +48,104 @@ class _CustomNumberInputState extends State<CustomNumberInput> {
     if (value.isEmpty) {
       widget.onChanged(null);
       setState(() {
-        _errorMessage = widget.required ? 'This field is required.' : '';
+        _errorMessage =
+            widget.isMandatory == true ? 'This field is mandatory.' : '';
       });
       return;
     }
 
     final number = int.tryParse(value);
-    if (number != null) {
-      if (widget.minValue != null && number < widget.minValue!) {
-        setState(() {
-          _errorMessage = 'Value must be >= ${widget.minValue}';
-        });
-        widget.onChanged(null);
-      } else if (widget.maxValue != null && number > widget.maxValue!) {
-        setState(() {
-          _errorMessage = 'Value must be <= ${widget.maxValue}';
-        });
-        widget.onChanged(null);
-      } else {
-        setState(() {
-          _errorMessage = '';
-        });
-        widget.onChanged(number);
-      }
-    } else {
+    if (number == null) {
       setState(() {
-        _errorMessage = 'Please enter a valid number';
+        _errorMessage = 'Please enter a valid number.';
       });
       widget.onChanged(null);
+      return;
     }
+
+    if (widget.minValue != null && number < widget.minValue!) {
+      setState(() {
+        _errorMessage = 'Value must be >= ${widget.minValue}.';
+      });
+      widget.onChanged(null);
+      return;
+    }
+
+    if (widget.maxValue != null && number > widget.maxValue!) {
+      setState(() {
+        _errorMessage = 'Value must be <= ${widget.maxValue}.';
+      });
+      widget.onChanged(null);
+      return;
+    }
+
+    // If we reach here, the value is valid
+    setState(() {
+      _errorMessage = '';
+    });
+    widget.onChanged(number);
   }
 
   @override
   Widget build(BuildContext context) {
+    const primaryColor = Color(0xFF1976D2);
+    final isFocused = _focusNode.hasFocus;
+    final isInvalid = _errorMessage.isNotEmpty;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Label with an asterisk for required fields
-        Text.rich(
-          TextSpan(
-            text: widget.label.toUpperCase(),
-            style: const TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 16,
+        const SizedBox(height: 8),
+        TextField(
+          controller: _controller,
+          focusNode: _focusNode,
+          keyboardType: TextInputType.number,
+          onChanged: _onChange,
+          decoration: InputDecoration(
+            labelText:
+                widget.isMandatory == true ? '${widget.label} *' : widget.label,
+            labelStyle: TextStyle(
+              color: isFocused ? primaryColor : Colors.black54,
+              fontWeight: FontWeight.w500,
             ),
-            children: widget.required
-                ? [
-              const TextSpan(
-                text: " *",
-                style: TextStyle(
-                  color: Colors.red, // Red asterisk for required fields
-                ),
-              ),
-            ]
-                : [],
-          ),
-        ),
-        SizedBox(height: 8),
-        // Input Field
-        GestureDetector(
-          onTap: () {
-            _focusNode.requestFocus();
-          },
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              border: Border.all(
-                color: _focusNode.hasFocus
-                    ? Theme.of(context).colorScheme.secondary
-                    : _errorMessage.isNotEmpty
-                    ? Colors.red
-                    : Theme.of(context)
-                    .colorScheme
-                    .secondary
-                    .withOpacity(0.7),
+            hintText: widget.hint ??
+                (widget.isMandatory == true ? 'Mandatory' : 'Optional'),
+            hintStyle: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(
+                color: Colors.black26,
                 width: 1.5,
               ),
             ),
-            child: TextField(
-              controller: _controller,
-              focusNode: _focusNode,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                hintText: widget.hint ?? 'Enter a number',
-                hintStyle: TextStyle(
-                  color: Colors.grey.shade600,
-                  fontSize: 14,
-                ),
-                border: InputBorder.none,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: isInvalid ? Colors.red : Colors.black.withOpacity(0.2),
+                width: 1.5,
               ),
-              onChanged: _onChange,
             ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: isInvalid ? Colors.red : primaryColor,
+                width: 1.5,
+              ),
+            ),
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
         ),
-        SizedBox(height: 8),
-        // Error Message
         if (_errorMessage.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 4),
             child: Text(
               _errorMessage,
               style: TextStyle(
-                color: Colors.red,
+                color: Colors.red.shade700,
                 fontSize: 12,
               ),
             ),

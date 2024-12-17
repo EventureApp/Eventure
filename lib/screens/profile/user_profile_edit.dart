@@ -63,8 +63,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
               IconButton(
                 icon: const Icon(Icons.done),
                 onPressed: () {
-                  final user = userProvider.users
-                      .firstWhere((user) => user.id == userProvider.user.id);
+                  final user = userProvider.user;
                   userProvider.updateUser(user.copyWith(
                     lastName: lastNameController.text,
                     firstName: firstNameController.text,
