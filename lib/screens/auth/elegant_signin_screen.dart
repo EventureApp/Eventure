@@ -31,7 +31,8 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
 
       if (userId == null) {
         setState(() {
-          _errorMessage = 'Es gab ein Problem bei der Registrierung.';
+          _errorMessage =
+              'There was a Problem with your login. Please try again.';
         });
         return;
       }
@@ -40,7 +41,7 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
       GoRouter.of(context).go('/');
     } catch (e) {
       setState(() {
-        _errorMessage = 'Anmeldung fehlgeschlagen: ${e.toString()}';
+        _errorMessage = 'Failed to sign in: ${e.toString()}';
       });
     }
   }
@@ -100,7 +101,7 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    'Willkommen zurück!',
+                    'Welcome back to Eventure!',
                     style: theme.textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
@@ -109,7 +110,7 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Melde dich an, um fortzufahren',
+                    'Sign in to your account',
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: Colors.black54,
                       fontSize: 16,
@@ -135,7 +136,7 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
                     controller: _passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
-                      labelText: 'Passwort',
+                      labelText: 'Password',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -165,7 +166,7 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
                       ),
                     ),
                     child: const Text(
-                      'Anmelden',
+                      'Sign in',
                       style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
@@ -180,7 +181,7 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
                         // Hier die Logik für "Passwort vergessen" einbauen
                       },
                       child: const Text(
-                        'Passwort vergessen?',
+                        'Forgot Password?',
                         style: TextStyle(fontSize: 14),
                       ),
                     ),
@@ -191,13 +192,13 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('Noch kein Konto?'),
+                      const Text('Don\'t have an account yet?'),
                       TextButton(
                         onPressed: () {
                           context.push('/sign-up');
                         },
                         child: Text(
-                          'Registrieren',
+                          'Sing up',
                           style: TextStyle(color: primaryColor),
                         ),
                       ),
