@@ -71,6 +71,7 @@ class _HomePageState extends State<HomePage> {
                 title: const Text('User'),
                 onTap: () {
                   Navigator.of(context).pop();
+                  context.push('/userList');
                 },
               ),
               ListTile(

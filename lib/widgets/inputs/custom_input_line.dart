@@ -93,7 +93,7 @@ class _CustomInputLineState extends State<CustomInputLine> {
             focusNode: _focusNode, // Fokus-Node an das Textfeld binden
             readOnly: !widget.editable,
             decoration: InputDecoration(
-              hintText: widget.required ? 'Mandatory' : 'Optional',
+              hintText: 'Choose a title',
               hintStyle: TextStyle(
                 color: Colors.grey.shade600,
                 fontSize: 14,

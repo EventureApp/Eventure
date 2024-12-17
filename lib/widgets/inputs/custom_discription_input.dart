@@ -63,13 +63,13 @@ class _CustomDescriptionInputState extends State<CustomDescriptionInput> {
             ),
             children: widget.required
                 ? [
-              const TextSpan(
-                text: " *", // Sternchen für Pflichtfelder
-                style: TextStyle(
-                  color: Colors.red, // Stern in Rot
-                ),
-              ),
-            ]
+                    const TextSpan(
+                      text: " *", // Sternchen für Pflichtfelder
+                      style: TextStyle(
+                        color: Colors.red, // Stern in Rot
+                      ),
+                    ),
+                  ]
                 : [], // Kein Sternchen, wenn nicht erforderlich
           ),
         ),
@@ -88,10 +88,13 @@ class _CustomDescriptionInputState extends State<CustomDescriptionInput> {
               borderRadius: BorderRadius.circular(4), // Runde Ecken
               border: Border.all(
                 color: _focusNode.hasFocus
-                    ? Theme.of(context).primaryColor // Blau wenn fokussiert
+                    ? Theme.of(context).colorScheme.secondary
                     : _isFieldEmpty
-                    ? Colors.red // Rot bei Fehler
-                    : Colors.black.withOpacity(0.2), // Standardfarbe wenn nicht fokussiert
+                        ? Colors.red
+                        : Theme.of(context)
+                            .colorScheme
+                            .secondary
+                            .withOpacity(0.7),
                 width: 1.5,
               ),
             ),
@@ -101,7 +104,7 @@ class _CustomDescriptionInputState extends State<CustomDescriptionInput> {
               readOnly: !widget.editable,
               maxLines: 5, // Mehrzeiliges Textfeld
               decoration: InputDecoration(
-                hintText: widget.required ? 'Madatory' : 'Optional',
+                hintText: widget.required ? 'Mandatory' : 'Optional',
                 hintStyle: TextStyle(
                   color: Colors.grey.shade600,
                   fontSize: 14,
@@ -110,9 +113,9 @@ class _CustomDescriptionInputState extends State<CustomDescriptionInput> {
               ),
               onChanged: widget.editable
                   ? (value) {
-                widget.onChanged(value);
-                _validateField(value);
-              }
+                      widget.onChanged(value);
+                      _validateField(value);
+                    }
                   : null,
             ),
           ),

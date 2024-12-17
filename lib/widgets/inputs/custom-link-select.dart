@@ -79,13 +79,13 @@ class _CustomLinkInputState extends State<CustomLinkInput> {
             ),
             children: widget.isMandatory!
                 ? [
-              const TextSpan(
-                text: " *", // Sternchen für Pflichtfelder
-                style: TextStyle(
-                  color: Colors.red, // Stern in Rot
-                ),
-              ),
-            ]
+                    const TextSpan(
+                      text: " *", // Sternchen für Pflichtfelder
+                      style: TextStyle(
+                        color: Colors.red, // Stern in Rot
+                      ),
+                    ),
+                  ]
                 : [], // Kein Sternchen, wenn nicht erforderlich
           ),
         ),
@@ -93,7 +93,8 @@ class _CustomLinkInputState extends State<CustomLinkInput> {
         // Eingabefeld im angepassten Design
         GestureDetector(
           onTap: () {
-            _focusNode.requestFocus(); // Fokus anfordern, wenn das Feld angetippt wird
+            _focusNode
+                .requestFocus(); // Fokus anfordern, wenn das Feld angetippt wird
           },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 12),
@@ -101,10 +102,13 @@ class _CustomLinkInputState extends State<CustomLinkInput> {
               borderRadius: BorderRadius.circular(4),
               border: Border.all(
                 color: _focusNode.hasFocus
-                    ? Theme.of(context).primaryColor // Blau wenn fokussiert
+                    ? Theme.of(context).colorScheme.secondary
                     : _errorMessage.isNotEmpty
-                    ? Colors.red // Rot bei Fehler
-                    : Colors.black.withOpacity(0.2), // Standardfarbe wenn nicht fokussiert
+                        ? Colors.red
+                        : Theme.of(context)
+                            .colorScheme
+                            .secondary
+                            .withOpacity(0.7),
                 width: 1.5,
               ),
             ),

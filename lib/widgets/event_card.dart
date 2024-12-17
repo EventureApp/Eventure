@@ -7,7 +7,7 @@ class EventCard extends StatelessWidget {
   final String address;
   final String organizer;
   final IconData icon;
-  final VoidCallback onTap;
+    final VoidCallback onTap;
 
   const EventCard({
     Key? key,

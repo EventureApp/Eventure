@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CustomNumberInput extends StatefulWidget {
   final String label;
   final String? hint;
-  final bool? isMandatory;
+  final bool required; // Changed isMandatory to required
   final int? minValue;
   final int? maxValue;
   final Function(int?) onChanged;
@@ -12,7 +12,7 @@ class CustomNumberInput extends StatefulWidget {
     Key? key,
     required this.label,
     this.hint,
-    this.isMandatory = false,
+    this.required = false, // Default value remains false
     this.minValue,
     this.maxValue,
     required this.onChanged,
@@ -25,22 +25,22 @@ class CustomNumberInput extends StatefulWidget {
 class _CustomNumberInputState extends State<CustomNumberInput> {
   String _errorMessage = "";
   late TextEditingController _controller;
-  late FocusNode _focusNode; // FocusNode für das Eingabefeld
+  late FocusNode _focusNode; // FocusNode for managing focus
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController();
-    _focusNode = FocusNode(); // Initialisieren des Fokus-Managements
+    _focusNode = FocusNode();
     _focusNode.addListener(() {
-      setState(() {}); // UI bei Fokusänderung aktualisieren
+      setState(() {}); // Update UI when focus changes
     });
   }
 
   @override
   void dispose() {
     _controller.dispose();
-    _focusNode.dispose(); // Fokus-Node freigeben
+    _focusNode.dispose(); // Clean up focus node
     super.dispose();
   }
 
@@ -48,7 +48,7 @@ class _CustomNumberInputState extends State<CustomNumberInput> {
     if (value.isEmpty) {
       widget.onChanged(null);
       setState(() {
-        _errorMessage = widget.isMandatory! ? 'This field is mandatory.' : '';
+        _errorMessage = widget.required ? 'This field is required.' : '';
       });
       return;
     }
@@ -84,48 +84,51 @@ class _CustomNumberInputState extends State<CustomNumberInput> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Label mit Sternchen für Pflichtfelder
+        // Label with an asterisk for required fields
         Text.rich(
           TextSpan(
-            text: widget.label.toUpperCase(), // Label immer in Großbuchstaben
+            text: widget.label.toUpperCase(),
             style: const TextStyle(
               fontWeight: FontWeight.w400,
               fontSize: 16,
             ),
-            children: widget.isMandatory!
+            children: widget.required
                 ? [
               const TextSpan(
-                text: " *", // Sternchen für Pflichtfelder
+                text: " *",
                 style: TextStyle(
-                  color: Colors.red, // Stern in Rot
+                  color: Colors.red, // Red asterisk for required fields
                 ),
               ),
             ]
-                : [], // Kein Sternchen, wenn nicht erforderlich
+                : [],
           ),
         ),
         SizedBox(height: 8),
-        // Eingabefeld im angepassten Design
+        // Input Field
         GestureDetector(
           onTap: () {
-            _focusNode.requestFocus(); // Fokus anfordern, wenn das Feld angetippt wird
+            _focusNode.requestFocus();
           },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4), // Runde Ecken
+              borderRadius: BorderRadius.circular(4),
               border: Border.all(
                 color: _focusNode.hasFocus
-                    ? Theme.of(context).primaryColor // Blau wenn fokussiert
+                    ? Theme.of(context).colorScheme.secondary
                     : _errorMessage.isNotEmpty
-                    ? Colors.red // Rot bei Fehler
-                    : Colors.black.withOpacity(0.2), // Standardfarbe wenn nicht fokussiert
+                    ? Colors.red
+                    : Theme.of(context)
+                    .colorScheme
+                    .secondary
+                    .withOpacity(0.7),
                 width: 1.5,
               ),
             ),
             child: TextField(
               controller: _controller,
-              focusNode: _focusNode, // Fokus-Node für das TextField
+              focusNode: _focusNode,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 hintText: widget.hint ?? 'Enter a number',
@@ -140,7 +143,7 @@ class _CustomNumberInputState extends State<CustomNumberInput> {
           ),
         ),
         SizedBox(height: 8),
-        // Fehlernachricht
+        // Error Message
         if (_errorMessage.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 4),

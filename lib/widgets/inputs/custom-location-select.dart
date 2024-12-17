@@ -57,8 +57,8 @@ class _MapWidgetState extends State<MapWidget> {
             : InteractionOptions(flags: InteractiveFlag.none),
         onTap: widget.isEditable
             ? (tapPosition, point) {
-          widget.onTap(point);
-        }
+                widget.onTap(point);
+              }
             : null,
       ),
       children: [
@@ -75,7 +75,7 @@ class _MapWidgetState extends State<MapWidget> {
               child: Icon(
                 Icons.location_on,
                 size: 50,
-                color: Colors.blue,
+                color: Theme.of(context).colorScheme.surface
               ),
             ),
           ],
@@ -221,9 +221,11 @@ class _LocationSelectState extends State<LocationSelect> {
         _isLoading = false;
       });
       return;
-    } else if (permission == LocationPermission.denied || permission == LocationPermission.whileInUse) {
+    } else if (permission == LocationPermission.denied ||
+        permission == LocationPermission.whileInUse) {
       permission = await Geolocator.requestPermission();
-      if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
+      if (permission != LocationPermission.whileInUse &&
+          permission != LocationPermission.always) {
         setState(() {
           _isLoading = false;
         });
@@ -231,7 +233,8 @@ class _LocationSelectState extends State<LocationSelect> {
       }
     }
 
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
     setState(() {
       _selectedLocation = LatLng(position.latitude, position.longitude);
       _isLoading = false;
@@ -267,7 +270,7 @@ class _LocationSelectState extends State<LocationSelect> {
           children: [
             Expanded(
               child: Text(
-                widget.label,
+                widget.label.toUpperCase(),
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
               ),
             ),
@@ -276,7 +279,9 @@ class _LocationSelectState extends State<LocationSelect> {
               child: Icon(
                 Icons.map,
                 size: 24,
-                color: widget.isEditable ? Colors.blue : Colors.grey,
+                color: widget.isEditable
+                    ? Theme.of(context).colorScheme.secondary
+                    : Colors.grey,
               ),
             ),
           ],
@@ -297,13 +302,13 @@ class _LocationSelectState extends State<LocationSelect> {
           child: _isLoading
               ? Center(child: CircularProgressIndicator())
               : MapWidget(
-            initialLocation: _selectedLocation ?? LatLng(0.0, 0.0),
-            isEditable: false,
-            onTap: (LatLng) {
-              _openLocationPopover();
-            },
-            isMandatory: widget.isMandatory,
-          ),
+                  initialLocation: _selectedLocation ?? LatLng(0.0, 0.0),
+                  isEditable: false,
+                  onTap: (LatLng) {
+                    _openLocationPopover();
+                  },
+                  isMandatory: widget.isMandatory,
+                ),
         ),
         SizedBox(height: 16),
       ],

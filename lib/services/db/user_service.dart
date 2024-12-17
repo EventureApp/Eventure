@@ -54,4 +54,28 @@ class UserService implements DatabaseService<AppUser> {
     }
     return friends;
   }
+  Future<List<AppUser>> getStartingWith(String startingString) async {
+    if(startingString==""){
+      return await getAll();
+    }
+    final strFrontCode = startingString.substring(0, startingString.length - 1);
+    final strEndCode = startingString.substring(startingString.length-1,startingString.length);
+    final limit =
+        strFrontCode + String.fromCharCode(strEndCode.codeUnitAt(0) + 1);
+
+    final snapshot = await _firestore.collection('users').where(
+      Filter.or(
+        Filter.and(
+          Filter('firstName', isGreaterThanOrEqualTo: startingString),
+          Filter('firstName', isLessThan: limit)
+        ),
+        Filter.and(
+            Filter('lastName', isGreaterThanOrEqualTo: startingString),
+            Filter('lastName', isLessThan: limit)
+        )
+      )).get();
+    return snapshot.docs.map((doc) {
+      return AppUser.fromMap(doc.data(), doc.id);
+    }).toList();
+  }
 }

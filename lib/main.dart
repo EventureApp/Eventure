@@ -6,6 +6,7 @@ import 'package:eventure/screens/events/event-screen.dart';
 import 'package:eventure/screens/events/detail_view.dart';
 import 'package:eventure/screens/filter/filter-screen.dart';
 import 'package:eventure/screens/home/home_page.dart';
+import 'package:eventure/screens/profile/add_friends.dart';
 import 'package:eventure/screens/profile/user_profile.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
@@ -124,6 +125,11 @@ final _router = GoRouter(
               return Consumer<AuthenticationProvider>(
                   builder: (context, authProvider, _) =>
                       const ProfileDetailScreen());
+            }),
+        GoRoute(
+            path:"userList",
+            builder: (context,state){
+              return AddFriendsScreen();
             }),
         GoRoute(
             path: "addEvent",

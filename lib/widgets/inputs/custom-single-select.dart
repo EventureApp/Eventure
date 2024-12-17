@@ -29,9 +29,7 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      _selectedValue = widget.initValue;
-    });
+    _selectedValue = null; // No initial value selected
     _focusNode = FocusNode();
   }
 
@@ -55,8 +53,6 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
 
   @override
   Widget build(BuildContext context) {
-    final isValid = _errorMessage.isEmpty;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -70,7 +66,7 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
                 fontSize: 16,
               ),
             ),
-            if (widget.required) ...[
+            if (widget.required)
               const Text(
                 ' *',
                 style: TextStyle(
@@ -78,7 +74,6 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
                   fontSize: 16,
                 ),
               ),
-            ],
           ],
         ),
         SizedBox(height: 8),
@@ -94,7 +89,6 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
                   title: Text('Select ${widget.label}'),
                   content: SingleChildScrollView(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: widget.data.keys.map((option) {
                         return RadioListTile<String>(
                           activeColor: Theme.of(context).primaryColor,
@@ -113,17 +107,15 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
                       }).toList(),
                     ),
                   ),
-                  actions: <Widget>[
+                  actions: [
                     TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text('Close',
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text(
+                        'Close',
                         style: TextStyle(
                           color: Theme.of(context).primaryColor,
                         ),
                       ),
-
                     ),
                   ],
                 );
@@ -136,11 +128,7 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
-                color: _errorMessage.isNotEmpty
-                    ? Colors.red
-                    : _focusNode.hasFocus
-                    ? Theme.of(context).primaryColor
-                    : Colors.black.withOpacity(0.2),
+                color: Theme.of(context).colorScheme.secondary.withOpacity(0.7),
                 width: 1.5,
               ),
             ),
@@ -150,10 +138,12 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
                 Expanded(
                   child: Text(
                     _selectedValue ??
-                        (widget.required ? 'Required field' : 'Select option'),
+                        'Select option', // Placeholder text
                     style: TextStyle(
                       fontSize: 16,
-                      color: widget.editable ? Colors.black : Colors.grey,
+                      color: _selectedValue == null
+                          ? Colors.grey // Placeholder text color
+                          : Theme.of(context).colorScheme.onSurface, // Selected value color
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -161,7 +151,7 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
                 Icon(
                   Icons.arrow_drop_down,
                   color: widget.editable
-                      ? Colors.black.withOpacity(0.3)
+                      ? Theme.of(context).colorScheme.secondary.withOpacity(0.6)
                       : Colors.grey,
                 ),
               ],

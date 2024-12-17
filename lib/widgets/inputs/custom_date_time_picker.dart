@@ -60,15 +60,16 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
       errorFormatText: 'This is not the correct format',
       builder: (context, child) {
         return Theme(
-          data : ThemeData(
-          colorScheme: const ColorScheme.light(primary: const Color(0xFFB7CBDD)),
-          datePickerTheme: const DatePickerThemeData(
-            backgroundColor: Colors.white,
-            dividerColor: const Color(0xFFB7CBDD),
-            headerBackgroundColor: const Color(0xFFB7CBDD),
-            headerForegroundColor: Colors.white,
+          data: ThemeData(
+            colorScheme:
+                const ColorScheme.light(primary: const Color(0xFFB7CBDD)),
+            datePickerTheme: const DatePickerThemeData(
+              backgroundColor: Colors.white,
+              dividerColor: const Color(0xFFB7CBDD),
+              headerBackgroundColor: const Color(0xFFB7CBDD),
+              headerForegroundColor: Colors.white,
+            ),
           ),
-        ),
           child: child!,
         );
       },
@@ -84,8 +85,9 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
         initialTime: TimeOfDay.fromDateTime(_selectedDateTime),
         builder: (context, child) {
           return Theme(
-            data : ThemeData(
-              colorScheme: const ColorScheme.light(primary: const Color(0xFFB7CBDD)),
+            data: ThemeData(
+              colorScheme:
+                  const ColorScheme.light(primary: const Color(0xFFB7CBDD)),
               timePickerTheme: const TimePickerThemeData(
                 backgroundColor: Colors.white,
                 hourMinuteColor: const Color(0xFFB7CBDD),
@@ -166,13 +168,15 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
             decoration: BoxDecoration(
               // Weiß, wenn nicht fokussiert
               borderRadius: BorderRadius.circular(2),
-              // Leicht abgerundete Ecken
               border: Border.all(
                 color: _focusNode.hasFocus
-                    ? Theme.of(context).primaryColor
+                    ? Theme.of(context).colorScheme.secondary
                     : _isFieldEmpty
                         ? Colors.red
-                        : Colors.black.withOpacity(0.2),
+                        : Theme.of(context)
+                            .colorScheme
+                            .secondary
+                            .withOpacity(0.7),
                 width: 1.5,
               ),
             ),
@@ -194,7 +198,7 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
                 ),
                 Icon(
                   Icons.calendar_today,
-                  color: Colors.black.withOpacity(0.3),
+                  color: Theme.of(context).colorScheme.secondary,
                   size: 20,
                 ),
               ],

@@ -3,9 +3,9 @@ import 'package:eventure/widgets/inputs/custom-number-select.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:provider/provider.dart'; // Provider importieren
+import 'package:provider/provider.dart';
 
-import '../../providers/event_provider.dart'; // Dein EventProvider
+import '../../providers/event_provider.dart';
 import '../../statics/event_types.dart';
 import '../../statics/event_visibility.dart';
 import '../../widgets/inputs/custom-event-select.dart';
@@ -30,7 +30,6 @@ class _EventScreenState extends State<EventScreen> {
   bool _isEditing = true;
   final _formKey = GlobalKey<FormState>();
 
-  // Felder für die Form-Daten
   late String _title;
   late DateTime _startDate;
   late DateTime _endDate;
@@ -48,7 +47,6 @@ class _EventScreenState extends State<EventScreen> {
   void initState() {
     super.initState();
     if (widget.event != null) {
-      // Felder vorbefüllen, falls Bearbeitung
       _isEditing = false;
       _title = widget.event!.name;
       _startDate = widget.event!.startDate;
@@ -61,7 +59,6 @@ class _EventScreenState extends State<EventScreen> {
       _maxParticipants = widget.event!.maxParticipants;
       _description = widget.event!.description;
     } else {
-      // Felder initialisieren für neues Event
       _title = '';
       _startDate = DateTime.now();
       _endDate = DateTime.now().add(Duration(hours: 1));
@@ -88,27 +85,23 @@ class _EventScreenState extends State<EventScreen> {
 
   void _saveEvent(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      // Neues Event-Objekt erstellen
       Event newEvent = Event(
         name: _title,
         startDate: _startDate,
         endDate: _endDate,
         location: _location,
         address: '',
-        // Address handling could be added here
         eventType: _eventType,
         icon: _eventIcon,
         visibility: _visibility,
         eventLink: _link,
         maxParticipants: _maxParticipants,
         description: _description,
-        organizer: 'Current User', // Replace with actual user
+        organizer: 'Current User',
       );
 
-      // Event über den Provider speichern
       Provider.of<EventProvider>(context, listen: false).addEvent(newEvent);
 
-      // Feedback an den Nutzer und zurück navigieren
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Event successfully saved!")),
       );
@@ -128,155 +121,165 @@ class _EventScreenState extends State<EventScreen> {
             onPressed: _isFormValid
                 ? () {
               _saveEvent(context);
-            } : _isEditing == false ? () {
+            }
+                : _isEditing == false
+                ? () {
               setState(() {
                 _isEditing = true;
               });
-            }: null,
+            }
+                : null,
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(children: [
-          Container(
-            color: Theme.of(context).primaryColor,
-            width: double.infinity,
-            height: 100,
-            padding: const EdgeInsets.symmetric(vertical: 13),
-            child: Center(
-              child: Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                ),
+      body: Container(
+        color: Theme.of(context).colorScheme.background,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                color: Theme.of(context).primaryColor,
+                width: double.infinity,
+                height: 100,
+                padding: const EdgeInsets.symmetric(vertical: 13),
                 child: Center(
-                  child: Icon(
-                    _eventIcon,
-                    size: 30,
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color:  Theme.of(context).colorScheme.secondary,
+                    ),
+                    child: Center(
+                      child: Icon(
+                        _eventIcon,
+                        size: 30,
+                        color:  Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(16.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomInputLine(
-                    label: "Title",
-                    required: true,
-                    editable: _isEditing,
-                    onChanged: (value) {
-                      setState(() {
-                        _title = value;
-                      });
-                      _validateForm();
-                    },
+              Container(
+                padding: EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomInputLine(
+                        label: "Title",
+                        required: true,
+                        editable: _isEditing,
+                        onChanged: (value) {
+                          setState(() {
+                            _title = value;
+                          });
+                          _validateForm();
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      CustomDateAndTimePicker(
+                        label: "Start Date",
+                        required: true,
+                        initValue: _startDate,
+                        editable: _isEditing,
+                        onDateChanged: (date) {
+                          setState(() {
+                            _startDate = date;
+                          });
+                          _validateForm();
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      CustomDateAndTimePicker(
+                        label: "End Date",
+                        required: true,
+                        editable: _isEditing,
+                        onDateChanged: (date) {
+                          setState(() {
+                            _endDate = date;
+                          });
+                          _validateForm();
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      LocationSelect(
+                        label: "Location",
+                        isEditable: _isEditing,
+                        onChanged: (location) {
+                          setState(() {
+                            _location = location!;
+                          });
+                          _validateForm();
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      EventSelect(
+                        label: 'Event Type',
+                        isEditable: _isEditing,
+                        initValues: [_eventType],
+                        events: eventTypesWithIcon,
+                        isMultiSelect: false,
+                        onChanged: (selected) {
+                          setState(() {
+                            _eventType = selected[0];
+                            _eventIcon = eventTypesWithIcon[selected[0]]!;
+                          });
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      CustomLinkInput(
+                        label: "Link",
+                        onChanged: (value) {
+                          setState(() {
+                            _link = value ?? '';
+                          });
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      CustomNumberInput(
+                        label: "Max Participants",
+                        required: true,
+                        onChanged: (value) {
+                          setState(() {
+                            _maxParticipants = value;
+                          });
+                          _validateForm();
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      CustomDescriptionInput(
+                        label: "Description",
+                        required: true,
+                        editable: _isEditing,
+                        onChanged: (value) {
+                          setState(() {
+                            _description = value;
+                          });
+                          _validateForm();
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      SingleSelectDropdown(
+                        label: 'Visibility',
+                        initValue: _visibility.toString().split('.').last,
+                        data: eventVisibilityData,
+                        required: true,
+                        editable: _isEditing,
+                        onChanged: (value) {
+                          setState(() {
+                            _visibility = eventVisibilityData[value];
+                          });
+                        },
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 16),
-                  CustomDateAndTimePicker(
-                    label: "Start Date",
-                    required: true,
-                    initValue: _startDate,
-                    editable: _isEditing,
-                    onDateChanged: (date) {
-                      setState(() {
-                        _startDate = date;
-                      });
-                      _validateForm();
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  CustomDateAndTimePicker(
-                    label: "End Date",
-                    required: true,
-                    editable: _isEditing,
-                    onDateChanged: (date) {
-                      setState(() {
-                        _endDate = date;
-                      });
-                      _validateForm();
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  LocationSelect(
-                    label: "Location",
-                    isEditable: _isEditing,
-                    onChanged: (location) {
-                      setState(() {
-                        _location = location!;
-                      });
-                      _validateForm();
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  EventSelect(
-                    label: 'Event Type',
-                    isEditable: _isEditing,
-                    initValues: [_eventType],
-                    events: eventTypesWithIcon,
-                    isMultiSelect: false,
-                    onChanged: (selected) {
-                      setState(() {
-                        _eventType = selected[0];
-                        _eventIcon = eventTypesWithIcon[selected[0]]!;
-                      });
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  CustomLinkInput(
-                    label: "Link",
-                    onChanged: (value) {
-                      setState(() {
-                        _link = value ?? '';
-                      });
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  CustomNumberInput(
-                    label: "Max Participants",
-                    onChanged: (value) {
-                      setState(() {
-                        _maxParticipants = value;
-                      });
-                      _validateForm();
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  CustomDescriptionInput(
-                    label: "Description",
-                    required: true,
-                    editable: _isEditing,
-                    onChanged: (value) {
-                      setState(() {
-                        _description = value;
-                      });
-                      _validateForm();
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  SingleSelectDropdown(
-                    label: 'Visibility',
-                    initValue: _visibility.toString().split('.').last,
-                    data: eventVisibilityData,
-                    required: true,
-                    editable: _isEditing,
-                    onChanged: (value) {
-                      setState(() {
-                        _visibility = eventVisibilityData[value];
-                      });
-                    },
-                  ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        ]),
+        ),
       ),
     );
   }
