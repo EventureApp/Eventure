@@ -83,55 +83,48 @@ class _MapWidgetState extends State<MapWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<EventProvider, LocationProvider>(
-      builder: (context, eventProvider, locationProvider, child) {
-        return Stack(
-          children: [
-            Consumer<EventProvider>(
-              builder: (context, eventProvider, child) {
-                return FlutterMap(
-                  options: MapOptions(
-                      initialCenter: _currentLocation,
-                      initialZoom: 13.0,
-                      onMapReady: () {
-                        setState(() {
-                          _isMapReady = true;
-                        });
-                      }
-                  ),
-                  mapController: _mapController,
-                  children: [
-                    TileLayer(
-                      urlTemplate:
-                      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                      subdomains: const ['a', 'b', 'c'],
-                    ),
-                    MarkerLayer(
-                      markers: _getMarkers(eventProvider.filteredEvents,
-                          _currentLocation, context),
-                    ),
-                  ],
-                );
-              },
-            ),
-            Positioned(
-              bottom: 16.0,
-              right: 16.0,
-              child: FloatingActionButton(
-                backgroundColor: const Color(0xFFEDEAF4),
-                onPressed: () async {
-                  await locationProvider.fetchCurrentLocation();
-                  LatLng currentLocation =
-                  locationProvider.currentLocation!;
-                  _mapController.move(currentLocation, 13.0);
-                },
-                child: const Icon(Icons.my_location, color: Color(
-                    0xFF7763AE),),
+    return Stack(
+      children: [
+        Consumer<EventProvider>(
+          builder: (context, eventProvider, child) {
+            return FlutterMap(
+              options: MapOptions(
+                  initialCenter: _currentLocation,
+                  initialZoom: 13.0,
+                  onMapReady: () {
+                    setState(() {
+                      _isMapReady = true;
+                    });
+                  }
               ),
-            )
-          ],
-        );
-      },
+              mapController: _mapController,
+              children: [
+                TileLayer(
+                  urlTemplate:
+                  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                  subdomains: const ['a', 'b', 'c'],
+                ),
+                MarkerLayer(
+                  markers: _getMarkers(eventProvider.filteredEvents,
+                      _currentLocation, context),
+                ),
+              ],
+            );
+          },
+        ),
+        Positioned(
+          bottom: 16.0,
+          right: 16.0,
+          child: FloatingActionButton(
+            backgroundColor: const Color(0xFFEDEAF4),
+            onPressed: () async {
+              _mapController.move(_currentLocation, 13.0);
+            },
+            child: const Icon(Icons.my_location, color: Color(
+                0xFF7763AE),),
+          ),
+        )
+      ],
     );
   }
 }
