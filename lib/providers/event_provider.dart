@@ -15,7 +15,7 @@ class EventProvider with ChangeNotifier {
 
   List<Event> get filteredEvents => _filteredEvents;
 
-  EventFilter? get filter => _filter;
+  EventFilter get filter => _filter;
 
   EventProvider() {
     _fetchAllEvents();
@@ -32,6 +32,7 @@ class EventProvider with ChangeNotifier {
   }
 
   Future<void> _fetchEventsByLocation() async {
+    print(_filter.location);
     _events =
         await _eventService.getAllInRange(_filter.location!, _filter.range!);
     _filteredEvents = List.from(_events);
@@ -43,7 +44,7 @@ class EventProvider with ChangeNotifier {
     _events.add(event);
     resetFilter();
     _applyFilter();
-    _fetchEventsByLocation();
+    _fetchAllEvents();
     notifyListeners();
   }
 
@@ -53,16 +54,13 @@ class EventProvider with ChangeNotifier {
   }
 
   void setFilter(EventFilter filter) {
-    if (filter.location == null || filter.range == 0.0) {
-      _fetchAllEvents();
-    } else if (filter.location == null && filter.range != null) {
-      return;
+    if (filter.location == null || filter.range == null) {
+      _filterEvents(_fetchAllEvents, filter);
     } else if (filter.location != _filter.location || filter.range != _filter.range) {
-      _filter = filter;
-      _fetchEventsByLocation();
+      _filterEvents(_fetchEventsByLocation, filter);
+    } else {
+      _filterEvents(null, filter);
     }
-    _filter = filter;
-    _applyFilter();
   }
 
   void resetFilter() {
@@ -72,6 +70,16 @@ class EventProvider with ChangeNotifier {
         searchInput: null,
         startDate: null,
         endDate: null));
+  }
+
+  Future<void> _filterEvents(Function? fetch, EventFilter filter) async {
+    _filter = filter;
+
+    if (fetch != null) {
+      await fetch();
+    }
+
+    _applyFilter();
   }
 
   void _applyFilter() {

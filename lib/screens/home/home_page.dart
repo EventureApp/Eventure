@@ -2,18 +2,14 @@ import 'package:eventure/models/event_filter.dart';
 import 'package:eventure/models/user.dart';
 import 'package:eventure/providers/event_provider.dart';
 import 'package:eventure/providers/location_provider.dart';
+import 'package:eventure/providers/user_provider.dart';
 import 'package:eventure/screens/list/list_screen.dart';
 import 'package:eventure/widgets/map.dart';
-import 'package:eventure/providers/user_provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
 import '../../statics/custom_icons.dart';
-import 'package:eventure/screens/list/list_screen.dart';
-import 'package:eventure/widgets/map.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,6 +20,15 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool isMapSelected = true;
+
+  bool areFiltersApplied(EventFilter filter) {
+    return !(filter.range == null &&
+        filter.location == null &&
+        filter.eventType == null &&
+        filter.endDate == null &&
+        filter.startDate == null
+        );
+  }
 
   @override
   void initState() {
@@ -168,37 +173,28 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          EventFilter newFilter = eventProvider.filter!;
-                          if (eventProvider.filter!.startDate != DateTime(
-                            DateTime.now().year,
-                            DateTime.now().month,
-                            DateTime.now().day,
-                          ) && eventProvider.filter!.endDate != DateTime(
-                            DateTime.now().year,
-                            DateTime.now().month,
-                            DateTime.now().day + 1,
-                          )) {
+                          EventFilter newFilter = eventProvider.filter;
+                          if (eventProvider.filter.startDate !=
+                                  DateTime(
+                                    DateTime.now().year,
+                                    DateTime.now().month,
+                                    DateTime.now().day,
+                                  ) &&
+                              eventProvider.filter.endDate !=
+                                  DateTime(
+                                    DateTime.now().year,
+                                    DateTime.now().month,
+                                    DateTime.now().day + 1,
+                                  )) {
                             newFilter.startDate = DateTime(
-                              DateTime
-                                  .now()
-                                  .year,
-                              DateTime
-                                  .now()
-                                  .month,
-                              DateTime
-                                  .now()
-                                  .day,
+                              DateTime.now().year,
+                              DateTime.now().month,
+                              DateTime.now().day,
                             );
                             newFilter.endDate = DateTime(
-                              DateTime
-                                  .now()
-                                  .year,
-                              DateTime
-                                  .now()
-                                  .month,
-                              DateTime
-                                  .now()
-                                  .day + 1,
+                              DateTime.now().year,
+                              DateTime.now().month,
+                              DateTime.now().day + 1,
                             );
                             eventProvider.setFilter(newFilter);
                           } else {
@@ -218,37 +214,28 @@ class _HomePageState extends State<HomePage> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          EventFilter newFilter = eventProvider.filter!;
-                          if (eventProvider.filter!.startDate != DateTime(
-                            DateTime.now().year,
-                            DateTime.now().month,
-                            DateTime.now().day + 1,
-                          ) && eventProvider.filter!.endDate != DateTime(
-                            DateTime.now().year,
-                            DateTime.now().month,
-                            DateTime.now().day + 2,
-                          )) {
+                          EventFilter newFilter = eventProvider.filter;
+                          if (eventProvider.filter.startDate !=
+                                  DateTime(
+                                    DateTime.now().year,
+                                    DateTime.now().month,
+                                    DateTime.now().day + 1,
+                                  ) &&
+                              eventProvider.filter.endDate !=
+                                  DateTime(
+                                    DateTime.now().year,
+                                    DateTime.now().month,
+                                    DateTime.now().day + 2,
+                                  )) {
                             newFilter.startDate = DateTime(
-                              DateTime
-                                  .now()
-                                  .year,
-                              DateTime
-                                  .now()
-                                  .month,
-                              DateTime
-                                  .now()
-                                  .day + 1,
+                              DateTime.now().year,
+                              DateTime.now().month,
+                              DateTime.now().day + 1,
                             );
                             newFilter.endDate = DateTime(
-                              DateTime
-                                  .now()
-                                  .year,
-                              DateTime
-                                  .now()
-                                  .month,
-                              DateTime
-                                  .now()
-                                  .day + 2,
+                              DateTime.now().year,
+                              DateTime.now().month,
+                              DateTime.now().day + 2,
                             );
                             eventProvider.setFilter(newFilter);
                           } else {
@@ -268,37 +255,28 @@ class _HomePageState extends State<HomePage> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          EventFilter newFilter = eventProvider.filter!;
-                          if (eventProvider.filter!.startDate != DateTime(
-                            DateTime.now().year,
-                            DateTime.now().month,
-                            DateTime.now().day,
-                          ) && eventProvider.filter!.endDate != DateTime(
-                            DateTime.now().year,
-                            DateTime.now().month,
-                            DateTime.now().day + 7,
-                          )) {
+                          EventFilter newFilter = eventProvider.filter;
+                          if (eventProvider.filter.startDate !=
+                                  DateTime(
+                                    DateTime.now().year,
+                                    DateTime.now().month,
+                                    DateTime.now().day,
+                                  ) &&
+                              eventProvider.filter.endDate !=
+                                  DateTime(
+                                    DateTime.now().year,
+                                    DateTime.now().month,
+                                    DateTime.now().day + 7,
+                                  )) {
                             newFilter.startDate = DateTime(
-                              DateTime
-                                  .now()
-                                  .year,
-                              DateTime
-                                  .now()
-                                  .month,
-                              DateTime
-                                  .now()
-                                  .day,
+                              DateTime.now().year,
+                              DateTime.now().month,
+                              DateTime.now().day,
                             );
                             newFilter.endDate = DateTime(
-                              DateTime
-                                  .now()
-                                  .year,
-                              DateTime
-                                  .now()
-                                  .month,
-                              DateTime
-                                  .now()
-                                  .day + 7,
+                              DateTime.now().year,
+                              DateTime.now().month,
+                              DateTime.now().day + 7,
                             );
                             eventProvider.setFilter(newFilter);
                           } else {
@@ -356,14 +334,30 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                IconButton(
-                  icon: const Icon(
-                    CustomIcons.filteroptions,
-                    size: 24,
-                  ),
-                  onPressed: () {
-                    context.push('/addFilter');
-                  },
+                Consumer<EventProvider>(
+                  builder: (context, eventProvider, child) {
+                    return Stack(
+                      children: [
+                        IconButton(
+                          icon: const Icon(
+                            CustomIcons.filteroptions,
+                            size: 24,
+                          ),
+                          onPressed: () {
+                            context.push('/addFilter');
+                          },
+                        ),
+                        if (areFiltersApplied(eventProvider.filter))
+                          const Positioned(
+                              right: 8,
+                              top: 8,
+                              child: CircleAvatar(
+                                radius: 4,
+                                backgroundColor: Colors.blueAccent,
+                              ))
+                      ],
+                    );
+                  }
                 ),
                 ToggleButtons(
                   isSelected: [isMapSelected, !isMapSelected],
