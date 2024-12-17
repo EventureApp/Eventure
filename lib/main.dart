@@ -2,6 +2,7 @@ import 'package:eventure/models/user.dart';
 import 'package:eventure/providers/event_provider.dart';
 import 'package:eventure/providers/location_provider.dart';
 import 'package:eventure/providers/user_provider.dart';
+import 'package:eventure/providers/user_provider.dart';
 import 'package:eventure/screens/auth/elegant_signin_screen.dart';
 import 'package:eventure/screens/auth/elegant_signup_screen.dart';
 import 'package:eventure/screens/events/event-screen.dart';
@@ -47,6 +48,8 @@ final _router = GoRouter(
   redirect: (context, state) {
     final authProvider =
         Provider.of<AuthenticationProvider>(context, listen: false);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    userProvider.initializeUser();
     final isOnAuthPage = state.uri.toString() == '/sign-in' ||
         state.uri.toString() == '/sign-up';
 

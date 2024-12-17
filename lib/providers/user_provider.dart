@@ -13,7 +13,7 @@ class UserProvider with ChangeNotifier {
   String _queryStartsWith = "";
   List<AppUser> _usersStartingWith = [];
 
-  set queryStartsWith(String string){
+  set queryStartsWith(String string) {
     _queryStartsWith = string;
   }
 
@@ -24,7 +24,9 @@ class UserProvider with ChangeNotifier {
   List<AppUser> get users => _users;
   List<AppUser> get usersStartingWith => _usersStartingWith;
 
-  UserProvider() {
+  UserProvider() {}
+
+  void initializeUser() {
     if (_firebaseAuth.currentUser != null) {
       getCurrentUser(_firebaseAuth.currentUser?.uid);
       fetchFriends();
@@ -41,14 +43,13 @@ class UserProvider with ChangeNotifier {
   }
 
   String getUserName(String id) {
-    print(this);
-    print(id);
     for (AppUser user in _users) {
       if (id == user.id) {
+        getCurrentUser(id);
         return user.username;
       }
     }
-    return "Ersteller";
+    return "";
   }
 
   Future<void> updateUser(AppUser user) async {
@@ -75,7 +76,6 @@ class UserProvider with ChangeNotifier {
   Future<void> addUser(AppUser user) async {
     await _userService.create(user);
     _users.add(user);
-    fetchUsers();
     notifyListeners();
   }
 
