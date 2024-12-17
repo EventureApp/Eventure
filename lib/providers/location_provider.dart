@@ -45,7 +45,7 @@ class LocationProvider with ChangeNotifier {
     }
   }
 
-  void setLocation(LatLng location) {
+  void setLocation(LatLng? location) {
     _currentSelectedLocation = location;
     notifyListeners();
   }

@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:latlong2/latlong.dart';
 
 import '../models/event.dart';
 import '../models/event_filter.dart';
 import '../services/db/event_service.dart';
 
 class EventProvider with ChangeNotifier {
-  static const double DEFAULT_RANGE = 10.0;
-  static const LatLng DEFAULT_LOCATION = LatLng(49.4699765, 8.4819024);
-
   final EventService _eventService = EventService();
   List<Event> _events = [];
   List<Event> _filteredEvents = [];
 
-  EventFilter _filter =
-      EventFilter(range: DEFAULT_RANGE, location: DEFAULT_LOCATION);
+  EventFilter _filter = EventFilter();
 
   List<Event> get events => _events;
 
@@ -23,18 +18,24 @@ class EventProvider with ChangeNotifier {
   EventFilter get filter => _filter;
 
   EventProvider() {
-    _fetchEvents();
+    _fetchAllEvents();
+  }
+
+  Future<void> _fetchAllEvents() async {
+    _events = await _eventService.getAll();
+    _filteredEvents = List.from(_events);
+    notifyListeners();
   }
 
   Event getEventFromId(String id) {
     return events.firstWhere((event) => event.id == id);
   }
 
-  Future<void> _fetchEvents() async {
+  Future<void> _fetchEventsByLocation() async {
+    print(_filter.location);
     _events =
-        await _eventService.getAllInRange(_filter.location, _filter.range);
+        await _eventService.getAllInRange(_filter.location!, _filter.range!);
     _filteredEvents = List.from(_events);
-    print(this);
     notifyListeners();
   }
 
@@ -43,7 +44,7 @@ class EventProvider with ChangeNotifier {
     _events.add(event);
     resetFilter();
     _applyFilter();
-    _fetchEvents();
+    _fetchAllEvents();
     notifyListeners();
   }
 
@@ -53,24 +54,32 @@ class EventProvider with ChangeNotifier {
   }
 
   void setFilter(EventFilter filter) {
-    print(_filter);
-    if (filter.location != _filter.location || filter.range != _filter.range) {
-      _filter = filter;
-      _fetchEvents();
+    if (filter.location == null || filter.range == null) {
+      _filterEvents(_fetchAllEvents, filter);
+    } else if (filter.location != _filter.location || filter.range != _filter.range) {
+      _filterEvents(_fetchEventsByLocation, filter);
+    } else {
+      _filterEvents(null, filter);
     }
-    _filter = filter;
-    print(_filter);
-
-    _applyFilter();
   }
 
   void resetFilter() {
     setFilter(EventFilter(
-        range: DEFAULT_RANGE,
-        location: DEFAULT_LOCATION,
+        range: null,
+        location: null,
         searchInput: null,
         startDate: null,
         endDate: null));
+  }
+
+  Future<void> _filterEvents(Function? fetch, EventFilter filter) async {
+    _filter = filter;
+
+    if (fetch != null) {
+      await fetch();
+    }
+
+    _applyFilter();
   }
 
   void _applyFilter() {
