@@ -14,7 +14,7 @@ import '../../widgets/inputs/custom-location-select.dart';
 import '../../widgets/inputs/custom-multi-select.dart';
 import '../../widgets/inputs/custom-single-select.dart';
 import '../../widgets/inputs/custom_date_time_picker.dart';
-import '../../widgets/inputs/custom_discription_input.dart';
+import '../../widgets/inputs/custom_description_input.dart';
 import '../../widgets/inputs/custom_input_line.dart';
 
 class EventScreen extends StatefulWidget {

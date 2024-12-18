@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:eventure/widgets/inputs/custom_description_input.dart';
 import 'package:eventure/widgets/inputs/custom_input_line.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -114,7 +115,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                 const SizedBox(height: 20),
                 _buildTextField('Vorname', firstNameController),
                 _buildTextField('Nachname', lastNameController),
-                _buildTextField('Bio', descriptionController),
+                _buildDescriptionField('Bio', descriptionController),
                 _buildTextField('Studiengang', studyCourseController),
                 _buildTextField('Universität', uniController),
                 _buildTextField('Links', socialMediaLinksController),
@@ -130,6 +131,22 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
       child: CustomInputLine(
+        label: label,
+        initValue: controller.text,
+        required: false,
+        editable: true,
+        onChanged: (value) {
+          controller.text = value;
+        },
+      ),
+    );
+  }
+
+  Widget _buildDescriptionField(
+      String label, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+      child: CustomDescriptionInput(
         label: label,
         initValue: controller.text,
         required: false,
