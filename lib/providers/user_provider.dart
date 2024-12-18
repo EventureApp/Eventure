@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -39,6 +41,10 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> uploadImage(File image, AppUser user) async {
+    _user = await _userService.uploadImage(image, user);
+    notifyListeners();
+  }
   Future<AppUser> getUser(String id) async {
     return await _userService.getSingleUser(id);
   }

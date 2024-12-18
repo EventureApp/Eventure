@@ -4,7 +4,7 @@ import 'dart:typed_data';
 class AppUser implements Entity {
   final String? id;
   final String username;
-  final Uint8List? profilePicture;
+  final Map<String,dynamic>? profilePicture;
   final String? studyCourse;
   final String? firstName;
   final String? lastName;
@@ -29,7 +29,7 @@ class AppUser implements Entity {
     return AppUser(
       id: id,
       username: map['username'] as String,
-      profilePicture: map['profilePicture'] as Uint8List?,
+      profilePicture: map['profilePicture'] as Map<String,dynamic>?,
       studyCourse: map['studyCourse'] as String?,
       firstName: map['firstName'] as String?,
       lastName: map['lastName'] as String?,
@@ -47,7 +47,7 @@ class AppUser implements Entity {
   AppUser copyWith({
     String? id,
     String? username,
-    Uint8List? profilePicture,
+    Map<String,dynamic>? profilePicture,
     String? studyCourse,
     String? firstName,
     String? lastName,

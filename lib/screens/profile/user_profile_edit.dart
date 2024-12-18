@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:eventure/widgets/inputs/custom_input_line.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -42,11 +43,17 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   }
 
   Future<void> _pickImage() async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     _pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (_pickedFile != null && mounted) {
-      setState(() {
-        _image = File(_pickedFile!.path);
-      });
+      if (!kIsWeb) {
+        setState(() {
+          _image = File(_pickedFile!.path);
+          userProvider.uploadImage(_image!, userProvider.user);
+        });
+      } else {
+        print("Web not supported for this functionality");
+      }
     }
   }
 
@@ -92,7 +99,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                         backgroundImage: _image != null
                             ? FileImage(_image!)
                             : NetworkImage(
-                                FirebaseAuth.instance.currentUser?.photoURL ??
+                                userProvider.user.profilePicture?['url'] ??
                                     'https://i.pravatar.cc/300',
                               ) as ImageProvider,
                       ),

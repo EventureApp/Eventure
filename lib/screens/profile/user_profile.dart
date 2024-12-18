@@ -54,7 +54,7 @@ class ProfileDetailScreen extends StatelessWidget {
                     CircleAvatar(
                       radius: 50,
                       backgroundImage: NetworkImage(
-                        currentUser?.photoURL ?? 'https://i.pravatar.cc/300',
+                        user.profilePicture?['url'] ?? 'https://i.pravatar.cc/300',
                       ),
                     ),
                     const SizedBox(height: 10),

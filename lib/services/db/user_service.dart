@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eventure/models/user.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'models/db_service.dart';
 
@@ -29,6 +32,20 @@ class UserService implements DatabaseService<AppUser> {
     await _firestore.collection('users').doc(user.id).update(user.toMap());
   }
 
+  Future<AppUser> uploadImage(File image, AppUser user) async {
+    final username = user.username;
+    final storageRef = FirebaseStorage.instance.ref().child('images/$username');
+    final uploadTask = storageRef.putFile(image);
+    final snapshot = await uploadTask;
+    final downloadUrl = await snapshot.ref.getDownloadURL();
+    Map<String,dynamic> newUser = user.toMap();
+    newUser['profilePicture'] = {
+      'fileName' : username,
+      'url' : downloadUrl,
+    };
+    await _firestore.collection('users').doc(user.id).update(newUser);
+    return AppUser.fromMap(newUser, newUser['id']);
+  }
   /*
   This is implemented so we don't have to call the entire data base for the friends Operation
   */

@@ -60,8 +60,8 @@ class _HomePageState extends State<HomePage> {
               ListTile(
                 leading: CircleAvatar(
                   backgroundImage: NetworkImage(
-                    user.profilePicture as String? ??
-                        'https://i.pravatar.cc/300',
+                      user.profilePicture?['url'] as String? ?? 'https://i.pravatar.cc/300'
+
                   ),
                 ),
                 title: Text(
@@ -144,8 +144,7 @@ class _HomePageState extends State<HomePage> {
                         icon: CircleAvatar(
                           radius: 20,
                           backgroundImage: NetworkImage(
-                            user.profilePicture as String? ??
-                                'https://i.pravatar.cc/300',
+                              user.profilePicture?['url'] as String? ?? 'https://i.pravatar.cc/300'
                           ),
                         ),
                         onPressed: () {
