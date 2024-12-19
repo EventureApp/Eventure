@@ -89,7 +89,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
       body: SingleChildScrollView(
         child: Column(children: [
           Container(
-            color: Theme.of(context).primaryColor,
+            color: Theme.of(context).colorScheme.surface,
             width: double.infinity,
             height: 100,
             padding: const EdgeInsets.symmetric(vertical: 13),
@@ -98,7 +98,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                 width: 50,
                 height: 50,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondary,
+                  color: Theme.of(context).primaryColor,
                   shape: BoxShape.circle,
                 ),
                 child: Center(

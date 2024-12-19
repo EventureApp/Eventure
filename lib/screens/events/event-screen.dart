@@ -147,7 +147,7 @@ class _EventScreenState extends State<EventScreen> {
               children: [
                 // Header Container mit Event-Icon
                 Container(
-                  color: Theme.of(context).primaryColor,
+                  color: Theme.of(context).colorScheme.surface,
                   width: double.infinity,
                   height: 100,
                   padding: const EdgeInsets.symmetric(vertical: 13),
@@ -157,7 +157,7 @@ class _EventScreenState extends State<EventScreen> {
                       height: 50,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: Theme.of(context).primaryColor,
                       ),
                       child: Center(
                         child: Icon(

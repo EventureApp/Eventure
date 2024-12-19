@@ -116,13 +116,13 @@ class _MapWidgetState extends State<MapWidget> {
           bottom: 16.0,
           right: 16.0,
           child: FloatingActionButton(
-            backgroundColor: Theme.of(context).colorScheme.secondary,
+            backgroundColor: Theme.of(context).colorScheme.surface,
             onPressed: () async {
               _mapController.move(_currentLocation, 13.0);
             },
             child: Icon(
               Icons.near_me,
-              color: Theme.of(context).colorScheme.primary,
+              color: Theme.of(context).colorScheme.secondary,
             ),
           ),
         )
