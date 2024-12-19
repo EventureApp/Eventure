@@ -41,13 +41,21 @@ class EventCard extends StatelessWidget {
             SizedBox(
               width: 117,
               height: 100,
-              child: Center(
-                child: Icon(
-                  icon,
-                  size: 36,
-                  color: Theme.of(context).colorScheme.secondary,
+              child:  Center(
+                  child: Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Icon(
+                          icon,
+                          color: Theme.of(context).colorScheme.primary
+                      ),
+                    ),
+                  ),
                 ),
-              ),
             ),
             Expanded(
               child: Padding(
