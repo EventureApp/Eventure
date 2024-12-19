@@ -17,12 +17,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:eventure/screens/settings/settings.dart';
 
 import 'firebase_options.dart';
 import 'providers/auth_provider.dart';
 import 'providers/chat_provider.dart';
-import 'providers/theme_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -119,6 +117,12 @@ final _router = GoRouter(
             return const SettingsScreen();
           },
         ),
+        GoRoute(
+            path: "chat/:id",
+            builder: (context, state) {
+              final id = state.pathParameters['id'];
+              return Chat(eventId: id!);
+            }),
       ],
     ),
   ],
@@ -165,4 +169,3 @@ class App extends StatelessWidget {
     );
   }
 }
-

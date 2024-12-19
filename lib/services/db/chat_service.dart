@@ -27,18 +27,19 @@ class ChatService implements DatabaseService<ChatMessage> {
     }).toList();
   }
 
-  Stream<List<ChatMessage>> getAllByStream() {
+  Stream<List<ChatMessage>> getAllByStream(String eventId) {
     return _firestore
         .collection('chat')
+        .where('eventId', isEqualTo: eventId)
         .orderBy('timestamp', descending: true)
         .snapshots()
         .map((snapshot) {
       return snapshot.docs.map((doc) {
         return ChatMessage(
-          name: doc.data()['name'] ?? 'Unknown',
           text: doc.data()['message'] ?? '',
           timestamp: doc.data()['timestamp'],
           userId: doc.data()['userId'],
+          eventId: eventId,
         );
       }).toList();
     });
@@ -63,12 +64,12 @@ class ChatService implements DatabaseService<ChatMessage> {
     return _firestore.collection('chat').doc(id).delete();
   }
 
-  Future<void> addMessage(String message, String userName, String userId) {
+  Future<void> addMessage(String message, String userId, String eventId) {
     final newMessage = ChatMessage(
-      name: userName,
       text: message,
       timestamp: DateTime.now().millisecondsSinceEpoch,
       userId: userId,
+      eventId: eventId,
     );
     return create(newMessage);
   }
