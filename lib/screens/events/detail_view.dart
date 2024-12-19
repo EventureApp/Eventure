@@ -14,7 +14,12 @@ class EventDetailViewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Theme.of(context)
+            .colorScheme
+            .background, // or use a custom color like Color(0xFF1B2936)
+
         appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.primary,
           leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () {
@@ -28,18 +33,23 @@ class EventDetailViewScreen extends StatelessWidget {
                       context.push('/editEvent/${event.id}');
                     },
                   )
-                : const SizedBox.shrink()
+                : const SizedBox.shrink(),
+            IconButton(
+                icon: const Icon(Icons.message),
+                onPressed: () {
+                  context.push("/chat/${event.id}");
+                }),
           ],
         ),
         body: Column(
           children: [
             Container(
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).colorScheme.surface,
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: CircleAvatar(
                   radius: 60,
-                  backgroundColor: Colors.white,
+                  backgroundColor: Theme.of(context).primaryColor,
                   child: Icon(
                     event.icon,
                     size: 70,
@@ -48,12 +58,19 @@ class EventDetailViewScreen extends StatelessWidget {
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
-              child: Column(
-                  // mainAxisAlignment: MainAxisAlignment.center,
+              child: Container(
+                // Set the background color here
+                child: Column(
                   children: [
-                    Text(event.name,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24.0), // Add horizontal padding
+                      child: Text(
+                        event.name,
                         style: const TextStyle(
-                            fontSize: 35, fontWeight: FontWeight.bold)),
+                            fontSize: 35, fontWeight: FontWeight.bold),
+                      ),
+                    ),
                     Container(
                       margin: const EdgeInsets.only(left: 20, top: 20),
                       child: Row(
@@ -64,9 +81,7 @@ class EventDetailViewScreen extends StatelessWidget {
                           ),
                           const SizedBox(width: 10),
                           Text(parseDateForEvents(event.startDate)),
-                          const SizedBox(
-                            width: 10,
-                          ),
+                          const SizedBox(width: 10),
                           const Text('bis'),
                           const SizedBox(width: 10),
                           Text(parseDateForEvents(event.endDate))
@@ -77,25 +92,30 @@ class EventDetailViewScreen extends StatelessWidget {
                       margin: const EdgeInsets.only(left: 20, top: 10),
                       child: Row(
                         children: [
-                          const Icon(
-                            Icons.location_pin,
-                            size: 40,
-                          ),
+                          Icon(Icons.location_pin,
+                              size: 40,
+                              color: Theme.of(context).colorScheme.secondary),
                           const SizedBox(width: 10),
                           TextButton.icon(
                             label: const Text('Navigation'),
-                            icon: const Icon(Icons.navigation),
+                            icon: Icon(
+                              Icons.navigation,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .secondary, // Set the icon color here
+                            ),
                             style: TextButton.styleFrom(
-                                backgroundColor: Colors.grey,
-                                foregroundColor: Colors.black),
+                              backgroundColor: Theme.of(context)
+                                  .colorScheme
+                                  .surface, // Button background color
+                              foregroundColor: Theme.of(context)
+                                  .colorScheme
+                                  .secondary, // Text color
+                            ),
                             onPressed: () async {
-                              // TODO call google maps using url_launcher
-                              // Uri googleMapsLink = Uri.parse(
-                              //     'https://www.google.com/maps/dir/?api=1&destination=${event.location.latitude},${event.location.longitude}');
-                              // await launchUrl(googleMapsLink);
                               print('Navigation pressed');
                             },
-                          )
+                          ),
                         ],
                       ),
                     ),
@@ -109,7 +129,7 @@ class EventDetailViewScreen extends StatelessWidget {
                           ),
                           const SizedBox(width: 10),
                           Text(Provider.of<UserProvider>(context)
-                              .getUserName(event.organizer ?? ""))
+                              .getUserName(event.organizer ?? "")),
                         ],
                       ),
                     ),
@@ -119,7 +139,7 @@ class EventDetailViewScreen extends StatelessWidget {
                         children: [
                           const Icon(Icons.supervised_user_circle, size: 40),
                           const SizedBox(width: 10),
-                          Text(capitalizeString(event.visibility.name))
+                          Text(capitalizeString(event.visibility.name)),
                         ],
                       ),
                     ),
@@ -129,7 +149,7 @@ class EventDetailViewScreen extends StatelessWidget {
                         children: [
                           Icon(event.icon, size: 40),
                           const SizedBox(width: 10),
-                          Text(capitalizeString(event.eventType.name))
+                          Text(capitalizeString(event.eventType.name)),
                         ],
                       ),
                     ),
@@ -143,37 +163,40 @@ class EventDetailViewScreen extends StatelessWidget {
                                 InkWell(
                                   child: Text(event.eventLink!),
                                   onTap: () async {
-                                    // TODO call link using url_launcher
-                                    // final Uri url = Uri.parse(event.eventLink!);
-                                    // await launchUrl(url);
                                     print('Event link pressed');
                                   },
-                                )
+                                ),
                               ],
-                            ))
+                            ),
+                          )
                         : const SizedBox.shrink(),
                     event.description != null
                         ? Container(
                             margin: const EdgeInsets.only(left: 20, top: 50),
                             alignment: Alignment.centerLeft,
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              // Align children to the left
                               children: [
                                 const Text(
-                                  'Beschreibung',
+                                  'Description',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(
-                                  width: 50,
                                   child: Text(
                                     event.description!,
                                     overflow: TextOverflow.ellipsis,
+                                    maxLines: 5,
                                   ),
-                                )
+                                ),
                               ],
-                            ))
-                        : const SizedBox.shrink()
-                  ]),
-            ),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
+                  ],
+                ),
+              ),
+            )
           ],
         ));
   }

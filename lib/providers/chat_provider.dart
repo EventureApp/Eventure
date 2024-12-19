@@ -13,13 +13,9 @@ class ChatProvider with ChangeNotifier {
 
   List<ChatMessage> get chatMessages => _chatMessages;
 
-  Stream<List<ChatMessage>> get chatMessagesStream {
-    return _chatService.getAllByStream();
-  }
-
-  void startListeningToChatMessages() {
+  void startListeningToChatMessages(String eventId) {
     _chatMessagesSubscription =
-        _chatService.getAllByStream().listen((messages) {
+        _chatService.getAllByStream(eventId).listen((messages) {
       _chatMessages = messages;
       notifyListeners();
     }, onError: (error) {});
@@ -31,10 +27,9 @@ class ChatProvider with ChangeNotifier {
     super.dispose();
   }
 
-  Future<void> addMessage(
-      String message, String userName, String userId) async {
+  Future<void> addMessage(String message, String userId, String eventId) async {
     try {
-      await _chatService.addMessage(message, userName, userId);
+      await _chatService.addMessage(message, userId, eventId);
     } catch (error) {
       print('Error adding message: $error');
     }
