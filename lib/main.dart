@@ -17,10 +17,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:eventure/screens/settings/settings.dart';
 
 import 'firebase_options.dart';
 import 'providers/auth_provider.dart';
 import 'providers/chat_provider.dart';
+import 'providers/theme_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,6 +39,7 @@ void main() {
           ChangeNotifierProvider(create: (context) => EventProvider()),
           ChangeNotifierProvider(create: (context) => ChatProvider()),
           ChangeNotifierProvider(create: (context) => UserProvider()),
+          ChangeNotifierProvider(create: (context) => ThemeProvider())
         ],
         child: const App(),
       ),
@@ -110,6 +113,12 @@ final _router = GoRouter(
             builder: (context, state) {
               return EventFilterScreen();
             }),
+        GoRoute(
+          path: 'settings',
+          builder: (context, state) {
+            return const SettingsScreen();
+          },
+        ),
       ],
     ),
   ],
@@ -120,21 +129,40 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Eventure',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primaryColor: const Color(0xFFB7CBDD),
-        useMaterial3: true,
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.light,
-        primaryColor: const Color(0xFFB7CBDD),
-        useMaterial3: true,
-      ),
-      themeMode: ThemeMode.system,
-      routerConfig: _router,
+    return Consumer<ThemeProvider>( // Listen for theme changes
+      builder: (context, themeProvider, child) {
+        return MaterialApp.router(
+          title: 'Eventure',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            brightness: Brightness.light,
+            primaryColor: const Color(0xFFB7CBDD),
+            useMaterial3: true,
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFFF7F8F9),
+              secondary: Colors.black,
+              surface: Color(0xFFF1F2F4),
+              background: Color(0xFFDCDFE4),
+              error: Colors.red,
+            ),
+          ),
+          darkTheme: ThemeData(
+            brightness: Brightness.dark, // Set the dark theme
+            primaryColor: const Color(0xFFB7CBDD),
+            useMaterial3: true,
+            colorScheme: const ColorScheme.dark(
+              primary: const Color(0xFF10151B),
+              secondary: Colors.white,
+              surface: Color(0xFF1B2936),
+              background: Color(0xFF121212),
+              error: Colors.red,
+            ),
+          ),
+          themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+          routerConfig: _router,
+        );
+      },
     );
   }
 }
+

@@ -46,7 +46,6 @@ class _CustomLinkInputState extends State<CustomLinkInput> {
 
   void _onChange(String value) {
     if (value.isEmpty) {
-      // Empty value
       widget.onChanged(null);
       setState(() {
         _errorMessage = widget.isMandatory! ? 'This field is required.' : '';
@@ -84,7 +83,6 @@ class _CustomLinkInputState extends State<CustomLinkInput> {
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFF1976D2);
     final isFocused = _focusNode.hasFocus;
     final isError = _hasError;
 
@@ -103,7 +101,7 @@ class _CustomLinkInputState extends State<CustomLinkInput> {
             labelText:
                 widget.isMandatory == true ? '${widget.label} *' : widget.label,
             labelStyle: TextStyle(
-              color: isFocused ? primaryColor : Colors.black54,
+              color: Theme.of(context).colorScheme.secondary,
               fontWeight: FontWeight.w500,
             ),
             hintText: hintText,
@@ -125,16 +123,17 @@ class _CustomLinkInputState extends State<CustomLinkInput> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: isError ? Colors.red : primaryColor,
+                color: isError ? Colors.red : Theme.of(context).colorScheme.secondary,
                 width: 1.5,
               ),
             ),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: Theme.of(context).colorScheme.surface,
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           ),
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
+          style: TextStyle(
+              fontSize: 16, fontWeight: FontWeight.normal, color: Theme.of(context).colorScheme.secondary),
         ),
         if (isError)
           Padding(
@@ -156,7 +155,7 @@ class _CustomLinkInputState extends State<CustomLinkInput> {
               child: Text(
                 'Open link',
                 style: TextStyle(
-                  color: primaryColor,
+                  color: Colors.blue,
                   decoration: TextDecoration.underline,
                   fontSize: 14,
                 ),

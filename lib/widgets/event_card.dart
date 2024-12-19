@@ -29,25 +29,33 @@ class EventCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.02),
+              color: Colors.black.withOpacity(0.1), // Subtle shadow
               offset: const Offset(0, 4),
-              blurRadius: 4,
+              blurRadius: 8,
             ),
           ],
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
         ),
         child: Row(
           children: [
             SizedBox(
               width: 117,
               height: 100,
-              child: Center(
-                child: Icon(
-                  icon,
-                  size: 36,
-                  color: Colors.blue,
+              child:  Center(
+                  child: Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Icon(
+                          icon,
+                          color: Theme.of(context).colorScheme.primary
+                      ),
+                    ),
+                  ),
                 ),
-              ),
             ),
             Expanded(
               child: Padding(
@@ -57,35 +65,37 @@ class EventCard extends StatelessWidget {
                   children: [
                     Text(
                       name,
-                      style: const TextStyle(
-                        fontSize: 18,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                      ),
+                      ), // Dynamic text style
                     ),
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        const Icon(Icons.access_time,
-                            size: 18, color: Colors.black),
+                        Icon(
+                          Icons.access_time,
+                          size: 18,
+                          color: Theme.of(context).colorScheme.secondary // Dynamic icon color
+                        ),
                         const SizedBox(width: 8),
                         Text(
                           parseDateForEvents(startDate),
-                          style: const TextStyle(
-                            color: Colors.black,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall, // Dynamic text style
                         ),
                       ],
                     ),
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        const Icon(Icons.person, size: 18, color: Colors.black),
+                        Icon(
+                          Icons.person,
+                          size: 18,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
                         const SizedBox(width: 8),
                         Text(
                           organizer,
-                          style: const TextStyle(
-                            color: Colors.black,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ],
                     ),

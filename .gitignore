@@ -11,6 +11,13 @@
 .buildlog/
 .history
 .svn/
+macos/Flutter/GeneratedPluginRegistrant.swift
+windows/flutter/generated_plugins.cmake
+linux/flutter/generated_plugins.cmake
+windows/flutter/generated_plugin_registrant.h
+linux/flutter/generated_plugin_registrant.h
+windows/flutter/generated_plugin_registrant.cc
+linux/flutter/generated_plugin_registrant.cc
 
 # IntelliJ related
 *.iml
@@ -401,6 +408,7 @@ captures/
 .idea/dictionaries
 .idea/libraries
 .idea/caches
+.idea/libraries/Flutter_Plugins.xml
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild

@@ -24,13 +24,16 @@ class _AddFriendsScreenState extends State<AddFriendsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
         appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.primary,
           title: const Text("User list"),
         ),
         body: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
               child: TextField(
                 decoration: InputDecoration(
                     hintText: 'Search users...',
@@ -40,7 +43,7 @@ class _AddFriendsScreenState extends State<AddFriendsScreen> {
                       borderSide: BorderSide.none,
                     ),
                     filled: true,
-                    fillColor: Colors.white),
+                    fillColor: Theme.of(context).colorScheme.surface),
                 onChanged: (value) {
                   context.read<UserProvider>().queryStartsWith = value;
                   context.read<UserProvider>().fetchUsersStartingWith();
@@ -52,32 +55,59 @@ class _AddFriendsScreenState extends State<AddFriendsScreen> {
               List<AppUser> usersStartingWith = userProvider.usersStartingWith;
               return Expanded(
                   child: ListView.builder(
-                padding:const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 itemCount: usersStartingWith.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.02),
-                          offset: const Offset(0, 4),
-                          blurRadius: 4,
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.02),
+                            offset: const Offset(0, 4),
+                            blurRadius: 4,
+                          ),
+                        ],
+                        color: Theme.of(context).colorScheme.surface,
+                      ),
+                    child: ListTile(
+                      tileColor: Theme.of(context).colorScheme.surface,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.horizontal(
+                          right: Radius.circular(50),
+                          left: Radius.circular(50),
                         ),
-                      ],
-                      color: Colors.white,
+                      ),
+                      title: Text(
+                        "${usersStartingWith[index].firstName} ${usersStartingWith[index].lastName}",
+                      ),
+                      subtitle: Text("${usersStartingWith[index].uni}"),
+                      trailing: InkWell( // Replace StyledButton if no direct control over styling
+                        onTap: () {}, // Your action here
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.white, // White border
+                              width: 2, // Border width
+                            ),
+                            borderRadius: BorderRadius.circular(12), // Rounded corners
+                            color: Colors.transparent, // Transparent background
+                          ),
+                          child: const Text(
+                            "Send friend request",
+                            style: TextStyle(
+                              color: Colors.white, // Text color
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                    child:ListTile(
-                    tileColor: Colors.white,
-                    shape:const RoundedRectangleBorder(borderRadius: BorderRadius.horizontal(right:Radius.circular(50),left:Radius.circular(50))),
-                    title: Text(
-                        "${usersStartingWith[index].firstName} ${usersStartingWith[index].lastName}"),
-                    subtitle: Text("${usersStartingWith[index].uni}"),
-                    trailing: StyledButton(
-                        onPressed: () {},
-                        child: const Text("Send friend request")),
-                  ));
+
+                  );
                 },
               ));
             }),
