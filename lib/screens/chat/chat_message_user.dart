@@ -14,10 +14,12 @@ class ChatMessageUser extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
+
+        const SizedBox(width: 16),
         Flexible(
           child: Container(
             padding: const EdgeInsets.all(12),
-            margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+            margin: const EdgeInsets.symmetric(vertical: 4, horizontal:12),
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primary,
               borderRadius: BorderRadius.circular(16),
@@ -28,6 +30,7 @@ class ChatMessageUser extends StatelessWidget {
             ),
           ),
         ),
+        const SizedBox(width: 8),
       ],
     );
   }

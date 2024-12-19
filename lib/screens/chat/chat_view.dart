@@ -39,22 +39,25 @@ class _ChatState extends State<Chat> {
           child: messages.isEmpty
               ? const Center(child: Text('No messages yet'))
               : ListView.builder(
-            reverse: true,
-            itemCount: messages.length,
-            itemBuilder: (context, index) {
-              final message = messages[index];
-              final isSentByUser = message.userId == context.read<AuthenticationProvider>().currentUser?.uid;
-              if (isSentByUser) {
-                return ChatMessageUser(message: message.text);
-              } else {
-                final userName = Provider.of<UserProvider>(context).getUserName(message.userId);
-                return ChatMessageGroup(
-                  message: message.text,
-                  userName: userName,
-                );
-              }
-            },
-          ),
+                  reverse: true,
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    final message = messages[index];
+                    final isSentByUser = message.userId ==
+                        context.read<AuthenticationProvider>().currentUser?.uid;
+                    if (isSentByUser) {
+                      return ChatMessageUser(message: message.text);
+                    } else {
+                      final userName = Provider.of<UserProvider>(context)
+                          .getUser(message.userId);
+
+                      return ChatMessageGroup(
+                        message: message.text,
+                        userFuture: userName,
+                      );
+                    }
+                  },
+                ),
         );
       },
     );
@@ -68,7 +71,6 @@ class _ChatState extends State<Chat> {
         right: 8.0,
         top: 4.0,
       ),
-      color: Theme.of(context).colorScheme.surface,
       child: Form(
         key: _formKey,
         child: Row(
@@ -76,9 +78,14 @@ class _ChatState extends State<Chat> {
             Expanded(
               child: TextFormField(
                 controller: _controller,
-                decoration: const InputDecoration(
-                  hintText: 'Leave a message',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  filled: true,
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -93,9 +100,11 @@ class _ChatState extends State<Chat> {
               icon: const Icon(Icons.send),
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
-                  final user = context.read<AuthenticationProvider>().currentUser;
+                  final user =
+                      context.read<AuthenticationProvider>().currentUser;
                   if (user != null) {
-                    await Provider.of<ChatProvider>(context, listen: false).addMessage(
+                    await Provider.of<ChatProvider>(context, listen: false)
+                        .addMessage(
                       _controller.text,
                       user.uid,
                       eventId,
@@ -160,7 +169,3 @@ class _ChatState extends State<Chat> {
     super.dispose();
   }
 }
-
-
-
-
