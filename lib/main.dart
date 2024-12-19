@@ -1,8 +1,6 @@
-import 'package:eventure/models/user.dart';
 import 'package:eventure/providers/event_provider.dart';
 import 'package:eventure/providers/location_provider.dart';
 import 'package:eventure/providers/theme_provider.dart';
-import 'package:eventure/providers/user_provider.dart';
 import 'package:eventure/providers/user_provider.dart';
 import 'package:eventure/screens/auth/elegant_signin_screen.dart';
 import 'package:eventure/screens/auth/elegant_signup_screen.dart';
@@ -18,7 +16,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
@@ -70,7 +67,7 @@ final _router = GoRouter(
         GoRoute(
           path: 'sign-in',
           builder: (context, state) =>
-              PopScope(canPop: false, child: const ElegantSignInScreen()),
+              const PopScope(canPop: false, child: ElegantSignInScreen()),
         ),
         GoRoute(
           path: '/sign-up', // <- Hier ist der Fehler: führender Slash
@@ -86,7 +83,7 @@ final _router = GoRouter(
         GoRoute(
             path: "userList",
             builder: (context, state) {
-              return AddFriendsScreen();
+              return const AddFriendsScreen();
             }),
         GoRoute(
             path: "addEvent",
@@ -158,7 +155,7 @@ class App extends StatelessWidget {
             primaryColor: const Color(0xFFB7CBDD),
             useMaterial3: true,
             colorScheme: const ColorScheme.dark(
-              primary: const Color(0xFF10151B),
+              primary: Color(0xFF10151B),
               secondary: Colors.white,
               surface: Color(0xFF1B2936),
               background: Color(0xFF121212),
