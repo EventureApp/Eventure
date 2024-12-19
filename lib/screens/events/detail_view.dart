@@ -33,7 +33,12 @@ class EventDetailViewScreen extends StatelessWidget {
                       context.push('/editEvent/${event.id}');
                     },
                   )
-                : const SizedBox.shrink()
+                : const SizedBox.shrink(),
+            IconButton(
+                icon: const Icon(Icons.message),
+                onPressed: () {
+                  context.push("/chat/${event.id}");
+                }),
           ],
         ),
         body: Column(
@@ -169,23 +174,24 @@ class EventDetailViewScreen extends StatelessWidget {
                         ? Container(
                             margin: const EdgeInsets.only(left: 20, top: 50),
                             alignment: Alignment.centerLeft,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start, // Align children to the left
-                        children: [
-                          const Text(
-                            'Description',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            child: Text(
-                              event.description!,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 5,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              // Align children to the left
+                              children: [
+                                const Text(
+                                  'Description',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  child: Text(
+                                    event.description!,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 5,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
-                    )
+                          )
                         : const SizedBox.shrink(),
                   ],
                 ),
