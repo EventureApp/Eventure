@@ -12,27 +12,32 @@ class ListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background, // Set background color here
       body: Consumer<EventProvider>(
         builder: (context, eventProvider, child) {
           return ListView.builder(
             itemCount: eventProvider.filteredEvents.length,
             itemBuilder: (context, index) {
               final event = eventProvider.filteredEvents[index];
-              return EventCard(
-                name: event.name,
-                startDate: event.startDate,
-                address: event.address,
-                icon: event.icon,
-                organizer: Provider.of<UserProvider>(context)
-                    .getUserName(event.organizer ?? ""),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EventDetailViewScreen(event: event),
-                    ),
-                  );
-                },
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+                child: EventCard(
+                  name: event.name,
+                  startDate: event.startDate,
+                  address: event.address,
+                  icon: event.icon,
+                  organizer: Provider.of<UserProvider>(context)
+                      .getUserName(event.organizer ?? ""),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            EventDetailViewScreen(event: event),
+                      ),
+                    );
+                  },
+                ),
               );
             },
           );

@@ -88,14 +88,12 @@ class _CustomNumberInputState extends State<CustomNumberInput> {
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFF1976D2);
     final isFocused = _focusNode.hasFocus;
     final isInvalid = _errorMessage.isNotEmpty;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 8),
         TextField(
           controller: _controller,
           focusNode: _focusNode,
@@ -105,7 +103,7 @@ class _CustomNumberInputState extends State<CustomNumberInput> {
             labelText:
                 widget.isMandatory == true ? '${widget.label} *' : widget.label,
             labelStyle: TextStyle(
-              color: isFocused ? primaryColor : Colors.black54,
+              color: Theme.of(context).colorScheme.secondary,
               fontWeight: FontWeight.w500,
             ),
             hintText: widget.hint ??
@@ -128,16 +126,16 @@ class _CustomNumberInputState extends State<CustomNumberInput> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: isInvalid ? Colors.red : primaryColor,
+                color: isInvalid ? Colors.red : Theme.of(context).colorScheme.secondary,
                 width: 1.5,
               ),
             ),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: Theme.of(context).colorScheme.surface,
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           ),
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Theme.of(context).colorScheme.secondary),
         ),
         if (_errorMessage.isNotEmpty)
           Padding(
