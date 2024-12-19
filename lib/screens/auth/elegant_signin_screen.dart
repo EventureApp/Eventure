@@ -102,7 +102,7 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [primaryColor, secondaryColor],
+                  colors: [primaryColor, theme.colorScheme.surface],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -230,9 +230,9 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
                             onPressed: () {
                               // Hier die Logik für "Passwort vergessen" einbauen
                             },
-                            child: const Text(
+                            child: Text(
                               'Forgot password?',
-                              style: TextStyle(fontSize: 14),
+                              style: TextStyle(fontSize: 14, color: secondaryColor),
                             ),
                           ),
                         ),

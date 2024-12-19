@@ -136,7 +136,7 @@ class _ElegantSignUpScreenState extends State<ElegantSignUpScreen> {
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [primaryColor, const Color(0xFFF5F5F5)],
+                  colors: [primaryColor, theme.colorScheme.surface],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -204,6 +204,7 @@ class _ElegantSignUpScreenState extends State<ElegantSignUpScreen> {
                           _lastNameController,
                           'Last Name',
                           prefixIcon: Icons.person_outline,
+                          secondaryColor: secondaryColor,
                         ),
                         const SizedBox(height: 16),
                         _buildTextField(
