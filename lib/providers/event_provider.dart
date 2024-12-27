@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../models/event.dart';
 import '../models/event_filter.dart';
 import '../services/db/event_service.dart';
 
 class EventProvider with ChangeNotifier {
+  static const double DEFAULT_RANGE = 10.0;
+  static const LatLng DEFAULT_LOCATION = LatLng(49.4699765, 8.4819024);
+
   final EventService _eventService = EventService();
   List<Event> _events = [];
   List<Event> _filteredEvents = [];
 
-  EventFilter _filter = EventFilter();
+  EventFilter _filter =
+  EventFilter(range: DEFAULT_RANGE, location: DEFAULT_LOCATION);
 
   List<Event> get events => _events;
 
@@ -18,7 +23,7 @@ class EventProvider with ChangeNotifier {
   EventFilter get filter => _filter;
 
   EventProvider() {
-    _fetchAllEvents();
+    _fetchEventsByLocation();
   }
 
   Future<void> _fetchAllEvents() async {
@@ -32,9 +37,8 @@ class EventProvider with ChangeNotifier {
   }
 
   Future<void> _fetchEventsByLocation() async {
-    print(_filter.location);
     _events =
-        await _eventService.getAllInRange(_filter.location!, _filter.range!);
+        await _eventService.getAllInRange(_filter.location, _filter.range);
     _filteredEvents = List.from(_events);
     notifyListeners();
   }
@@ -44,7 +48,7 @@ class EventProvider with ChangeNotifier {
     _events.add(event);
     resetFilter();
     _applyFilter();
-    _fetchAllEvents();
+    _fetchEventsByLocation();
     notifyListeners();
   }
 
@@ -54,19 +58,19 @@ class EventProvider with ChangeNotifier {
   }
 
   void setFilter(EventFilter filter) {
-    if (filter.location == null || filter.range == null) {
-      _filterEvents(_fetchAllEvents, filter);
-    } else if (filter.location != _filter.location || filter.range != _filter.range) {
-      _filterEvents(_fetchEventsByLocation, filter);
-    } else {
-      _filterEvents(null, filter);
+    if (filter.location != _filter.location || filter.range != _filter.range) {
+      _filter = filter;
+      _fetchEventsByLocation();
     }
+
+    _filter = filter;
+    _applyFilter();
   }
 
   void resetFilter() {
     setFilter(EventFilter(
-        range: null,
-        location: null,
+        range: DEFAULT_RANGE,
+        location: DEFAULT_LOCATION,
         searchInput: null,
         startDate: null,
         endDate: null));

@@ -104,7 +104,7 @@ class _MapWidgetState extends State<MapWidget> {
               child: FloatingActionButton(
                 backgroundColor: Theme.of(context).colorScheme.secondary,
                 onPressed: () async {
-                  _mapController.move(_currentSelectedLocation, 13.0);
+                  _mapController.move(widget.userLocation!, 13.0);
                 },
                 child: Icon(
                   Icons.near_me,

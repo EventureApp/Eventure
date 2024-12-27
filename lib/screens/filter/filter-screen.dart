@@ -25,8 +25,8 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
   late DateTime? _endDate;
   late EventVisability _visibility;
   late List<EventType>? _eventType;
-  late LatLng? _location;
-  late double? _radius;
+  late LatLng _location;
+  late double _radius;
 
   @override
   void initState() {
