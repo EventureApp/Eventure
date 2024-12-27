@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
 class MapWidget extends StatefulWidget {
@@ -72,25 +71,23 @@ class _MapWidgetState extends State<MapWidget> {
           MarkerLayer(
             markers: [
               // Falls userLocation vorhanden ist, zeige blauen Marker für den Nutzerstandort
-              if (widget.userLocation != null)
+              Marker(
+                point: _currentSelectedLocation,
+                width: 50,
+                height: 50,
+                child: const Icon(
+                  Icons.location_on,
+                  size: 40,
+                  color: Colors.redAccent,
+                ),
+              ),
+              // Ausgewählte Location (rot), nur anzeigen falls sie != userLocation ist
+              if (_currentSelectedLocation != widget.userLocation)
                 Marker(
                   point: widget.userLocation!,
                   child: const Icon(
                     Icons.my_location,
                     color: Colors.blueAccent,
-                  ),
-                ),
-              // Ausgewählte Location (rot), nur anzeigen falls sie != userLocation ist
-              if (widget.userLocation == null ||
-                  _currentSelectedLocation != widget.userLocation)
-                Marker(
-                  point: _currentSelectedLocation,
-                  width: 50,
-                  height: 50,
-                  child: const Icon(
-                    Icons.location_on,
-                    size: 40,
-                    color: Colors.redAccent,
                   ),
                 ),
             ],

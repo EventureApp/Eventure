@@ -8,13 +8,13 @@ import '../services/db/event_service.dart';
 class EventProvider with ChangeNotifier {
   static const double DEFAULT_RANGE = 10.0;
   static const LatLng DEFAULT_LOCATION = LatLng(49.4699765, 8.4819024);
+  late LatLng _filterLocation;
 
   final EventService _eventService = EventService();
   List<Event> _events = [];
   List<Event> _filteredEvents = [];
 
-  EventFilter _filter =
-  EventFilter(range: DEFAULT_RANGE, location: DEFAULT_LOCATION);
+  late EventFilter _filter;
 
   List<Event> get events => _events;
 
@@ -23,6 +23,14 @@ class EventProvider with ChangeNotifier {
   EventFilter get filter => _filter;
 
   EventProvider() {
+    _filterLocation = DEFAULT_LOCATION;
+    _filter = EventFilter(range: DEFAULT_RANGE, location: _filterLocation);
+    _fetchEventsByLocation();
+  }
+
+  EventProvider.withLocation(LatLng? userLocation) {
+    _filterLocation = userLocation ?? DEFAULT_LOCATION;
+    _filter = EventFilter(range: DEFAULT_RANGE, location: _filterLocation);
     _fetchEventsByLocation();
   }
 
