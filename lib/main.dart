@@ -9,6 +9,7 @@ import 'package:eventure/screens/chat/chat_view.dart';
 import 'package:eventure/screens/events/create-event-screen.dart';
 import 'package:eventure/screens/events/detail_view.dart';
 import 'package:eventure/screens/filter/filter-screen.dart';
+import 'package:eventure/screens/filter/location_select_screen.dart';
 import 'package:eventure/screens/home/home_page.dart';
 import 'package:eventure/screens/profile/add_friends.dart';
 import 'package:eventure/screens/profile/user_profile.dart';
@@ -127,6 +128,12 @@ final _router = GoRouter(
               final id = state.pathParameters['id'];
               return Chat(eventId: id!);
             }),
+        GoRoute(
+          path: "setLocation",
+          builder: (context, state) {
+            return LocationSelectScreen();
+          }
+        )
       ],
     ),
   ],

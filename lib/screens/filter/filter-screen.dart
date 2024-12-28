@@ -1,16 +1,12 @@
 import 'package:eventure/models/event_filter.dart';
 import 'package:eventure/providers/event_provider.dart';
-import 'package:eventure/providers/location_provider.dart';
-import 'package:eventure/widgets/inputs/custom-number-select.dart';
 import 'package:flutter/material.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
 import '../../statics/custom_icons.dart';
 import '../../statics/event_types.dart';
 import '../../statics/event_visibility.dart';
 import '../../widgets/inputs/custom-event-type-select.dart';
-import '../../widgets/inputs/custom-location-select.dart';
 import '../../widgets/inputs/custom_date_time_picker.dart';
 
 class EventFilterScreen extends StatefulWidget {
@@ -25,8 +21,6 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
   late DateTime? _endDate;
   late EventVisability _visibility;
   late List<EventType>? _eventType;
-  late LatLng _location;
-  late double _radius;
 
   @override
   void initState() {
@@ -37,17 +31,16 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
     _endDate = eventFilter.endDate;
     _visibility = EventVisability.public;
     _eventType = eventFilter.eventType;
-    _location = eventFilter.location;
-    _radius = eventFilter.range;
   }
 
   void _applyFilters() {
     if (_formKey.currentState!.validate()) {
+      EventFilter eventFilter = context.read<EventProvider>().filter;
       context.read<EventProvider>().setFilter(EventFilter(
-            range: _radius,
+            range: eventFilter.range,
             startDate: _startDate,
             endDate: _endDate,
-            location: _location,
+            location: eventFilter.location,
             eventType: _eventType,
           ));
 
@@ -81,11 +74,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
           IconButton(
               icon: const Icon(Icons.save),
               onPressed: () {
-                (_radius == null &&
-                        _location == null &&
-                        _endDate == null &&
-                        _startDate == null &&
-                        _eventType == null)
+                (_endDate == null && _startDate == null && _eventType == null)
                     ? null
                     : _applyFilters();
               }),
@@ -177,42 +166,6 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                     onChanged: (selected) {
                       setState(() {
                         _eventType = selected;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Standort
-                  Consumer<LocationProvider>(
-                      builder: (context, locationProvider, child) {
-                    if (locationProvider.currentLocation == null) {
-                      return const Center(
-                        child: CircularProgressIndicator(), // Loading state
-                      );
-                    }
-
-                    return LocationSelect(
-                      label: "Location",
-                      isEditable: true,
-                      initValue: _location,
-                      userLocation: locationProvider.currentLocation!,
-                      onChanged: (location) {
-                        setState(() {
-                          _location = location!;
-                        });
-                      },
-                    );
-                  }),
-                  const SizedBox(height: 16),
-
-                  // Radius
-                  CustomNumberInput(
-                    label: "Radius (km)",
-                    initValue:
-                        _radius.toString() == 'null' ? '' : _radius.toString(),
-                    onChanged: (value) {
-                      setState(() {
-                        _radius = value!.toDouble();
                       });
                     },
                   ),

@@ -22,12 +22,9 @@ class _HomePageState extends State<HomePage> {
   bool isMapSelected = true;
 
   bool areFiltersApplied(EventFilter filter) {
-    return !(filter.range == null &&
-        filter.location == null &&
-        filter.eventType == null &&
+    return !(filter.eventType == null &&
         filter.endDate == null &&
-        filter.startDate == null
-        );
+        filter.startDate == null);
   }
 
   @override
@@ -316,8 +313,7 @@ class _HomePageState extends State<HomePage> {
               return isMapSelected
                   ? MapWidget(
                       currentLocation: locationProvider.currentLocation!,
-                      currentSelectedLocation:
-                          eventProvider.filter.location,
+                      currentSelectedLocation: eventProvider.filter.location,
                     )
                   : const ListScreen();
             },
@@ -334,30 +330,42 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Consumer<EventProvider>(
-                  builder: (context, eventProvider, child) {
-                    return Stack(
-                      children: [
-                        IconButton(
-                          icon: const Icon(
-                            CustomIcons.filteroptions,
-                            size: 24,
+                Row(
+                  children: [
+                    Consumer<EventProvider>(
+                        builder: (context, eventProvider, child) {
+                      return Stack(
+                        children: [
+                          IconButton(
+                            icon: const Icon(
+                              CustomIcons.filteroptions,
+                              size: 24,
+                            ),
+                            onPressed: () {
+                              context.push('/addFilter');
+                            },
                           ),
-                          onPressed: () {
-                            context.push('/addFilter');
-                          },
-                        ),
-                        if (areFiltersApplied(eventProvider.filter))
-                          const Positioned(
-                              right: 8,
-                              top: 8,
-                              child: CircleAvatar(
-                                radius: 4,
-                                backgroundColor: Colors.blueAccent,
-                              ))
-                      ],
-                    );
-                  }
+                          if (areFiltersApplied(eventProvider.filter))
+                            const Positioned(
+                                right: 8,
+                                top: 8,
+                                child: CircleAvatar(
+                                  radius: 4,
+                                  backgroundColor: Colors.blueAccent,
+                                ))
+                        ],
+                      );
+                    }),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.location_pin,
+                        size: 24,
+                      ),
+                      onPressed: () {
+                        context.push('/setLocation');
+                      },
+                    ),
+                  ],
                 ),
                 ToggleButtons(
                   isSelected: [isMapSelected, !isMapSelected],
