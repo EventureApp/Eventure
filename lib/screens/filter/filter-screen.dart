@@ -43,7 +43,6 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
 
   void _applyFilters() {
     if (_formKey.currentState!.validate()) {
-      context.read<LocationProvider>().setLocation(_location);
       context.read<EventProvider>().setFilter(EventFilter(
             range: _radius,
             startDate: _startDate,
@@ -186,24 +185,24 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                   // Standort
                   Consumer<LocationProvider>(
                       builder: (context, locationProvider, child) {
-                        if (locationProvider.currentLocation == null) {
-                          return const Center(
-                            child: CircularProgressIndicator(), // Loading state
-                          );
-                        }
+                    if (locationProvider.currentLocation == null) {
+                      return const Center(
+                        child: CircularProgressIndicator(), // Loading state
+                      );
+                    }
 
-                        return LocationSelect(
-                          label: "Location",
-                          isEditable: true,
-                          initValue: _location,
-                          userLocation: locationProvider.currentLocation!,
-                          onChanged: (location) {
-                            setState(() {
-                              _location = location!;
-                            });
-                          },
-                        );
-                      }),
+                    return LocationSelect(
+                      label: "Location",
+                      isEditable: true,
+                      initValue: _location,
+                      userLocation: locationProvider.currentLocation!,
+                      onChanged: (location) {
+                        setState(() {
+                          _location = location!;
+                        });
+                      },
+                    );
+                  }),
                   const SizedBox(height: 16),
 
                   // Radius

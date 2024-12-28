@@ -78,20 +78,10 @@ class EventProvider with ChangeNotifier {
   void resetFilter() {
     setFilter(EventFilter(
         range: DEFAULT_RANGE,
-        location: DEFAULT_LOCATION,
+        location: _filterLocation,
         searchInput: null,
         startDate: null,
         endDate: null));
-  }
-
-  Future<void> _filterEvents(Function? fetch, EventFilter filter) async {
-    _filter = filter;
-
-    if (fetch != null) {
-      await fetch();
-    }
-
-    _applyFilter();
   }
 
   void _applyFilter() {

@@ -305,8 +305,8 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Stack(
         children: [
-          Consumer<LocationProvider>(
-            builder: (context, locationProvider, child) {
+          Consumer2<LocationProvider, EventProvider>(
+            builder: (context, locationProvider, eventProvider, child) {
               if (locationProvider.currentLocation == null) {
                 return const Center(
                   child: CircularProgressIndicator(), // Loading state
@@ -317,7 +317,7 @@ class _HomePageState extends State<HomePage> {
                   ? MapWidget(
                       currentLocation: locationProvider.currentLocation!,
                       currentSelectedLocation:
-                          locationProvider.currentSelectedLocation,
+                          eventProvider.filter.location,
                     )
                   : const ListScreen();
             },
