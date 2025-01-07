@@ -6,6 +6,7 @@ import '../models/event_filter.dart';
 import '../services/db/event_service.dart';
 
 class EventProvider with ChangeNotifier {
+  bool _isDisposed = false;
   static const double DEFAULT_RANGE = 10.0;
   static const LatLng DEFAULT_LOCATION = LatLng(49.4699765, 8.4819024);
 
@@ -13,8 +14,7 @@ class EventProvider with ChangeNotifier {
   List<Event> _events = [];
   List<Event> _filteredEvents = [];
 
-  EventFilter _filter =
-      EventFilter(range: DEFAULT_RANGE, location: DEFAULT_LOCATION);
+  late EventFilter _filter;
 
   List<Event> get events => _events;
 
@@ -23,27 +23,47 @@ class EventProvider with ChangeNotifier {
   EventFilter get filter => _filter;
 
   EventProvider() {
-    _fetchEvents();
+    _filter = EventFilter(range: DEFAULT_RANGE, location: DEFAULT_LOCATION);
+    _fetchEventsByLocation();
+  }
+
+  EventProvider.withLocation(LatLng? userLocation) {
+    _filter = EventFilter(range: DEFAULT_RANGE, location: userLocation ?? DEFAULT_LOCATION);
+    _fetchEventsByLocation();
+  }
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+    super.dispose();
+  }
+
+  Future<void> _fetchAllEvents() async {
+    if (_isDisposed) return;
+    _events = await _eventService.getAll();
+    _filteredEvents = List.from(_events);
+    notifyListeners();
   }
 
   Event getEventFromId(String id) {
     return events.firstWhere((event) => event.id == id);
   }
 
-  Future<void> _fetchEvents() async {
+  Future<void> _fetchEventsByLocation() async {
+    if (_isDisposed) return;
     _events =
         await _eventService.getAllInRange(_filter.location, _filter.range);
     _filteredEvents = List.from(_events);
-    print(this);
     notifyListeners();
   }
 
   Future<void> addEvent(Event event) async {
+    if (_isDisposed) return;
     await _eventService.create(event);
     _events.add(event);
     resetFilter();
     _applyFilter();
-    _fetchEvents();
+    _fetchEventsByLocation();
     notifyListeners();
   }
 
@@ -53,27 +73,34 @@ class EventProvider with ChangeNotifier {
   }
 
   void setFilter(EventFilter filter) {
-    print(_filter);
     if (filter.location != _filter.location || filter.range != _filter.range) {
       _filter = filter;
-      _fetchEvents();
+      _fetchEventsByLocation();
     }
-    _filter = filter;
-    print(_filter);
 
+    _filter = filter;
     _applyFilter();
   }
 
   void resetFilter() {
     setFilter(EventFilter(
-        range: DEFAULT_RANGE,
-        location: DEFAULT_LOCATION,
-        searchInput: null,
-        startDate: null,
-        endDate: null));
+        range: _filter.range,
+        location: _filter.location));
+  }
+
+  void resetLocation(LatLng userLocation) {
+    setFilter(EventFilter(
+      range: DEFAULT_RANGE,
+      location: userLocation,
+      searchInput: _filter.searchInput,
+      startDate: _filter.startDate,
+      endDate: _filter.endDate,
+      eventType: _filter.eventType,
+    ));
   }
 
   void _applyFilter() {
+    if (_isDisposed) return;
     _filteredEvents = events.where((event) {
       final matchesSearch = _filter.searchInput == null ||
           (event.name

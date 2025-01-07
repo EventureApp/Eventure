@@ -2,12 +2,14 @@ import 'package:eventure/providers/event_provider.dart';
 import 'package:eventure/providers/location_provider.dart';
 import 'package:eventure/providers/theme_provider.dart';
 import 'package:eventure/providers/user_provider.dart';
+import 'package:eventure/providers/user_provider.dart';
 import 'package:eventure/screens/auth/elegant_signin_screen.dart';
 import 'package:eventure/screens/auth/elegant_signup_screen.dart';
 import 'package:eventure/screens/chat/chat_view.dart';
-import 'package:eventure/screens/events/event-screen.dart';
+import 'package:eventure/screens/events/create-event-screen.dart';
 import 'package:eventure/screens/events/detail_view.dart';
 import 'package:eventure/screens/filter/filter-screen.dart';
+import 'package:eventure/screens/filter/location_select_screen.dart';
 import 'package:eventure/screens/home/home_page.dart';
 import 'package:eventure/screens/profile/add_friends.dart';
 import 'package:eventure/screens/profile/user_profile.dart';
@@ -34,7 +36,10 @@ void main() {
         providers: [
           ChangeNotifierProvider(create: (context) => AuthenticationProvider()),
           ChangeNotifierProvider(create: (context) => LocationProvider()),
-          ChangeNotifierProvider(create: (context) => EventProvider()),
+          ChangeNotifierProxyProvider<LocationProvider, EventProvider>(
+              create: (_) => EventProvider(),
+              update: (context, locationProvider, eventProvider) =>
+                  EventProvider.withLocation(locationProvider.currentLocation)),
           ChangeNotifierProvider(create: (context) => ChatProvider()),
           ChangeNotifierProvider(create: (context) => UserProvider()),
           ChangeNotifierProvider(create: (context) => ThemeProvider())
@@ -123,6 +128,12 @@ final _router = GoRouter(
               final id = state.pathParameters['id'];
               return Chat(eventId: id!);
             }),
+        GoRoute(
+          path: "setLocation",
+          builder: (context, state) {
+            return LocationSelectScreen();
+          }
+        )
       ],
     ),
   ],

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
 class MapWidget extends StatefulWidget {
@@ -55,7 +54,6 @@ class _MapWidgetState extends State<MapWidget> {
         options: MapOptions(
           initialCenter: _currentSelectedLocation,
           initialZoom: 13.0,
-          minZoom: 13.0,
           maxZoom: 100.0,
           onTap: widget.isEditable
               ? (tapPosition, point) {
@@ -73,25 +71,23 @@ class _MapWidgetState extends State<MapWidget> {
           MarkerLayer(
             markers: [
               // Falls userLocation vorhanden ist, zeige blauen Marker für den Nutzerstandort
-              if (widget.userLocation != null)
+              Marker(
+                point: _currentSelectedLocation,
+                width: 50,
+                height: 50,
+                child: const Icon(
+                  Icons.location_on,
+                  size: 40,
+                  color: Colors.redAccent,
+                ),
+              ),
+              // Ausgewählte Location (rot), nur anzeigen falls sie != userLocation ist
+              if (_currentSelectedLocation != widget.userLocation)
                 Marker(
                   point: widget.userLocation!,
                   child: const Icon(
                     Icons.my_location,
                     color: Colors.blueAccent,
-                  ),
-                ),
-              // Ausgewählte Location (rot), nur anzeigen falls sie != userLocation ist
-              if (widget.userLocation == null ||
-                  _currentSelectedLocation != widget.userLocation)
-                Marker(
-                  point: _currentSelectedLocation,
-                  width: 50,
-                  height: 50,
-                  child: Icon(
-                    Icons.location_on,
-                    size: 40,
-                    color: Colors.redAccent,
                   ),
                 ),
             ],
@@ -105,7 +101,7 @@ class _MapWidgetState extends State<MapWidget> {
               child: FloatingActionButton(
                 backgroundColor: Theme.of(context).colorScheme.secondary,
                 onPressed: () async {
-                  _mapController.move(_currentSelectedLocation, 13.0);
+                  _mapController.move(widget.userLocation!, 13.0);
                 },
                 child: Icon(
                   Icons.near_me,
@@ -283,6 +279,7 @@ class LocationSelect extends StatefulWidget {
   final Function(LatLng?) onChanged;
   final bool isMandatory;
   final bool isEditable;
+  final LatLng userLocation;
 
   const LocationSelect({
     Key? key,
@@ -291,6 +288,7 @@ class LocationSelect extends StatefulWidget {
     required this.onChanged,
     this.isMandatory = false,
     this.isEditable = true,
+    required this.userLocation,
   }) : super(key: key);
 
   @override
@@ -299,58 +297,12 @@ class LocationSelect extends StatefulWidget {
 
 class _LocationSelectState extends State<LocationSelect> {
   LatLng? _selectedLocation;
-  LatLng? _userLocation;
   bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _selectedLocation = widget.initValue;
-    if (_selectedLocation == null) {
-      _getCurrentLocation();
-    } else {
-      _userLocation = _selectedLocation;
-    }
-  }
-
-  Future<void> _getCurrentLocation() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      setState(() {
-        _isLoading = false;
-      });
-      return;
-    }
-
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.deniedForever) {
-      setState(() {
-        _isLoading = false;
-      });
-      return;
-    } else if (permission == LocationPermission.denied ||
-        permission == LocationPermission.whileInUse) {
-      permission = await Geolocator.requestPermission();
-      if (permission != LocationPermission.whileInUse &&
-          permission != LocationPermission.always) {
-        setState(() {
-          _isLoading = false;
-        });
-        return;
-      }
-    }
-
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    setState(() {
-      _selectedLocation = LatLng(position.latitude, position.longitude);
-      _userLocation = _selectedLocation;
-      _isLoading = false;
-    });
+    _selectedLocation = widget.initValue ?? widget.userLocation;
   }
 
   void _openLocationBottomSheet() {
@@ -369,7 +321,7 @@ class _LocationSelectState extends State<LocationSelect> {
               widget.onChanged(newLocation);
             },
             isMandatory: widget.isMandatory,
-            userLocation: _userLocation,
+            userLocation: widget.userLocation,
           );
         },
       );
@@ -427,7 +379,7 @@ class _LocationSelectState extends State<LocationSelect> {
                             _openLocationBottomSheet();
                           },
                           isMandatory: widget.isMandatory,
-                          userLocation: _userLocation,
+                          userLocation: widget.userLocation,
                         ),
                       ),
               ),

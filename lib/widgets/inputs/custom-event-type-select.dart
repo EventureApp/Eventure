@@ -116,7 +116,7 @@ class _EventSelectState extends State<EventSelect> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        widget.isMultiSelect ? 'Select Events' : 'Select Event',
+                        widget.isMultiSelect ? 'Select Event Types' : 'Select Event Type',
                         style: const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
@@ -128,7 +128,7 @@ class _EventSelectState extends State<EventSelect> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Tap on an event to ${widget.isMultiSelect ? "toggle selection" : "select it"}.',
+                    'Tap on an event type to ${widget.isMultiSelect ? "toggle selection" : "select it"}.',
                     style: TextStyle(color: Colors.grey[700], fontSize: 14),
                   ),
                   const SizedBox(height: 16),
@@ -138,7 +138,7 @@ class _EventSelectState extends State<EventSelect> {
                     onChanged: applySearch,
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.search),
-                      hintText: 'Search events...',
+                      hintText: 'Search event types...',
                       hintStyle:
                           TextStyle(color: Colors.grey.shade600, fontSize: 14),
                       fillColor: Theme.of(context).colorScheme.surface,
@@ -366,7 +366,7 @@ class _EventSelectState extends State<EventSelect> {
                   // Placeholder or prompt
                   if (_selectedEvents.isEmpty)
                     Text(
-                      widget.isMandatory ? 'Mandatory' : 'Select event(s)',
+                      widget.isMandatory ? 'Mandatory' : 'Select event type(s)',
                       style: TextStyle(
                         color: Colors.grey.shade600,
                         fontSize: 14,

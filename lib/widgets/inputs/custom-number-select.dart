@@ -6,6 +6,7 @@ class CustomNumberInput extends StatefulWidget {
   final bool? isMandatory;
   final int? minValue;
   final int? maxValue;
+  final String? initValue;
   final Function(int?) onChanged;
 
   const CustomNumberInput({
@@ -15,6 +16,7 @@ class CustomNumberInput extends StatefulWidget {
     this.isMandatory = false,
     this.minValue,
     this.maxValue,
+    this.initValue,
     required this.onChanged,
   }) : super(key: key);
 
@@ -31,6 +33,7 @@ class _CustomNumberInputState extends State<CustomNumberInput> {
   void initState() {
     super.initState();
     _controller = TextEditingController();
+    _controller.text = widget.initValue ?? '';
     _focusNode = FocusNode();
     _focusNode.addListener(() {
       setState(() {}); // Refresh UI on focus changes

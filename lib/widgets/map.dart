@@ -1,4 +1,3 @@
-import 'package:eventure/providers/location_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
@@ -30,16 +29,14 @@ class _MapWidgetState extends State<MapWidget> {
     super.initState();
     _currentLocation = widget.currentLocation;
     _currentSelectedLocation = widget.currentSelectedLocation;
-    Provider.of<LocationProvider>(context, listen: false)
+    Provider.of<EventProvider>(context, listen: false)
         .addListener(_onLocationChanged);
   }
 
   void _onLocationChanged() {
-    final newLocation = Provider.of<LocationProvider>(context, listen: false)
-        .currentSelectedLocation;
-    if (newLocation != null &&
-        newLocation != _currentSelectedLocation &&
-        _isMapReady) {
+    final newLocation =
+        Provider.of<EventProvider>(context, listen: false).filter.location;
+    if (newLocation != _currentSelectedLocation && _isMapReady) {
       setState(() {
         _currentSelectedLocation = newLocation;
       });
