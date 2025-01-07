@@ -258,7 +258,7 @@ class _LocationSelectBottomSheetState extends State<LocationSelectBottomSheet> {
                 padding:
                     const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
               ),
-              child: const Text(
+              child: Text(
                 'Done',
                 style: TextStyle(
                     fontSize: 16,
