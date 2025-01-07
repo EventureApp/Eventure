@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EventDetailViewScreen extends StatelessWidget {
   final Event event;
@@ -114,6 +115,10 @@ class EventDetailViewScreen extends StatelessWidget {
                             ),
                             onPressed: () async {
                               print('Navigation pressed');
+                              Uri googleMapsUri = Uri.https('maps.google.com', '',{'q': '${event.location.latitude},${event.location.longitude}'});
+                              if (!await launchUrl(googleMapsUri)) {
+                                throw Exception('Could not launch $googleMapsUri');
+                              }
                             },
                           ),
                         ],
