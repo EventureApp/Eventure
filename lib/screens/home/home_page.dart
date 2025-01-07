@@ -325,37 +325,38 @@ class _HomePageState extends State<HomePage> {
         child: BottomAppBar(
           color: Theme.of(context).colorScheme.primary,
           elevation: 4,
-          child: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // Left buttons
+              Positioned(
+                left: 20, // Adjust this value to control the horizontal position
+                child: Row(
                   children: [
                     Consumer<EventProvider>(
                         builder: (context, eventProvider, child) {
-                      return Stack(
-                        children: [
-                          IconButton(
-                            icon: const Icon(
-                              CustomIcons.filteroptions,
-                              size: 24,
-                            ),
-                            onPressed: () {
-                              context.push('/addFilter');
-                            },
-                          ),
-                          if (areFiltersApplied(eventProvider.filter))
-                            const Positioned(
-                                right: 8,
-                                top: 8,
-                                child: CircleAvatar(
-                                  radius: 4,
-                                  backgroundColor: Colors.blueAccent,
-                                ))
-                        ],
-                      );
-                    }),
+                          return Stack(
+                            children: [
+                              IconButton(
+                                icon: const Icon(
+                                  CustomIcons.filteroptions,
+                                  size: 24,
+                                ),
+                                onPressed: () {
+                                  context.push('/addFilter');
+                                },
+                              ),
+                              if (areFiltersApplied(eventProvider.filter))
+                                const Positioned(
+                                    right: 8,
+                                    top: 8,
+                                    child: CircleAvatar(
+                                      radius: 4,
+                                      backgroundColor: Colors.blueAccent,
+                                    ))
+                            ],
+                          );
+                        }),
                     IconButton(
                       icon: const Icon(
                         Icons.location_pin,
@@ -367,7 +368,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
-                ToggleButtons(
+              ),
+              // Centered toggle button
+              Center(
+                child: ToggleButtons(
                   isSelected: [isMapSelected, !isMapSelected],
                   onPressed: (int index) {
                     setState(() {
@@ -375,18 +379,20 @@ class _HomePageState extends State<HomePage> {
                     });
                   },
                   borderRadius: BorderRadius.circular(20.0),
-                  color: Theme.of(context).colorScheme.secondary, // Set the color of the icons
-                  selectedColor:
-                    Theme.of(context).colorScheme.secondary, // Set the color of the selected icon
-                  fillColor: Theme.of(context)
-                      .primaryColor, // Set the fill color when selected
+                  color: Theme.of(context).colorScheme.secondary,
+                  selectedColor: Theme.of(context).colorScheme.secondary,
+                  fillColor: Theme.of(context).primaryColor,
                   splashColor: Colors.transparent,
                   children: const [
                     Icon(CustomIcons.map, size: 24),
                     Icon(Icons.list, size: 24),
                   ],
                 ),
-                IconButton(
+              ),
+              // Right button
+              Positioned(
+                right: 20, // Adjust this value to control the horizontal position
+                child: IconButton(
                   icon: const Icon(
                     CustomIcons.plus,
                     size: 24,
@@ -395,8 +401,8 @@ class _HomePageState extends State<HomePage> {
                     context.push('/addEvent');
                   },
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

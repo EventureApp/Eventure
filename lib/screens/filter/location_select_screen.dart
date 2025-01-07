@@ -64,6 +64,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Pick location"),
+        backgroundColor: Theme.of(context).colorScheme.primary,
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_outline),
@@ -82,9 +83,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
       body: SingleChildScrollView(
         child: Column(children: [
           Container(
-            color: Theme
-                .of(context)
-                .primaryColor,
+            color: Theme.of(context).colorScheme.surface,
             width: double.infinity,
             height: 100,
             padding: const EdgeInsets.symmetric(vertical: 13),
@@ -92,14 +91,15 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
               child: Container(
                 width: 50,
                 height: 50,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
                   shape: BoxShape.circle,
                 ),
-                child: const Center(
+                child: Center(
                   child: Icon(
                     Icons.location_pin,
                     size: 30,
+                    color: Theme.of(context).colorScheme.primary
                   ),
                 ),
               ),
@@ -107,6 +107,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
           ),
           Container(
             padding: const EdgeInsets.all(16.0),
+            color: Theme.of(context).colorScheme.background,
             child: Form(
               key: _formKey,
               child: Column(
@@ -147,7 +148,6 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
                       });
                     },
                   ),
-                  const SizedBox(height: 32),
                 ],
               ),
             ),

@@ -169,7 +169,6 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                       });
                     },
                   ),
-                  const SizedBox(height: 32),
                 ],
               ),
             ),
