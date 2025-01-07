@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth_provider.dart';
+import '../../providers/event_provider.dart';
 import 'chat_message_group.dart';
 import 'chat_message_user.dart';
 
@@ -122,15 +123,17 @@ class _ChatState extends State<Chat> {
 
   @override
   Widget build(BuildContext context) {
+    final event = context.read<EventProvider>().getEventFromId(widget.eventId);
+    final eventName = event.name;
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
-        title: const Text('Chat'),
+        title: Text(eventName),
       ),
       body: Column(
         children: [
-          // Header Section
           Container(
             color: Theme.of(context).colorScheme.surface,
             width: double.infinity,
@@ -154,9 +157,7 @@ class _ChatState extends State<Chat> {
               ),
             ),
           ),
-          // Messages List
           _buildMessages(context, widget.eventId),
-          // Input Area
           _buildInputArea(context, widget.eventId),
         ],
       ),
