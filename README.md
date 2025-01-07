@@ -1,16 +1,62 @@
-# eventure
+# Eventure
 
-A new Flutter project.
+**Eventure** is a Flutter application developed as part of the Cross-Platform Development Project at the Technical University of Applied Sciences. Its main purpose is to help students manage and organize events efficiently, connect with other students, and build friendships.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## Table of Contents
 
-A few resources to get you started if this is your first Flutter project:
+- [Overview](#overview)
+- [Installation](#installation)
+- [Features](#features)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Overview
+
+Eventure offers a convenient way for students to:
+- Create and manage various events.
+- Find events using filters (location, category, etc.).
+- Communicate with other participants through an integrated chat.
+- Manage and view user profiles.
+- Toggle between light and dark themes.
+
+---
+
+## Installation
+
+1. **Install Flutter**  
+   Make sure you have [Flutter](https://docs.flutter.dev/get-started/install) installed on your system. Verify your installation by running:
+   ```bash
+   flutter --version
+   ```
+2. **Clone or Download the Repository**
+   You can clone the repository using Git or download the ZIP file directly:
+    ```bash
+    git clone <repository-url>   
+    ```
+
+3. **Install Dependencies**
+   Navigate into the project directory and install the required packages from the pubspec.yaml file:
+  ```bash
+    cd Eventure
+    flutter pub get   
+  ```
+4. **Run the App**
+   To launch Eventure on an emulator or physical device, run:
+    ```bash
+    flutter run   
+    ```
+
+## Features
+- **Event Management**  
+Create, edit, and delete your own events.
+- **Event Filtering**  
+Find suitable events based on location or category using a filter screen.
+- **Chat Functionality**  
+Exchange messages with other event participants in real time.
+- **User Profiles**  
+View and manage personal profiles, connect with others, and add friends.
+- **Theme Switching**  
+Choose between light and dark mode to suit your preference.
+   
