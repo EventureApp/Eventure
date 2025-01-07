@@ -63,6 +63,7 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
     bool obscureText = false,
     IconData? prefixIcon,
     TextInputType keyboardType = TextInputType.text,
+    Color secondaryColor = Colors.white,
   }) {
     return TextField(
       controller: controller,
@@ -72,8 +73,7 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
         labelText: labelText,
         prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
         filled: true,
-        fillColor: Colors.white,
-        labelStyle: const TextStyle(color: Colors.black54),
+        labelStyle: TextStyle(color: secondaryColor),
         contentPadding:
             const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
         border: OutlineInputBorder(
@@ -89,8 +89,9 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    var primaryColor = theme.primaryColor;
-    const backgroundColor = Color(0xFFF5F5F5);
+    var primaryColor = theme.colorScheme.primary;
+    var backgroundColor = theme.colorScheme.background;
+    var secondaryColor = theme.colorScheme.secondary;
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -101,7 +102,7 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [theme.primaryColor, const Color(0xFFF5F5F5)],
+                  colors: [primaryColor, theme.colorScheme.surface],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -128,7 +129,7 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
                           'Welcome to Eventure!',
                           style: theme.textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: Colors.black87,
+                            color: secondaryColor,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -136,7 +137,7 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
                         Text(
                           'Sign in to continue',
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: Colors.black54,
+                            color: secondaryColor,
                             fontSize: 16,
                           ),
                           textAlign: TextAlign.center,
@@ -153,7 +154,7 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 24, vertical: 24),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: backgroundColor,
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
@@ -172,6 +173,7 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
                           'E-Mail',
                           prefixIcon: Icons.email_outlined,
                           keyboardType: TextInputType.emailAddress,
+                          secondaryColor: secondaryColor,
                         ),
                         const SizedBox(height: 20),
                         _buildTextField(
@@ -179,6 +181,7 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
                           'Password',
                           prefixIcon: Icons.lock_outline,
                           obscureText: true,
+                          secondaryColor: secondaryColor,
                         ),
 
                         if (_errorMessage.isNotEmpty) ...[
@@ -208,14 +211,13 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
                                   width: 24,
                                   height: 24,
                                   child: CircularProgressIndicator(
-                                    color: Colors.white,
                                     strokeWidth: 2,
                                   ),
                                 )
-                              : const Text(
+                              : Text(
                                   'Sign in',
                                   style: TextStyle(
-                                      fontSize: 16, color: Colors.white),
+                                      fontSize: 16, color: secondaryColor),
                                 ),
                         ),
 
@@ -228,9 +230,9 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
                             onPressed: () {
                               // Hier die Logik für "Passwort vergessen" einbauen
                             },
-                            child: const Text(
+                            child: Text(
                               'Forgot password?',
-                              style: TextStyle(fontSize: 14),
+                              style: TextStyle(fontSize: 14, color: secondaryColor),
                             ),
                           ),
                         ),
@@ -247,7 +249,7 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
                               },
                               child: Text(
                                 'Sign up',
-                                style: TextStyle(color: primaryColor),
+                                style: TextStyle(color: secondaryColor),
                               ),
                             ),
                           ],

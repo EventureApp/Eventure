@@ -40,6 +40,7 @@ class _HomePageState extends State<HomePage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
+          backgroundColor: Theme.of(context).colorScheme.background,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -71,7 +72,7 @@ class _HomePageState extends State<HomePage> {
               const Divider(),
               ListTile(
                 leading: const Icon(Icons.person),
-                title: const Text('Mein Profil'),
+                title: const Text('My Profile'),
                 onTap: () {
                   Navigator.of(context).pop();
                   context.push('/profile');
@@ -79,7 +80,7 @@ class _HomePageState extends State<HomePage> {
               ),
               ListTile(
                 leading: const Icon(Icons.group),
-                title: const Text('Nutzer'),
+                title: const Text('User'),
                 onTap: () {
                   Navigator.of(context).pop();
                   context.push('/userList');
@@ -87,9 +88,10 @@ class _HomePageState extends State<HomePage> {
               ),
               ListTile(
                 leading: const Icon(Icons.settings),
-                title: const Text('Einstellungen'),
+                title: const Text('Settings'),
                 onTap: () {
                   Navigator.of(context).pop();
+                  context.push('/settings');
                 },
               ),
             ],
@@ -127,7 +129,8 @@ class _HomePageState extends State<HomePage> {
                                 borderSide: BorderSide.none,
                               ),
                               filled: true,
-                              fillColor: Colors.white,
+                              fillColor: (Theme.of(context).colorScheme.surface),
+
                             ),
                             onChanged: (value) {
                               eventProvider.setSearchString(value);
@@ -204,6 +207,13 @@ class _HomePageState extends State<HomePage> {
                             eventProvider.setFilter(newFilter);
                           }
                         },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Theme.of(context).colorScheme.secondary, // Text color
+                          backgroundColor: Theme.of(context).colorScheme.surface, // Button background color
+                          textStyle: const TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
                         child: const Text('Today'),
                       ),
                       ElevatedButton(
@@ -247,6 +257,13 @@ class _HomePageState extends State<HomePage> {
                             eventProvider.setFilter(newFilter);
                           }
                         },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Theme.of(context).colorScheme.secondary, // Text color
+                          backgroundColor: Theme.of(context).colorScheme.surface, // Button background color
+                          textStyle: const TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
                         child: const Text('Tomorrow'),
                       ),
                       ElevatedButton(
@@ -290,6 +307,13 @@ class _HomePageState extends State<HomePage> {
                             eventProvider.setFilter(newFilter);
                           }
                         },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Theme.of(context).colorScheme.secondary, // Text color
+                          backgroundColor: Theme.of(context).colorScheme.surface, // Button background color
+                          textStyle: const TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
                         child: const Text('One Week'),
                       ),
                     ],
@@ -325,7 +349,7 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: SizedBox(
         height: 90,
         child: BottomAppBar(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.primary,
           elevation: 4,
           child: Center(
             child: Row(
@@ -349,9 +373,9 @@ class _HomePageState extends State<HomePage> {
                     });
                   },
                   borderRadius: BorderRadius.circular(20.0),
-                  color: Colors.black, // Set the color of the icons
+                  color: Theme.of(context).colorScheme.secondary, // Set the color of the icons
                   selectedColor:
-                      Colors.black, // Set the color of the selected icon
+                    Theme.of(context).colorScheme.secondary, // Set the color of the selected icon
                   fillColor: Theme.of(context)
                       .primaryColor, // Set the fill color when selected
                   splashColor: Colors.transparent,

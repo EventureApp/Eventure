@@ -1,21 +1,21 @@
-import 'package:eventure/models/user.dart';
 import 'package:eventure/providers/event_provider.dart';
 import 'package:eventure/providers/location_provider.dart';
-import 'package:eventure/providers/user_provider.dart';
+import 'package:eventure/providers/theme_provider.dart';
 import 'package:eventure/providers/user_provider.dart';
 import 'package:eventure/screens/auth/elegant_signin_screen.dart';
 import 'package:eventure/screens/auth/elegant_signup_screen.dart';
+import 'package:eventure/screens/chat/chat_view.dart';
 import 'package:eventure/screens/events/event-screen.dart';
 import 'package:eventure/screens/events/detail_view.dart';
 import 'package:eventure/screens/filter/filter-screen.dart';
 import 'package:eventure/screens/home/home_page.dart';
 import 'package:eventure/screens/profile/add_friends.dart';
 import 'package:eventure/screens/profile/user_profile.dart';
+import 'package:eventure/screens/settings/settings.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
@@ -37,6 +37,7 @@ void main() {
           ChangeNotifierProvider(create: (context) => EventProvider()),
           ChangeNotifierProvider(create: (context) => ChatProvider()),
           ChangeNotifierProvider(create: (context) => UserProvider()),
+          ChangeNotifierProvider(create: (context) => ThemeProvider())
         ],
         child: const App(),
       ),
@@ -66,7 +67,7 @@ final _router = GoRouter(
         GoRoute(
           path: 'sign-in',
           builder: (context, state) =>
-              PopScope(canPop: false, child: const ElegantSignInScreen()),
+              const PopScope(canPop: false, child: ElegantSignInScreen()),
         ),
         GoRoute(
           path: '/sign-up', // <- Hier ist der Fehler: führender Slash
@@ -82,7 +83,7 @@ final _router = GoRouter(
         GoRoute(
             path: "userList",
             builder: (context, state) {
-              return AddFriendsScreen();
+              return const AddFriendsScreen();
             }),
         GoRoute(
             path: "addEvent",
@@ -110,6 +111,18 @@ final _router = GoRouter(
             builder: (context, state) {
               return EventFilterScreen();
             }),
+        GoRoute(
+          path: 'settings',
+          builder: (context, state) {
+            return const SettingsScreen();
+          },
+        ),
+        GoRoute(
+            path: "chat/:id",
+            builder: (context, state) {
+              final id = state.pathParameters['id'];
+              return Chat(eventId: id!);
+            }),
       ],
     ),
   ],
@@ -120,21 +133,39 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Eventure',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primaryColor: const Color(0xFFB7CBDD),
-        useMaterial3: true,
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.light,
-        primaryColor: const Color(0xFFB7CBDD),
-        useMaterial3: true,
-      ),
-      themeMode: ThemeMode.system,
-      routerConfig: _router,
+    return Consumer<ThemeProvider>( // Listen for theme changes
+      builder: (context, themeProvider, child) {
+        return MaterialApp.router(
+          title: 'Eventure',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            brightness: Brightness.light,
+            primaryColor: const Color(0xFFB7CBDD),
+            useMaterial3: true,
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFFF7F8F9),
+              secondary: Colors.black,
+              surface: Color(0xFFF1F2F4),
+              background: Color(0xFFDCDFE4),
+              error: Colors.red,
+            ),
+          ),
+          darkTheme: ThemeData(
+            brightness: Brightness.dark, // Set the dark theme
+            primaryColor: const Color(0xFFB7CBDD),
+            useMaterial3: true,
+            colorScheme: const ColorScheme.dark(
+              primary: Color(0xFF10151B),
+              secondary: Colors.white,
+              surface: Color(0xFF1B2936),
+              background: Color(0xFF121212),
+              error: Colors.red,
+            ),
+          ),
+          themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+          routerConfig: _router,
+        );
+      },
     );
   }
 }

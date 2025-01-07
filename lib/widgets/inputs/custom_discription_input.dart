@@ -51,7 +51,6 @@ class _CustomDescriptionInputState extends State<CustomDescriptionInput> {
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFF1976D2);
     final isFocused = _focusNode.hasFocus;
 
     return Column(
@@ -66,13 +65,13 @@ class _CustomDescriptionInputState extends State<CustomDescriptionInput> {
           decoration: InputDecoration(
             labelText: widget.required ? '${widget.label} *' : widget.label,
             labelStyle: TextStyle(
-              color: isFocused ? primaryColor : Colors.black54,
+              color: Theme.of(context).colorScheme.secondary,
               fontWeight: FontWeight.w500,
             ),
             hintText: widget.required ? 'Mandatory' : 'Optional',
             hintStyle: TextStyle(color: Colors.grey.shade600, fontSize: 14),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: Theme.of(context).colorScheme.surface,
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
             border: OutlineInputBorder(
@@ -90,12 +89,12 @@ class _CustomDescriptionInputState extends State<CustomDescriptionInput> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: _isFieldEmpty ? Colors.red : primaryColor,
+                color: _isFieldEmpty ? Colors.red : Theme.of(context).colorScheme.secondary,
                 width: 1.5,
               ),
             ),
           ),
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Theme.of(context).colorScheme.secondary),
         ),
         if (_isFieldEmpty)
           Padding(

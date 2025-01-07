@@ -17,7 +17,9 @@ class ProfileDetailScreen extends StatelessWidget {
     final currentUser = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.primary,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -44,7 +46,7 @@ class ProfileDetailScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).colorScheme.surface,
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: Column(

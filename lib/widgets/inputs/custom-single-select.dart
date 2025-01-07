@@ -94,7 +94,6 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFF1976D2);
 
     String displayText = _selectedValue ??
         (widget.required ? 'Required field' : 'Select option');
@@ -116,14 +115,14 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
           decoration: InputDecoration(
             labelText: widget.label,
             labelStyle: TextStyle(
-              color: _focusNode.hasFocus ? primaryColor : Colors.black54,
+              color: Theme.of(context).colorScheme.secondary,
               fontWeight: FontWeight.w500,
             ),
             hintText: widget.required ? 'Mandatory' : 'Optional',
             hintStyle: TextStyle(color: Colors.grey.shade600, fontSize: 14),
             suffixIcon: Icon(
               Icons.arrow_drop_down,
-              color: _focusNode.hasFocus ? primaryColor : Colors.grey,
+              color: _focusNode.hasFocus ? Theme.of(context).colorScheme.secondary : Colors.grey,
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -143,16 +142,16 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: primaryColor,
+                color: Theme.of(context).colorScheme.secondary,
                 width: 1.5,
               ),
             ),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: Theme.of(context).colorScheme.surface,
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           ),
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color:Theme.of(context).colorScheme.secondary),
           controller: TextEditingController(text: displayText),
         ),
         if (_isFieldEmpty)

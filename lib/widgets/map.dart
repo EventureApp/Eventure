@@ -82,6 +82,7 @@ class _MapWidgetState extends State<MapWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Stack(
       children: [
         Consumer<EventProvider>(
@@ -98,8 +99,9 @@ class _MapWidgetState extends State<MapWidget> {
               mapController: _mapController,
               children: [
                 TileLayer(
-                  urlTemplate:
-                      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                  urlTemplate: isDarkMode
+                      ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                      : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                   subdomains: const ['a', 'b', 'c'],
                 ),
                 MarkerLayer(
@@ -114,13 +116,13 @@ class _MapWidgetState extends State<MapWidget> {
           bottom: 16.0,
           right: 16.0,
           child: FloatingActionButton(
-            backgroundColor: const Color(0xFFEDEAF4),
+            backgroundColor: Theme.of(context).colorScheme.surface,
             onPressed: () async {
               _mapController.move(_currentLocation, 13.0);
             },
-            child: const Icon(
+            child: Icon(
               Icons.near_me,
-              color: Color(0xFF7763AE),
+              color: Theme.of(context).colorScheme.secondary,
             ),
           ),
         )

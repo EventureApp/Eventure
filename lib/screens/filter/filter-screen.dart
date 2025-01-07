@@ -71,6 +71,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Filter"),
+        backgroundColor: Theme.of(context).colorScheme.primary,
         actions: [
           IconButton(
               icon: const Icon(Icons.delete_outline),
@@ -88,7 +89,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
       body: SingleChildScrollView(
         child: Column(children: [
           Container(
-            color: Theme.of(context).primaryColor,
+            color: Theme.of(context).colorScheme.surface,
             width: double.infinity,
             height: 100,
             padding: const EdgeInsets.symmetric(vertical: 13),
@@ -96,20 +97,22 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
               child: Container(
                 width: 50,
                 height: 50,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
                   shape: BoxShape.circle,
                 ),
-                child: const Center(
+                child: Center(
                   child: Icon(
                     CustomIcons.filteroptions,
                     size: 30,
+                    color: Theme.of(context).colorScheme.primary
                   ),
                 ),
               ),
             ),
           ),
           Container(
+            color: Theme.of(context).colorScheme.background,
             padding: const EdgeInsets.all(16.0),
             child: Form(
               key: _formKey,
