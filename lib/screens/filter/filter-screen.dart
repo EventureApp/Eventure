@@ -107,7 +107,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
           ),
           Container(
             color: Theme.of(context).colorScheme.background,
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(32.0),
             child: Form(
               key: _formKey,
               child: Column(
@@ -125,7 +125,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                       });
                     },
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 32),
 
                   // Enddatum
                   CustomDateAndTimePicker(
@@ -154,7 +154,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                   // //     });
                   // //   },
                   // // ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 32),
 
                   // Event-Typ (Einzelauswahl)
                   EventSelect(
@@ -169,6 +169,8 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                       });
                     },
                   ),
+
+                  const SizedBox(height: 420)
                 ],
               ),
             ),
