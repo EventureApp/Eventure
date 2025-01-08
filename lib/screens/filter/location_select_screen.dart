@@ -106,7 +106,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(32.0),
             color: Theme.of(context).colorScheme.background,
             child: Form(
               key: _formKey,
@@ -134,7 +134,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
                           },
                         );
                       }),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 32),
 
                   // Radius
                   CustomNumberInput(
@@ -148,6 +148,8 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
                       });
                     },
                   ),
+
+                  const SizedBox(height: 225)
                 ],
               ),
             ),
