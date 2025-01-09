@@ -46,7 +46,6 @@ class UserProvider with ChangeNotifier {
   String getUserName(String id) {
     for (AppUser user in _users) {
       if (id == user.id) {
-        getCurrentUser(id);
         return user.username;
       }
     }
