@@ -1,0 +1,22 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
+import 'package:eventure/main.dart' as app;
+
+void main() {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
+  testWidgets('Full app test', (WidgetTester tester) async {
+    app.main();
+    await tester.pumpAndSettle();
+
+    // Teste die Erstellung eines neuen Events
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byKey(Key('eventName')), 'Test Event');
+    await tester.tap(find.byKey(Key('saveEvent')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Event successfully saved!'), findsOneWidget);
+  });
+}

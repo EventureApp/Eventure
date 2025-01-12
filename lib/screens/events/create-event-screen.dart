@@ -50,7 +50,7 @@ class _EventScreenState extends State<EventScreen> {
     super.initState();
     if (widget.event != null) {
       // Felder vorbefüllen, falls Bearbeitung
-      _isEditing = false;
+      _isEditing = true;
       _title = widget.event!.name;
       _startDate = widget.event!.startDate;
       _endDate = widget.event!.endDate;
