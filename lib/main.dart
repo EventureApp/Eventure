@@ -1,8 +1,6 @@
-import 'package:eventure/models/user.dart';
 import 'package:eventure/providers/event_provider.dart';
 import 'package:eventure/providers/location_provider.dart';
 import 'package:eventure/providers/theme_provider.dart';
-import 'package:eventure/providers/user_provider.dart';
 import 'package:eventure/providers/user_provider.dart';
 import 'package:eventure/screens/auth/elegant_signin_screen.dart';
 import 'package:eventure/screens/auth/elegant_signup_screen.dart';
@@ -15,13 +13,12 @@ import 'package:eventure/screens/home/home_page.dart';
 import 'package:eventure/screens/profile/add_friends.dart';
 import 'package:eventure/screens/profile/user_profile.dart';
 import 'package:eventure/screens/settings/settings.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-
+import 'package:eventure/models/user.dart';
 import 'firebase_options.dart';
 import 'providers/auth_provider.dart';
 import 'providers/chat_provider.dart';

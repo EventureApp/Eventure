@@ -145,7 +145,7 @@ class EventDetailViewScreen extends StatelessWidget {
                               foregroundColor: Theme.of(context).colorScheme.secondary,
                             ),
                             onPressed: () {
-                              context.push('/eventCreatorProfile/${event.organizer}');
+                              context.push('/userProfile/${event.organizer}');
                             },
                           ),
                         ],
