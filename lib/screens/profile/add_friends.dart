@@ -1,11 +1,11 @@
 import 'package:eventure/providers/user_provider.dart';
+import 'package:eventure/screens/profile/user_profile.dart';
 import 'package:eventure/widgets/inputs/custom_input_line.dart';
 import 'package:eventure/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../models/user.dart';
 
 class AddFriendsScreen extends StatefulWidget {
@@ -84,7 +84,7 @@ class _AddFriendsScreenState extends State<AddFriendsScreen> {
                         "${usersStartingWith[index].firstName} ${usersStartingWith[index].lastName}",
                       ),
                       subtitle: Text("${usersStartingWith[index].uni}"),
-                      trailing: InkWell( // Replace StyledButton if no direct control over styling
+                      trailing: InkWell(
                         onTap: () {}, // Your action here
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -105,7 +105,18 @@ class _AddFriendsScreenState extends State<AddFriendsScreen> {
                           ),
                         ),
                       ),
-                    ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProfileDetailScreen(
+                              user: usersStartingWith[index], // Pass user or omit to use the current user
+                            ),
+                          ),
+                        );
+                      },
+                    )
+
 
                   );
                 },
