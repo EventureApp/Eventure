@@ -130,10 +130,24 @@ class EventDetailViewScreen extends StatelessWidget {
                           const Icon(
                             Icons.person,
                             size: 40,
+                            color: Colors.blue, // Optional: passe die Farbe des Icons an
                           ),
                           const SizedBox(width: 10),
-                          Text(Provider.of<UserProvider>(context)
-                              .getUserName(event.organizer ?? "")),
+                          TextButton.icon(
+                            label: Text(
+                              Provider.of<UserProvider>(context).getUserName(event.organizer ?? ""),
+                            ),
+                            icon: const Icon(
+                              Icons.person_outline, // Optional: passe das Symbol an
+                            ),
+                            style: TextButton.styleFrom(
+                              backgroundColor: Theme.of(context).colorScheme.surface,
+                              foregroundColor: Theme.of(context).colorScheme.secondary,
+                            ),
+                            onPressed: () {
+                              context.push('/eventCreatorProfile/${event.organizer}');
+                            },
+                          ),
                         ],
                       ),
                     ),
