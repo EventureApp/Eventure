@@ -127,10 +127,10 @@ class EventDetailViewScreen extends StatelessWidget {
                       margin: const EdgeInsets.only(left: 20, top: 10),
                       child: Row(
                         children: [
-                          const Icon(
+                           Icon(
                             Icons.person,
                             size: 40,
-                            color: Colors.blue, // Optional: passe die Farbe des Icons an
+                            color: Theme.of(context).colorScheme.secondary, // Optional: passe die Farbe des Icons an
                           ),
                           const SizedBox(width: 10),
                           TextButton.icon(
