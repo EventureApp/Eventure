@@ -2,7 +2,6 @@ import 'package:eventure/providers/event_provider.dart';
 import 'package:eventure/providers/location_provider.dart';
 import 'package:eventure/providers/theme_provider.dart';
 import 'package:eventure/providers/user_provider.dart';
-import 'package:eventure/providers/user_provider.dart';
 import 'package:eventure/screens/auth/elegant_signin_screen.dart';
 import 'package:eventure/screens/auth/elegant_signup_screen.dart';
 import 'package:eventure/screens/chat/chat_view.dart';
@@ -19,7 +18,7 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-
+import 'package:eventure/models/user.dart';
 import 'firebase_options.dart';
 import 'providers/auth_provider.dart';
 import 'providers/chat_provider.dart';
@@ -129,11 +128,34 @@ final _router = GoRouter(
               return Chat(eventId: id!);
             }),
         GoRoute(
-          path: "setLocation",
+            path: "setLocation",
+            builder: (context, state) {
+              return LocationSelectScreen();
+            }),
+        GoRoute(
+          path: "userProfile/:id",
           builder: (context, state) {
-            return LocationSelectScreen();
-          }
-        )
+            final id = state.pathParameters['id'];
+            final userProvider =
+                Provider.of<UserProvider>(context, listen: false);
+            final user = userProvider.getUser(id!);
+            return FutureBuilder<AppUser>(
+              future: user,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return const Center(
+                      child: Text('Error loading user profile'));
+                } else if (!snapshot.hasData) {
+                  return const Center(child: Text('User not found'));
+                } else {
+                  return ProfileDetailScreen(user: snapshot.data);
+                }
+              },
+            );
+          },
+        ),
       ],
     ),
   ],
@@ -144,7 +166,8 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>( // Listen for theme changes
+    return Consumer<ThemeProvider>(
+      // Listen for theme changes
       builder: (context, themeProvider, child) {
         return MaterialApp.router(
           title: 'Eventure',
@@ -173,7 +196,8 @@ class App extends StatelessWidget {
               error: Colors.red,
             ),
           ),
-          themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+          themeMode:
+              themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
           routerConfig: _router,
         );
       },
