@@ -29,11 +29,11 @@ class EventDetailViewScreen extends StatelessWidget {
           actions: [
             FirebaseAuth.instance.currentUser?.uid == event.organizer
                 ? IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      context.push('/editEvent/${event.id}');
-                    },
-                  )
+              icon: const Icon(Icons.edit),
+              onPressed: () {
+                context.push('/editEvent/${event.id}');
+              },
+            )
                 : const SizedBox.shrink(),
             IconButton(
                 icon: const Icon(Icons.message),
@@ -42,25 +42,24 @@ class EventDetailViewScreen extends StatelessWidget {
                 }),
           ],
         ),
-        body: Column(
-          children: [
-            Container(
-                color: Theme.of(context).colorScheme.surface,
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: CircleAvatar(
-                  radius: 60,
-                  backgroundColor: Theme.of(context).primaryColor,
-                  child: Icon(
-                    event.icon,
-                    size: 70,
-                  ),
-                )),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
-              child: Container(
-                // Set the background color here
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                  color: Theme.of(context).colorScheme.surface,
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: CircleAvatar(
+                    radius: 60,
+                    backgroundColor: Theme.of(context).primaryColor,
+                    child: Icon(
+                      event.icon,
+                      size: 70,
+                    ),
+                  )),
+              Padding(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
                 child: Column(
                   children: [
                     Padding(
@@ -115,7 +114,7 @@ class EventDetailViewScreen extends StatelessWidget {
                             ),
                             onPressed: () async {
                               print('Navigation pressed');
-                              Uri googleMapsUri = Uri.https('maps.google.com', '',{'q': '${event.location.latitude},${event.location.longitude}'});
+                              Uri googleMapsUri = Uri.https('maps.google.com', '', {'q': '${event.location.latitude},${event.location.longitude}'});
                               if (!await launchUrl(googleMapsUri)) {
                                 throw Exception('Could not launch $googleMapsUri');
                               }
@@ -128,13 +127,27 @@ class EventDetailViewScreen extends StatelessWidget {
                       margin: const EdgeInsets.only(left: 20, top: 10),
                       child: Row(
                         children: [
-                          const Icon(
+                           Icon(
                             Icons.person,
                             size: 40,
+                            color: Theme.of(context).colorScheme.secondary, // Optional: passe die Farbe des Icons an
                           ),
                           const SizedBox(width: 10),
-                          Text(Provider.of<UserProvider>(context)
-                              .getUserName(event.organizer ?? "")),
+                          TextButton.icon(
+                            label: Text(
+                              Provider.of<UserProvider>(context).getUserName(event.organizer ?? ""),
+                            ),
+                            icon: const Icon(
+                              Icons.person_outline, // Optional: passe das Symbol an
+                            ),
+                            style: TextButton.styleFrom(
+                              backgroundColor: Theme.of(context).colorScheme.surface,
+                              foregroundColor: Theme.of(context).colorScheme.secondary,
+                            ),
+                            onPressed: () {
+                              context.push('/userProfile/${event.organizer}');
+                            },
+                          ),
                         ],
                       ),
                     ),
@@ -160,49 +173,44 @@ class EventDetailViewScreen extends StatelessWidget {
                     ),
                     event.eventLink != null
                         ? Container(
-                            margin: const EdgeInsets.only(left: 20, top: 10),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.link, size: 40),
-                                const SizedBox(width: 10),
-                                InkWell(
-                                  child: Text(event.eventLink!),
-                                  onTap: () async {
-                                    print('Event link pressed');
-                                  },
-                                ),
-                              ],
-                            ),
-                          )
+                      margin: const EdgeInsets.only(left: 20, top: 10),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.link, size: 40),
+                          const SizedBox(width: 10),
+                          InkWell(
+                            child: Text(event.eventLink!),
+                            onTap: () async {
+                              print('Event link pressed');
+                            },
+                          ),
+                        ],
+                      ),
+                    )
                         : const SizedBox.shrink(),
                     event.description != null
                         ? Container(
-                            margin: const EdgeInsets.only(left: 20, top: 50),
-                            alignment: Alignment.centerLeft,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              // Align children to the left
-                              children: [
-                                const Text(
-                                  'Description',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(
-                                  child: Text(
-                                    event.description!,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 5,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
+                      margin: const EdgeInsets.only(left: 20, top: 50),
+                      alignment: Alignment.centerLeft,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Description',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            event.description!,
+                          ),
+                        ],
+                      ),
+                    )
                         : const SizedBox.shrink(),
                   ],
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ));
   }
 }

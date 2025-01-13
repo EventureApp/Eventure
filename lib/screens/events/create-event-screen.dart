@@ -129,165 +129,165 @@ class _EventScreenState extends State<EventScreen> {
                 widget.event == null || _isEditing ? Icons.save : Icons.edit),
             onPressed: _isFormValid
                 ? () {
-                    _saveEvent(context);
-                  }
+              _saveEvent(context);
+            }
                 : _isEditing == false
-                    ? () {
-                        setState(() {
-                          _isEditing = true;
-                        });
-                      }
-                    : null,
+                ? () {
+              setState(() {
+                _isEditing = true;
+              });
+            }
+                : null,
           ),
         ],
       ),
-        body: Container(
-          color: Theme.of(context).colorScheme.background, // Hintergrundfarbe setzen
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                // Header Container mit Event-Icon
-                Container(
-                  color: Theme.of(context).colorScheme.surface,
-                  width: double.infinity,
-                  height: 100,
-                  padding: const EdgeInsets.symmetric(vertical: 13),
-                  child: Center(
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      child: Center(
-                        child: Icon(
-                          _eventIcon,
-                          size: 30,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
+      body: Container(
+        color: Theme.of(context).colorScheme.background, // Hintergrundfarbe setzen
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Header Container mit Event-Icon
+              Container(
+                color: Theme.of(context).colorScheme.surface,
+                width: double.infinity,
+                height: 100,
+                padding: const EdgeInsets.symmetric(vertical: 13),
+                child: Center(
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    child: Center(
+                      child: Icon(
+                        _eventIcon,
+                        size: 30,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
                   ),
                 ),
-                // Formular-Container
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomInputLine(
-                          label: "Title",
-                          required: true,
-                          editable: _isEditing,
-                          onChanged: (value) {
-                            setState(() => _title = value);
-                            _validateForm();
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        CustomDateAndTimePicker(
-                          label: "Start Date",
-                          required: true,
-                          editable: _isEditing,
-                          onDateChanged: (date) {
-                            setState(() => _startDate = date);
-                            _validateForm();
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        CustomDateAndTimePicker(
-                          label: "End Date",
-                          required: true,
-                          editable: _isEditing,
-                          onDateChanged: (date) {
-                            setState(() => _endDate = date);
-                            _validateForm();
-                          },
-                        ),
-                        const SizedBox(height: 16),
+              ),
+              // Formular-Container
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomInputLine(
+                        label: "Title",
+                        required: true,
+                        editable: _isEditing,
+                        onChanged: (value) {
+                          setState(() => _title = value);
+                          _validateForm();
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      CustomDateAndTimePicker(
+                        label: "Start Date",
+                        required: true,
+                        editable: _isEditing,
+                        onDateChanged: (date) {
+                          setState(() => _startDate = date);
+                          _validateForm();
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      CustomDateAndTimePicker(
+                        label: "End Date",
+                        required: true,
+                        editable: _isEditing,
+                        onDateChanged: (date) {
+                          setState(() => _endDate = date);
+                          _validateForm();
+                        },
+                      ),
+                      const SizedBox(height: 16),
 
-                        Consumer<LocationProvider>(
-                            builder: (context, locationProvider, child) {
-                              if (locationProvider.currentLocation == null) {
-                                return const Center(
-                                  child: CircularProgressIndicator(), // Loading state
-                                );
-                              }
-
-                              return LocationSelect(
-                                label: "Location",
-                                isEditable: true,
-                                userLocation: locationProvider.currentLocation!,
-                                onChanged: (location) {
-                                  setState(() {
-                                    _location = location!;
-                                  });
-                                },
+                      Consumer<LocationProvider>(
+                          builder: (context, locationProvider, child) {
+                            if (locationProvider.currentLocation == null) {
+                              return const Center(
+                                child: CircularProgressIndicator(), // Loading state
                               );
                             }
-                        ),
-                        const SizedBox(height: 16),
-                        EventSelect(
-                          label: 'Event Type',
-                          isEditable: _isEditing,
-                          initValues: [_eventType],
-                          events: eventTypesWithIcon,
-                          isMultiSelect: false,
-                          onChanged: (selected) {
-                            setState(() {
-                              _eventType = selected[0];
-                              _eventIcon = eventTypesWithIcon[selected[0]]!;
-                            });
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        CustomLinkInput(
-                          label: "Link",
-                          onChanged: (value) {
-                            setState(() => _link = value ?? '');
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        CustomNumberInput(
-                          label: "Max Participants",
-                          isMandatory: true,
-                          onChanged: (value) {
-                            setState(() => _maxParticipants = value);
-                            _validateForm();
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        CustomDescriptionInput(
-                          label: "Description",
-                          required: true,
-                          editable: _isEditing,
-                          onChanged: (value) {
-                            setState(() => _description = value);
-                            _validateForm();
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        SingleSelectDropdown(
-                          label: 'Visibility',
-                          initValue: _visibility.toString().split('.').last,
-                          data: eventVisibilityData,
-                          required: true,
-                          editable: _isEditing,
-                          onChanged: (value) {
-                            setState(() => _visibility = eventVisibilityData[value]);
-                          },
-                        ),
-                      ],
-                    ),
+
+                            return LocationSelect(
+                              label: "Location",
+                              isEditable: true,
+                              userLocation: locationProvider.currentLocation!,
+                              onChanged: (location) {
+                                setState(() {
+                                  _location = location!;
+                                });
+                              },
+                            );
+                          }
+                      ),
+                      const SizedBox(height: 16),
+                      EventSelect(
+                        label: 'Event Type',
+                        isEditable: _isEditing,
+                        initValues: [_eventType],
+                        events: eventTypesWithIcon,
+                        isMultiSelect: false,
+                        onChanged: (selected) {
+                          setState(() {
+                            _eventType = selected[0];
+                            _eventIcon = eventTypesWithIcon[selected[0]]!;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      CustomLinkInput(
+                        label: "Link",
+                        onChanged: (value) {
+                          setState(() => _link = value ?? '');
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      CustomNumberInput(
+                        label: "Max Participants",
+                        isMandatory: true,
+                        onChanged: (value) {
+                          setState(() => _maxParticipants = value);
+                          _validateForm();
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      CustomDescriptionInput(
+                        label: "Description",
+                        required: true,
+                        editable: _isEditing,
+                        onChanged: (value) {
+                          setState(() => _description = value);
+                          _validateForm();
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      SingleSelectDropdown(
+                        label: 'Visibility',
+                        initValue: _visibility.toString().split('.').last,
+                        data: eventVisibilityData,
+                        required: true,
+                        editable: _isEditing,
+                        onChanged: (value) {
+                          setState(() => _visibility = eventVisibilityData[value]);
+                        },
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
+      ),
     );
   }
 }

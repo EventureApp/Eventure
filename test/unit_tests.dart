@@ -1,5 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:eventure/models/event.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:eventure/statics/event_types.dart';
+import 'package:eventure/statics/event_visibility.dart';
 
 void main() {
   group('Event Model Tests', () {

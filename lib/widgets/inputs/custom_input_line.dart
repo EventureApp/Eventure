@@ -75,11 +75,11 @@ class _CustomInputLineState extends State<CustomInputLine> {
               fontWeight: FontWeight.w500,
             ),
             hintText:
-                widget.hintText ?? (widget.required ? 'Mandatory' : 'Optional'),
+            widget.hintText ?? (widget.required ? 'Mandatory' : 'Optional'),
             hintStyle: TextStyle(color: Colors.grey.shade600, fontSize: 14),
             prefixIcon: widget.prefixIcon != null
                 ? Icon(widget.prefixIcon,
-                    color: _focusNode.hasFocus ? primaryColor : Colors.grey)
+                color: _focusNode.hasFocus ? primaryColor : Colors.grey)
                 : null,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -92,7 +92,7 @@ class _CustomInputLineState extends State<CustomInputLine> {
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
                 color:
-                    _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2),
+                _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2),
                 width: 1.5,
               ),
             ),
@@ -106,7 +106,7 @@ class _CustomInputLineState extends State<CustomInputLine> {
             filled: true,
             fillColor: Theme.of(context).colorScheme.surface,
             contentPadding:
-                const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           ),
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal,color: Theme.of(context).colorScheme.secondary),
         ),

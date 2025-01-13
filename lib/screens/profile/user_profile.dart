@@ -8,13 +8,21 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:eventure/providers/user_provider.dart';
+import '../../models/user.dart';
 
 class ProfileDetailScreen extends StatelessWidget {
-  const ProfileDetailScreen({super.key});
+  final AppUser? user; // Optional user
+
+  const ProfileDetailScreen({super.key, this.user});
 
   @override
   Widget build(BuildContext context) {
+    // Fallback to the current authenticated user if no user is passed
     final currentUser = FirebaseAuth.instance.currentUser;
+    final displayedUser = user ?? context.read<UserProvider>().user;
+
+    // Determine if the current user is being viewed
+    final isCurrentUser = user == null;
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
@@ -27,128 +35,86 @@ class ProfileDetailScreen extends StatelessWidget {
           },
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const ProfileEditScreen()),
-              );
-            },
-          ),
+          if (isCurrentUser)
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProfileEditScreen(),
+                  ),
+                );
+              },
+            ),
         ],
       ),
-      body: Consumer<UserProvider>(
-        builder: (context, userProvider, child) {
-          final user = userProvider.user;
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                color: Theme.of(context).colorScheme.surface,
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundImage: NetworkImage(
-                        currentUser?.photoURL ?? 'https://i.pravatar.cc/300',
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      "${user.firstName ?? ''} ${user.lastName ?? ''}",
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+      body: displayedUser != null
+          ? Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            color: Theme.of(context).colorScheme.surface,
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 50,
+                  backgroundImage: NetworkImage(
+                    currentUser?.photoURL ?? 'https://i.pravatar.cc/300',
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                const SizedBox(height: 10),
+                Text(
+                  "${displayedUser.firstName} ${displayedUser.lastName}",
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Description',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(displayedUser.description ?? ''),
+                const SizedBox(height: 20),
+                Row(
                   children: [
-                    const Text(
-                      'Description',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(user.description ?? ''),
-                    const SizedBox(height: 20),
-                    Row(
+                    const Icon(Icons.school),
+                    const SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(Icons.school),
-                        const SizedBox(width: 10),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(user.uni ?? ''),
-                            Text(user.studyCourse ?? ''),
-                          ],
-                        ),
+                        Text(displayedUser.uni ?? ''),
+                        Text(displayedUser.studyCourse ?? ''),
                       ],
                     ),
-                    const SizedBox(height: 20),
-                    if (user.socialMediaLinks != null &&
-                        user.socialMediaLinks!.isNotEmpty)
-                      Column(
-                        children: user.socialMediaLinks!
-                            .map((link) => Row(
-                                  children: [
-                                    Icon(Icons.link),
-                                    SizedBox(width: 10),
-                                    Text(link!),
-                                  ],
-                                ))
-                            .toList(),
-                      ),
-                    if (user.friends != null && user.friends!.isNotEmpty)
-                      Text('Friends: ${user.friends!.join(', ')}'),
                   ],
                 ),
-              ),
-              const Spacer(),
-              Center(
-                child: Consumer<AuthenticationProvider>(
-                  builder: (context, authProvider, _) {
-                    return Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.red,
-                          side: const BorderSide(color: Colors.red),
-                        ),
-                        onPressed: () async {
-                          await authProvider.logout();
-                          context.go("/sign-in");
-                        },
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.logout, color: Colors.red),
-                            SizedBox(width: 8),
-                            Text('Logout'),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          );
-        },
-      ),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+        ],
+      )
+          : const Center(child: CircularProgressIndicator()),
     );
   }
 }
+
+
