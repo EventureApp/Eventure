@@ -74,7 +74,7 @@ final _router = GoRouter(
               const PopScope(canPop: false, child: ElegantSignInScreen()),
         ),
         GoRoute(
-          path: '/sign-up', // <- Hier ist der Fehler: führender Slash
+          path: '/sign-up',
           builder: (context, state) => const ElegantSignUpScreen(),
         ),
         GoRoute(
