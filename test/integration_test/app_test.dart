@@ -11,10 +11,16 @@ void main() {
     await tester.pumpAndSettle();
 
     // Teste die Erstellung eines neuen Events
-    await tester.tap(find.byIcon(Icons.add));
+    final addIconFinder = find.byIcon(Icons.add);
+    expect(addIconFinder, findsOneWidget);
+
+    await tester.tap(addIconFinder);
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byKey(Key('eventName')), 'Test Event');
+    final eventNameField = find.byKey(Key('eventName'));
+    expect(eventNameField, findsOneWidget);
+
+    await tester.enterText(eventNameField, 'Test Event');
     await tester.tap(find.byKey(Key('saveEvent')));
     await tester.pumpAndSettle();
 
