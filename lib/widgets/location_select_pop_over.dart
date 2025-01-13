@@ -7,13 +7,13 @@ class LocationSelectPopover extends StatefulWidget {
   final LatLng? initValue;
   final Function(LatLng?) onChanged;
 
-  LocationSelectPopover({required this.onChanged, this.initValue});
+  const LocationSelectPopover({super.key, required this.onChanged, this.initValue});
 
   @override
-  _LocationSelectPopoverState createState() => _LocationSelectPopoverState();
+  LocationSelectPopoverState createState() => LocationSelectPopoverState();
 }
 
-class _LocationSelectPopoverState extends State<LocationSelectPopover> {
+class LocationSelectPopoverState extends State<LocationSelectPopover> {
   LatLng? _selectedLocation;
 
   @override
@@ -45,7 +45,7 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
             Align(
               alignment: Alignment.topLeft,
               child: IconButton(
-                icon: Icon(Icons.close),
+                icon: const Icon(Icons.close),
                 onPressed: () {
                   Navigator.pop(context);
                 },
@@ -66,11 +66,11 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
                   textAlign: TextAlign.center,
                 ),
               ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // Submit Button
             ElevatedButton(
               onPressed: _submitLocation,
-              child: Text('Submit'),
+              child: const Text('Submit'),
             ),
           ],
         ),

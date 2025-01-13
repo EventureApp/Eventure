@@ -3,13 +3,13 @@ import 'package:eventure/providers/event_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
-
 import '../../providers/location_provider.dart';
-import '../../statics/custom_icons.dart';
-import '../../widgets/inputs/custom-location-select.dart';
-import '../../widgets/inputs/custom-number-select.dart';
+import '../../widgets/inputs/custom_location_select.dart';
+import '../../widgets/inputs/custom_number_select.dart';
 
 class LocationSelectScreen extends StatefulWidget {
+  const LocationSelectScreen({super.key});
+
   @override
   State<StatefulWidget> createState() => _LocationSelectScreenState();
 }
@@ -107,7 +107,7 @@ class _LocationSelectScreenState extends State<LocationSelectScreen> {
           ),
           Container(
             padding: const EdgeInsets.all(32.0),
-            color: Theme.of(context).colorScheme.background,
+            color: Theme.of(context).colorScheme.tertiary,
             child: Form(
               key: _formKey,
               child: Column(

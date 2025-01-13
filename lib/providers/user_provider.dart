@@ -24,7 +24,7 @@ class UserProvider with ChangeNotifier {
   List<AppUser> get users => _users;
   List<AppUser> get usersStartingWith => _usersStartingWith;
 
-  UserProvider() {}
+  UserProvider();
 
   void initializeUser() {
     if (_firebaseAuth.currentUser != null) {

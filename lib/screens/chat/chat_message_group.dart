@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/user.dart';
@@ -8,16 +7,16 @@ class ChatMessageGroup extends StatefulWidget {
   final Future<AppUser> userFuture;
 
   const ChatMessageGroup({
-    Key? key,
+    super.key,
     required this.message,
     required this.userFuture,
-  }) : super(key: key);
+  });
 
   @override
-  _ChatMessageGroupState createState() => _ChatMessageGroupState();
+  ChatMessageGroupState createState() => ChatMessageGroupState();
 }
 
-class _ChatMessageGroupState extends State<ChatMessageGroup> {
+class ChatMessageGroupState extends State<ChatMessageGroup> {
   late Future<AppUser> userFuture;
 
   @override

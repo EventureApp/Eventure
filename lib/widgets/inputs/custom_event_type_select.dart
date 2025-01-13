@@ -11,7 +11,7 @@ class EventSelect extends StatefulWidget {
   final bool isEditable;
 
   const EventSelect({
-    Key? key,
+    super.key,
     required this.label,
     required this.initValues,
     required this.events,
@@ -19,13 +19,13 @@ class EventSelect extends StatefulWidget {
     this.isMultiSelect = true,
     this.isMandatory = false,
     this.isEditable = true,
-  }) : super(key: key);
+  });
 
   @override
-  _EventSelectState createState() => _EventSelectState();
+  EventSelectState createState() => EventSelectState();
 }
 
-class _EventSelectState extends State<EventSelect> {
+class EventSelectState extends State<EventSelect> {
   late List<EventType> _selectedEvents;
   bool _hasAttemptedSubmit = false;
   late FocusNode _focusNode;
@@ -106,7 +106,7 @@ class _EventSelectState extends State<EventSelect> {
                   top: 16, left: 16, right: 16, bottom: 16),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: Theme.of(context).colorScheme.background,
+                color: Theme.of(context).colorScheme.tertiary,
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -148,14 +148,14 @@ class _EventSelectState extends State<EventSelect> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withValues(alpha: 0.1),
                           width: 1.0,
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withValues(alpha: 0.1),
                           width: 1.0,
                         ),
                       ),
@@ -171,7 +171,7 @@ class _EventSelectState extends State<EventSelect> {
                   const SizedBox(height: 16),
 
                   // Event Grid
-                  Container(
+                  SizedBox(
                     height: 300, // Adjust as needed
                     child: filteredEvents.isEmpty
                         ? Center(
@@ -220,14 +220,14 @@ class _EventSelectState extends State<EventSelect> {
                                         ? Theme.of(context)
                                             .colorScheme
                                             .primary
-                                            .withOpacity(0.15)
+                                            .withValues(alpha: 0.15)
                                         : Theme.of(context).colorScheme.surface,
                                     border: Border.all(
                                       color: isSelected
                                           ? Theme.of(context)
                                               .colorScheme
                                               .primary
-                                          : Colors.black.withOpacity(0.1),
+                                          : Colors.black.withValues(alpha: 0.1),
                                       width: 1.0,
                                     ),
                                   ),
@@ -314,7 +314,7 @@ class _EventSelectState extends State<EventSelect> {
   Widget build(BuildContext context) {
     final isFocused = _focusNode.hasFocus;
     final isError = _hasError;
-    final borderColor = isError ? Colors.red : Colors.black.withOpacity(0.2);
+    final borderColor = isError ? Colors.red : Colors.black.withValues(alpha: 0.2);
 
     return GestureDetector(
       onTap: widget.isEditable ? _openEventPopover : null,
@@ -361,7 +361,7 @@ class _EventSelectState extends State<EventSelect> {
                             }
                           : null,
                     );
-                  }).toList(),
+                  }),
 
                   // Placeholder or prompt
                   if (_selectedEvents.isEmpty)

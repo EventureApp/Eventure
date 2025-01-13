@@ -1,11 +1,7 @@
-import 'package:eventure/providers/auth_provider.dart';
-import 'package:eventure/screens/auth/authentication.dart';
-import 'package:eventure/screens/profile/add_friends.dart';
+
 import 'package:eventure/screens/profile/user_profile_edit.dart';
-import 'package:eventure/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:eventure/providers/user_provider.dart';
 import '../../models/user.dart';
@@ -25,7 +21,7 @@ class ProfileDetailScreen extends StatelessWidget {
     final isCurrentUser = user == null;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.tertiary,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         leading: IconButton(
@@ -49,8 +45,7 @@ class ProfileDetailScreen extends StatelessWidget {
             ),
         ],
       ),
-      body: displayedUser != null
-          ? Column(
+      body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
@@ -112,7 +107,6 @@ class ProfileDetailScreen extends StatelessWidget {
           ),
         ],
       )
-          : const Center(child: CircularProgressIndicator()),
     );
   }
 }

@@ -10,10 +10,10 @@ class ProfileEditScreen extends StatefulWidget {
   const ProfileEditScreen({super.key});
 
   @override
-  _ProfileEditScreenState createState() => _ProfileEditScreenState();
+  ProfileEditScreenState createState() => ProfileEditScreenState();
 }
 
-class _ProfileEditScreenState extends State<ProfileEditScreen> {
+class ProfileEditScreenState extends State<ProfileEditScreen> {
   late TextEditingController lastNameController;
   late TextEditingController firstNameController;
   late TextEditingController descriptionController;
@@ -55,7 +55,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     return Consumer<UserProvider>(
       builder: (context, userProvider, child) {
         return Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: Theme.of(context).colorScheme.tertiary,
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.primary,
             title: const Text('Edit Profile'),

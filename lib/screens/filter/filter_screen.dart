@@ -5,21 +5,21 @@ import 'package:provider/provider.dart';
 
 import '../../statics/custom_icons.dart';
 import '../../statics/event_types.dart';
-import '../../statics/event_visibility.dart';
-import '../../widgets/inputs/custom-event-type-select.dart';
+import '../../widgets/inputs/custom_event_type_select.dart';
 import '../../widgets/inputs/custom_date_time_picker.dart';
 
 class EventFilterScreen extends StatefulWidget {
+  const EventFilterScreen({super.key});
+
   @override
-  _EventFilterScreenState createState() => _EventFilterScreenState();
+  EventFilterScreenState createState() => EventFilterScreenState();
 }
 
-class _EventFilterScreenState extends State<EventFilterScreen> {
+class EventFilterScreenState extends State<EventFilterScreen> {
   final _formKey = GlobalKey<FormState>();
 
   late DateTime? _startDate;
   late DateTime? _endDate;
-  late EventVisability _visibility;
   late List<EventType>? _eventType;
 
   @override
@@ -29,7 +29,6 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
 
     _startDate = eventFilter.startDate;
     _endDate = eventFilter.endDate;
-    _visibility = EventVisability.public;
     _eventType = eventFilter.eventType;
   }
 
@@ -97,7 +96,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
                 ),
                 child: Center(
                   child: Icon(
-                    CustomIcons.filteroptions,
+                    CustomIcons.filterOptions,
                     size: 30,
                     color: Theme.of(context).colorScheme.primary
                   ),
@@ -106,7 +105,7 @@ class _EventFilterScreenState extends State<EventFilterScreen> {
             ),
           ),
           Container(
-            color: Theme.of(context).colorScheme.background,
+            color: Theme.of(context).colorScheme.tertiary,
             padding: const EdgeInsets.all(32.0),
             child: Form(
               key: _formKey,

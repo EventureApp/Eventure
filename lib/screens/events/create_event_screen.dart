@@ -1,19 +1,18 @@
 import 'package:eventure/models/event.dart';
 import 'package:eventure/providers/location_provider.dart';
-import 'package:eventure/widgets/inputs/custom-number-select.dart';
+import 'package:eventure/widgets/inputs/custom_number_select.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:provider/provider.dart'; // Provider importieren
+import 'package:provider/provider.dart';
 
-import '../../providers/event_provider.dart'; // Dein EventProvider
+import '../../providers/event_provider.dart';
 import '../../statics/event_types.dart';
 import '../../statics/event_visibility.dart';
-import '../../widgets/inputs/custom-event-type-select.dart';
-import '../../widgets/inputs/custom-link-select.dart';
-import '../../widgets/inputs/custom-location-select.dart';
-import '../../widgets/inputs/custom-multi-select.dart';
-import '../../widgets/inputs/custom-single-select.dart';
+import '../../widgets/inputs/custom_event_type_select.dart';
+import '../../widgets/inputs/custom_link_select.dart';
+import '../../widgets/inputs/custom_location_select.dart';
+import '../../widgets/inputs/custom_single_select.dart';
 import '../../widgets/inputs/custom_date_time_picker.dart';
 import '../../widgets/inputs/custom_discription_input.dart';
 import '../../widgets/inputs/custom_input_line.dart';
@@ -21,13 +20,13 @@ import '../../widgets/inputs/custom_input_line.dart';
 class EventScreen extends StatefulWidget {
   final Event? event;
 
-  EventScreen({this.event});
+  const EventScreen({super.key, this.event});
 
   @override
-  _EventScreenState createState() => _EventScreenState();
+  EventScreenState createState() => EventScreenState();
 }
 
-class _EventScreenState extends State<EventScreen> {
+class EventScreenState extends State<EventScreen> {
   bool _isEditing = true;
   final _formKey = GlobalKey<FormState>();
 
@@ -65,8 +64,8 @@ class _EventScreenState extends State<EventScreen> {
       // Felder initialisieren für neues Event
       _title = '';
       _startDate = DateTime.now();
-      _endDate = DateTime.now().add(Duration(hours: 1));
-      _location = LatLng(0.0, 0.0);
+      _endDate = DateTime.now().add(const Duration(hours: 1));
+      _location = const LatLng(0.0, 0.0);
       _eventType = EventType.other;
       _eventIcon = Icons.event;
       _visibility = EventVisability.public;
@@ -111,7 +110,7 @@ class _EventScreenState extends State<EventScreen> {
 
       // Feedback an den Nutzer und zurück navigieren
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Event successfully saved!")),
+        const SnackBar(content: Text("Event successfully saved!")),
       );
       context.go("/");
     }
@@ -142,7 +141,7 @@ class _EventScreenState extends State<EventScreen> {
         ],
       ),
       body: Container(
-        color: Theme.of(context).colorScheme.background, // Hintergrundfarbe setzen
+        color: Theme.of(context).colorScheme.tertiary, // Hintergrundfarbe setzen
         child: SingleChildScrollView(
           child: Column(
             children: [
