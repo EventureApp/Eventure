@@ -17,7 +17,7 @@ class EventDetailViewScreen extends StatelessWidget {
     return Scaffold(
         backgroundColor: Theme.of(context)
             .colorScheme
-            .background, // or use a custom color like Color(0xFF1B2936)
+            .tertiary,
 
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.primary,
@@ -113,7 +113,6 @@ class EventDetailViewScreen extends StatelessWidget {
                                   .secondary, // Text color
                             ),
                             onPressed: () async {
-                              print('Navigation pressed');
                               Uri googleMapsUri = Uri.https('maps.google.com', '', {'q': '${event.location.latitude},${event.location.longitude}'});
                               if (!await launchUrl(googleMapsUri)) {
                                 throw Exception('Could not launch $googleMapsUri');
@@ -137,8 +136,9 @@ class EventDetailViewScreen extends StatelessWidget {
                             label: Text(
                               Provider.of<UserProvider>(context).getUserName(event.organizer ?? ""),
                             ),
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.person_outline, // Optional: passe das Symbol an
+                              color: Theme.of(context).colorScheme.secondary,
                             ),
                             style: TextButton.styleFrom(
                               backgroundColor: Theme.of(context).colorScheme.surface,
@@ -181,7 +181,6 @@ class EventDetailViewScreen extends StatelessWidget {
                           InkWell(
                             child: Text(event.eventLink!),
                             onTap: () async {
-                              print('Event link pressed');
                             },
                           ),
                         ],

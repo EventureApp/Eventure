@@ -10,19 +10,19 @@ class MapWidget extends StatefulWidget {
   final LatLng? userLocation;
 
   const MapWidget({
-    Key? key,
+    super.key,
     required this.onTap,
     required this.initialLocation,
     required this.isEditable,
     required this.isMandatory,
     this.userLocation,
-  }) : super(key: key);
+  });
 
   @override
-  _MapWidgetState createState() => _MapWidgetState();
+  MapWidgetState createState() => MapWidgetState();
 }
 
-class _MapWidgetState extends State<MapWidget> {
+class MapWidgetState extends State<MapWidget> {
   late LatLng _currentSelectedLocation;
   late MapController _mapController;
 
@@ -121,19 +121,19 @@ class LocationSelectBottomSheet extends StatefulWidget {
   final LatLng? userLocation;
 
   const LocationSelectBottomSheet({
-    Key? key,
+    super.key,
     required this.onChanged,
     this.initValue,
     this.isMandatory = false,
     this.userLocation,
-  }) : super(key: key);
+  });
 
   @override
-  _LocationSelectBottomSheetState createState() =>
-      _LocationSelectBottomSheetState();
+  LocationSelectBottomSheetState createState() =>
+      LocationSelectBottomSheetState();
 }
 
-class _LocationSelectBottomSheetState extends State<LocationSelectBottomSheet> {
+class LocationSelectBottomSheetState extends State<LocationSelectBottomSheet> {
   LatLng? _selectedLocation;
   bool _hasAttemptedSubmit = false;
 
@@ -216,7 +216,7 @@ class _LocationSelectBottomSheetState extends State<LocationSelectBottomSheet> {
             Text(
               "Click on the map to select a location.",
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
               ),
               textAlign: TextAlign.center,
             ),
@@ -243,7 +243,7 @@ class _LocationSelectBottomSheetState extends State<LocationSelectBottomSheet> {
               ),
             const SizedBox(height: 16),
             Divider(
-              color: theme.dividerColor.withOpacity(0.3),
+              color: theme.dividerColor.withValues(alpha: 0.3),
               thickness: 1,
               height: 1,
             ),
@@ -282,22 +282,22 @@ class LocationSelect extends StatefulWidget {
   final LatLng userLocation;
 
   const LocationSelect({
-    Key? key,
+    super.key,
     required this.label,
     this.initValue,
     required this.onChanged,
     this.isMandatory = false,
     this.isEditable = true,
     required this.userLocation,
-  }) : super(key: key);
+  });
 
   @override
-  _LocationSelectState createState() => _LocationSelectState();
+  LocationSelectState createState() => LocationSelectState();
 }
 
-class _LocationSelectState extends State<LocationSelect> {
+class LocationSelectState extends State<LocationSelect> {
   LatLng? _selectedLocation;
-  bool _isLoading = false;
+  final _isLoading = false;
 
   @override
   void initState() {
@@ -362,7 +362,7 @@ class _LocationSelectState extends State<LocationSelect> {
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color:
-                        showError ? Colors.red : Colors.black.withOpacity(0.2),
+                        showError ? Colors.red : Colors.black.withValues(alpha: 0.2),
                     width: 1.5,
                   ),
                   color: Colors.grey[100],

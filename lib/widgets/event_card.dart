@@ -10,14 +10,14 @@ class EventCard extends StatelessWidget {
     final VoidCallback onTap;
 
   const EventCard({
-    Key? key,
+    super.key,
     required this.name,
     required this.startDate,
     required this.address,
     required this.icon,
     required this.onTap,
     required this.organizer,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class EventCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1), // Subtle shadow
+              color: Colors.black.withValues(alpha: 0.1),
               offset: const Offset(0, 4),
               blurRadius: 8,
             ),

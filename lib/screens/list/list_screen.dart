@@ -12,7 +12,7 @@ class ListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background, // Set background color here
+      backgroundColor: Theme.of(context).colorScheme.tertiary,
       body: Consumer<EventProvider>(
         builder: (context, eventProvider, child) {
           return ListView.builder(

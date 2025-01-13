@@ -8,19 +8,19 @@ class CustomDescriptionInput extends StatefulWidget {
   final Function(String) onChanged;
 
   const CustomDescriptionInput({
-    Key? key,
+    super.key,
     required this.label,
     this.initValue,
     required this.required,
     required this.editable,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
-  _CustomDescriptionInputState createState() => _CustomDescriptionInputState();
+  CustomDescriptionInputState createState() => CustomDescriptionInputState();
 }
 
-class _CustomDescriptionInputState extends State<CustomDescriptionInput> {
+class CustomDescriptionInputState extends State<CustomDescriptionInput> {
   late TextEditingController _textController;
   late FocusNode _focusNode;
   bool _isFieldEmpty = false;
@@ -51,7 +51,6 @@ class _CustomDescriptionInputState extends State<CustomDescriptionInput> {
 
   @override
   Widget build(BuildContext context) {
-    final isFocused = _focusNode.hasFocus;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,7 +59,7 @@ class _CustomDescriptionInputState extends State<CustomDescriptionInput> {
           controller: _textController,
           focusNode: _focusNode,
           readOnly: !widget.editable,
-          maxLines: 5, // Supports multiple lines
+          maxLines: 5,
           onChanged: widget.editable ? _validateField : null,
           decoration: InputDecoration(
             labelText: widget.required ? '${widget.label} *' : widget.label,
@@ -82,7 +81,7 @@ class _CustomDescriptionInputState extends State<CustomDescriptionInput> {
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
                 color:
-                    _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2),
+                    _isFieldEmpty ? Colors.red : Colors.black.withValues(alpha: 0.2),
                 width: 1.5,
               ),
             ),

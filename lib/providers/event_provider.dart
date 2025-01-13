@@ -7,8 +7,8 @@ import '../services/db/event_service.dart';
 
 class EventProvider with ChangeNotifier {
   bool _isDisposed = false;
-  static const double DEFAULT_RANGE = 10.0;
-  static const LatLng DEFAULT_LOCATION = LatLng(49.4699765, 8.4819024);
+  static const double defaultRange = 10.0;
+  static const LatLng defaultLocation = LatLng(49.4699765, 8.4819024);
 
   final EventService _eventService = EventService();
   List<Event> _events = [];
@@ -23,12 +23,12 @@ class EventProvider with ChangeNotifier {
   EventFilter get filter => _filter;
 
   EventProvider() {
-    _filter = EventFilter(range: DEFAULT_RANGE, location: DEFAULT_LOCATION);
+    _filter = EventFilter(range: defaultRange, location: defaultLocation);
     _fetchEventsByLocation();
   }
 
   EventProvider.withLocation(LatLng? userLocation) {
-    _filter = EventFilter(range: DEFAULT_RANGE, location: userLocation ?? DEFAULT_LOCATION);
+    _filter = EventFilter(range: defaultRange, location: userLocation ?? defaultLocation);
     _fetchEventsByLocation();
   }
 
@@ -36,13 +36,6 @@ class EventProvider with ChangeNotifier {
   void dispose() {
     _isDisposed = true;
     super.dispose();
-  }
-
-  Future<void> _fetchAllEvents() async {
-    if (_isDisposed) return;
-    _events = await _eventService.getAll();
-    _filteredEvents = List.from(_events);
-    notifyListeners();
   }
 
   Event getEventFromId(String id) {
@@ -90,7 +83,7 @@ class EventProvider with ChangeNotifier {
 
   void resetLocation(LatLng userLocation) {
     setFilter(EventFilter(
-      range: DEFAULT_RANGE,
+      range: defaultRange,
       location: userLocation,
       searchInput: _filter.searchInput,
       startDate: _filter.startDate,

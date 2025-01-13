@@ -24,12 +24,12 @@ class CustomIcons {
 
   static const IconData armchair = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData beer2 = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData calender_bold = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData calender_light2 = IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData calener_light = IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData calenderBold = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData calenderLight2 = IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData calenderLight = IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData chess = IconData(0xe805, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData filteroptions = IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData gamingcontroller = IconData(0xe807, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData filterOptions = IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData gamingController = IconData(0xe807, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData listview = IconData(0xe808, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData map = IconData(0xe809, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData plus = IconData(0xe80a, fontFamily: _kFontFam, fontPackage: _kFontPkg);

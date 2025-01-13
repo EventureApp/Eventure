@@ -9,20 +9,20 @@ class MultiSelectDropdown extends StatefulWidget {
   final bool editable; // Whether it's editable or not
 
   const MultiSelectDropdown({
-    Key? key,
+    super.key,
     required this.label,
     required this.initValues,
     required this.data,
     required this.onChanged,
     required this.required,
     required this.editable,
-  }) : super(key: key);
+  });
 
   @override
-  _MultiSelectDropdownState createState() => _MultiSelectDropdownState();
+  MultiSelectDropdownState createState() => MultiSelectDropdownState();
 }
 
-class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
+class MultiSelectDropdownState extends State<MultiSelectDropdown> {
   late List<String> selectedValues;
   bool _hasAttemptedSubmit = false;
   late FocusNode _focusNode;
@@ -162,7 +162,7 @@ class _MultiSelectDropdownState extends State<MultiSelectDropdown> {
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: _hasError ? Colors.red : Colors.black.withOpacity(0.2),
+                color: _hasError ? Colors.red : Colors.black.withValues(alpha: 0.2),
                 width: 1.5,
               ),
             ),

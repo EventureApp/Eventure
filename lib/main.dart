@@ -5,9 +5,9 @@ import 'package:eventure/providers/user_provider.dart';
 import 'package:eventure/screens/auth/elegant_signin_screen.dart';
 import 'package:eventure/screens/auth/elegant_signup_screen.dart';
 import 'package:eventure/screens/chat/chat_view.dart';
-import 'package:eventure/screens/events/create-event-screen.dart';
+import 'package:eventure/screens/events/create_event_screen.dart';
 import 'package:eventure/screens/events/detail_view.dart';
-import 'package:eventure/screens/filter/filter-screen.dart';
+import 'package:eventure/screens/filter/filter_screen.dart';
 import 'package:eventure/screens/filter/location_select_screen.dart';
 import 'package:eventure/screens/home/home_page.dart';
 import 'package:eventure/screens/profile/add_friends.dart';
@@ -92,7 +92,7 @@ final _router = GoRouter(
         GoRoute(
             path: "addEvent",
             builder: (context, state) {
-              return EventScreen();
+              return const EventScreen();
             }),
         GoRoute(
             path: 'events/:id',
@@ -113,7 +113,7 @@ final _router = GoRouter(
         GoRoute(
             path: "addFilter",
             builder: (context, state) {
-              return EventFilterScreen();
+              return const EventFilterScreen();
             }),
         GoRoute(
           path: 'settings',
@@ -130,7 +130,7 @@ final _router = GoRouter(
         GoRoute(
             path: "setLocation",
             builder: (context, state) {
-              return LocationSelectScreen();
+              return const LocationSelectScreen();
             }),
         GoRoute(
           path: "userProfile/:id",
@@ -180,7 +180,7 @@ class App extends StatelessWidget {
               primary: Color(0xFFF7F8F9),
               secondary: Colors.black,
               surface: Color(0xFFF1F2F4),
-              background: Color(0xFFDCDFE4),
+              tertiary: Color(0xFFDCDFE4),
               error: Colors.red,
             ),
           ),
@@ -192,7 +192,7 @@ class App extends StatelessWidget {
               primary: Color(0xFF10151B),
               secondary: Colors.white,
               surface: Color(0xFF1B2936),
-              background: Color(0xFF121212),
+              tertiary: Color(0xFF121212),
               error: Colors.red,
             ),
           ),
