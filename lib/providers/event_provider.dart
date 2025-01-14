@@ -6,11 +6,14 @@ import '../models/event_filter.dart';
 import '../services/db/event_service.dart';
 
 class EventProvider with ChangeNotifier {
+
+
   bool _isDisposed = false;
   static const double defaultRange = 10.0;
   static const LatLng defaultLocation = LatLng(49.4699765, 8.4819024);
 
   final EventService _eventService = EventService();
+
   List<Event> _events = [];
   List<Event> _filteredEvents = [];
 

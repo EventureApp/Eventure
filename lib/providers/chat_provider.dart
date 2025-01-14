@@ -8,6 +8,7 @@ import '../services/db/chat_service.dart';
 class ChatProvider with ChangeNotifier {
   final ChatService _chatService = ChatService();
 
+
   List<ChatMessage> _chatMessages = [];
   StreamSubscription<List<ChatMessage>>? _chatMessagesSubscription;
 
