@@ -34,22 +34,21 @@ Eventure offers a convenient way for students to:
    ```
 2. **Clone or Download the Repository**
    You can clone the repository using Git or download the ZIP file directly:
-
-   ```bash
-   git clone <repository-url>
-   ```
+    ```bash
+    git clone <repository-url>   
+    ```
 
 3. **Install Dependencies**
    Navigate into the project directory and install the required packages from the pubspec.yaml file:
-   ```bash
-   cd Eventure
-   flutter pub get
-   ```
+  ```bash
+    cd Eventure
+    flutter pub get   
+  ```
 4. **Run the App**
    To launch Eventure on an emulator or physical device, run:
-   ```bash
-   flutter run
-   ```
+    ```bash
+    flutter run   
+    ```
 
 ## Features
 
