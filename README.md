@@ -9,12 +9,14 @@
 - [Overview](#overview)
 - [Installation](#installation)
 - [Features](#features)
+- [Cross-Platform](#cross-platform-support)
 
 ---
 
 ## Overview
 
 Eventure offers a convenient way for students to:
+
 - Create and manage various events.
 - Find events using filters (location, category, etc.).
 - Communicate with other participants through an integrated chat.
@@ -49,14 +51,22 @@ Eventure offers a convenient way for students to:
     ```
 
 ## Features
+
 - **Event Management**  
-Create, edit, and delete your own events.
+  Create, edit, and delete your own events.
 - **Event Filtering**  
-Find suitable events based on location or category using a filter screen.
+  Find suitable events based on location or category using a filter screen.
 - **Chat Functionality**  
-Exchange messages with other event participants in real time.
+  Exchange messages with other event participants in real time.
 - **User Profiles**  
-View and manage personal profiles, connect with others, and add friends.
+  View and manage personal profiles, connect with others, and add friends.
 - **Theme Switching**  
-Choose between light and dark mode to suit your preference.
-   
+  Choose between light and dark mode to suit your preference.
+
+## Cross-Platform Support
+
+Our application is designed to work seamlessly across multiple platforms, ensuring users have a consistent experience no matter where they access it. The app is compatible with:
+
+- **iOS**: Fully optimized for all iPhone and iPad devices, providing a native user experience through smooth performance and intuitive UI.
+- **Android**: Runs flawlessly on Android smartphones and tablets, supporting a wide range of devices and screen sizes.
+- **Chrome**: Accessible directly via the Chrome browser, offering a fast and responsive web-based version without the need for downloads.
