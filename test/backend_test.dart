@@ -36,15 +36,21 @@ void main() {
 
     test('Should add a new user', () async {
       // Arrange
-      when(mockUserProvider.addUser(any)).thenAnswer((_) async => true);
+      when(mockUserProvider.addUser(any))
+          .thenAnswer((_) async => Future.value()); // Void-Methode stubben
+      when(mockUserProvider.getUser('1'))
+          .thenAnswer((_) async => mockUser); // Stub für getUser
 
       // Act
-      var addUser = await mockUserProvider.addUser(mockUser);
-      var result = await mockUserProvider.getUser('1');
+      mockUserProvider.addUser(mockUser); // addUser aufrufen
+      var user = await mockUserProvider.getUser('1'); // getUser aufrufen
 
       // Assert
-      expect(result, isTrue);
-      verify(mockUserProvider.addUser(mockUser)).called(1);
+      expect(user, isNotNull);
+      expect(user.id, '1');
+      expect(user.username, 'Test User');
+      verify(mockUserProvider.addUser(mockUser))
+          .called(1); // Sicherstellen, dass addUser aufgerufen wurde
     });
   });
 
@@ -84,15 +90,22 @@ void main() {
 
     test('Should add a new event', () async {
       // Arrange
-      when(mockEventProvider.addEvent(any)).thenAnswer((_) async => true);
+      when(mockEventProvider.addEvent(any))
+          .thenAnswer((_) async => Future.value());
+      when(mockEventProvider.getEventFromId('1'))
+          .thenReturn(mockEvent); // Stub für getEventFromId
 
       // Act
-      var addEvent = await mockEventProvider.addEvent(mockEvent);
-      var result = mockEventProvider.getEventFromId('1');
+      mockEventProvider.addEvent(mockEvent); // addEvent aufrufen
+      var event =
+          mockEventProvider.getEventFromId('1'); // getEventFromId aufrufen
 
       // Assert
-      expect(result, isTrue);
-      verify(mockEventProvider.addEvent(mockEvent)).called(1);
+      expect(event, isNotNull);
+      expect(event.id, '1');
+      expect(event.name, 'Test Event');
+      verify(mockEventProvider.addEvent(mockEvent))
+          .called(1); // Sicherstellen, dass addEvent aufgerufen wurde
     });
   });
 }
