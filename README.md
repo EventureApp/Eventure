@@ -28,7 +28,7 @@ Eventure offers a convenient way for students to:
 ## Installation
 
 1. **Install Flutter**  
-   Make sure you have [Flutter](https://docs.flutter.dev/get-started/install) installed on your system. Verify your installation by running:
+   Make sure you have [Flutter](https://docs.flutter.dev/get-started/install) installed on your system (Least required version: `3.27.1`). Verify your installation by running:
    ```bash
    flutter --version
    ```
