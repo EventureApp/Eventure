@@ -1,6 +1,7 @@
 import 'package:eventure/models/event.dart';
 import 'package:eventure/providers/location_provider.dart';
 import 'package:eventure/widgets/inputs/custom_number_select.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
@@ -49,7 +50,7 @@ class EventScreenState extends State<EventScreen> {
     super.initState();
     if (widget.event != null) {
       // Felder vorbefüllen, falls Bearbeitung
-      _isEditing = false;
+      _isEditing = true;
       _title = widget.event!.name;
       _startDate = widget.event!.startDate;
       _endDate = widget.event!.endDate;
@@ -88,25 +89,29 @@ class EventScreenState extends State<EventScreen> {
 
   void _saveEvent(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      // Neues Event-Objekt erstellen
+      // Neues oder bestehendes Event-Objekt erstellen
       Event newEvent = Event(
+        id: widget.event?.id ?? UniqueKey().toString(),
         name: _title,
         startDate: _startDate,
         endDate: _endDate,
         location: _location,
         address: '',
-        // Address handling could be added here
         eventType: _eventType,
         icon: _eventIcon,
         visibility: _visibility,
         eventLink: _link,
         maxParticipants: _maxParticipants,
         description: _description,
-        organizer: 'Current User',
+        organizer: widget.event?.organizer ?? FirebaseAuth.instance.currentUser!.uid,
       );
 
-      // Event über den Provider speichern
-      Provider.of<EventProvider>(context, listen: false).addEvent(newEvent);
+      // Event über den Provider speichern oder aktualisieren
+      if (widget.event == null) {
+        Provider.of<EventProvider>(context, listen: false).addEvent(newEvent);
+      } else {
+        Provider.of<EventProvider>(context, listen: false).updateEvent(newEvent);
+      }
 
       // Feedback an den Nutzer und zurück navigieren
       ScaffoldMessenger.of(context).showSnackBar(
@@ -124,28 +129,26 @@ class EventScreenState extends State<EventScreen> {
         title: Text(widget.event == null ? "Create Event" : "Edit Event"),
         actions: [
           IconButton(
-            icon: Icon(
-                widget.event == null || _isEditing ? Icons.save : Icons.edit),
-            onPressed: _isFormValid
-                ? () {
-              _saveEvent(context);
-            }
-                : _isEditing == false
-                ? () {
-              setState(() {
-                _isEditing = true;
-              });
-            }
-                : null,
+            icon: Icon(_isEditing ? Icons.save : Icons.edit),
+            onPressed: () {
+              if (_isEditing) {
+                if (_isFormValid) {
+                  _saveEvent(context);
+                }
+              } else {
+                setState(() {
+                  _isEditing = true;
+                });
+              }
+            },
           ),
         ],
       ),
       body: Container(
-        color: Theme.of(context).colorScheme.tertiary, // Hintergrundfarbe setzen
+        color: Theme.of(context).colorScheme.tertiary,
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // Header Container mit Event-Icon
               Container(
                 color: Theme.of(context).colorScheme.surface,
                 width: double.infinity,
@@ -169,7 +172,6 @@ class EventScreenState extends State<EventScreen> {
                   ),
                 ),
               ),
-              // Formular-Container
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Form(
@@ -181,6 +183,7 @@ class EventScreenState extends State<EventScreen> {
                         label: "Title",
                         required: true,
                         editable: _isEditing,
+                        initValue: _title, // Set initial value
                         onChanged: (value) {
                           setState(() => _title = value);
                           _validateForm();
@@ -191,6 +194,7 @@ class EventScreenState extends State<EventScreen> {
                         label: "Start Date",
                         required: true,
                         editable: _isEditing,
+                        initValue: _startDate,
                         onDateChanged: (date) {
                           setState(() => _startDate = date);
                           _validateForm();
@@ -201,32 +205,32 @@ class EventScreenState extends State<EventScreen> {
                         label: "End Date",
                         required: true,
                         editable: _isEditing,
+                        initValue: _endDate,
                         onDateChanged: (date) {
                           setState(() => _endDate = date);
                           _validateForm();
                         },
                       ),
                       const SizedBox(height: 16),
-
                       Consumer<LocationProvider>(
-                          builder: (context, locationProvider, child) {
-                            if (locationProvider.currentLocation == null) {
-                              return const Center(
-                                child: CircularProgressIndicator(), // Loading state
-                              );
-                            }
-
-                            return LocationSelect(
-                              label: "Location",
-                              isEditable: true,
-                              userLocation: locationProvider.currentLocation!,
-                              onChanged: (location) {
-                                setState(() {
-                                  _location = location!;
-                                });
-                              },
+                        builder: (context, locationProvider, child) {
+                          if (locationProvider.currentLocation == null) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
                             );
                           }
+                          return LocationSelect(
+                            label: "Location",
+                            isEditable: true,
+                            userLocation: locationProvider.currentLocation!,
+                            initValue: _location,
+                            onChanged: (location) {
+                              setState(() {
+                                _location = location!;
+                              });
+                            },
+                          );
+                        },
                       ),
                       const SizedBox(height: 16),
                       EventSelect(
@@ -263,6 +267,7 @@ class EventScreenState extends State<EventScreen> {
                         label: "Description",
                         required: true,
                         editable: _isEditing,
+                        initValue: _description,
                         onChanged: (value) {
                           setState(() => _description = value);
                           _validateForm();

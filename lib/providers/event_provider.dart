@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
-
 import '../models/event.dart';
 import '../models/event_filter.dart';
 import '../services/db/event_service.dart';
@@ -58,6 +57,17 @@ class EventProvider with ChangeNotifier {
     _applyFilter();
     _fetchEventsByLocation();
     notifyListeners();
+  }
+  Future<void> updateEvent(Event updatedEvent) async {
+    if (_isDisposed) return;
+    await _eventService.update(updatedEvent);
+    final index = _events.indexWhere((event) => event.id == updatedEvent.id);
+    if (index != -1) {
+      _events[index] = updatedEvent;
+      resetFilter();
+      _applyFilter();
+      notifyListeners();
+    }
   }
 
   void setSearchString(String searchString) {
