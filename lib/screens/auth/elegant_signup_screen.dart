@@ -2,12 +2,11 @@ import 'package:eventure/models/user.dart';
 import 'package:eventure/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class ElegantSignUpScreen extends StatefulWidget {
-  const ElegantSignUpScreen({Key? key}) : super(key: key);
+  const ElegantSignUpScreen({super.key});
 
   @override
   State<ElegantSignUpScreen> createState() => _ElegantSignUpScreenState();
@@ -20,7 +19,6 @@ class _ElegantSignUpScreenState extends State<ElegantSignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   String _errorMessage = '';
   bool _isLoading = false;
@@ -65,6 +63,8 @@ class _ElegantSignUpScreenState extends State<ElegantSignUpScreen> {
         return;
       }
 
+      await Future.delayed(const Duration(seconds: 1));
+      if (!mounted) return;
       final userProvider = Provider.of<UserProvider>(context, listen: false);
 
       AppUser appUser = AppUser(
@@ -123,7 +123,7 @@ class _ElegantSignUpScreenState extends State<ElegantSignUpScreen> {
     final theme = Theme.of(context);
 
     var primaryColor = theme.colorScheme.primary;
-    var backgroundColor = theme.colorScheme.background;
+    var backgroundColor = theme.colorScheme.tertiary;
     var secondaryColor = theme.colorScheme.secondary;
 
 
@@ -184,7 +184,7 @@ class _ElegantSignUpScreenState extends State<ElegantSignUpScreen> {
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
+                          color: Colors.black.withValues(alpha: 0.05),
                           blurRadius: 20,
                           offset: const Offset(0, 10),
                         ),

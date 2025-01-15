@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class ElegantSignInScreen extends StatefulWidget {
-  const ElegantSignInScreen({Key? key}) : super(key: key);
+  const ElegantSignInScreen({super.key});
 
   @override
   State<ElegantSignInScreen> createState() => _ElegantSignInScreenState();
@@ -40,7 +40,8 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
         });
         return;
       }
-
+      await Future.delayed(const Duration(seconds: 1));
+      if (!mounted) return;
       final userProvider = Provider.of<UserProvider>(context, listen: false);
       userProvider.getCurrentUser(userId);
 
@@ -90,7 +91,7 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
     final theme = Theme.of(context);
 
     var primaryColor = theme.colorScheme.primary;
-    var backgroundColor = theme.colorScheme.background;
+    var backgroundColor = theme.colorScheme.tertiary;
     var secondaryColor = theme.colorScheme.secondary;
 
     return Scaffold(
@@ -158,7 +159,7 @@ class _ElegantSignInScreenState extends State<ElegantSignInScreen> {
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
+                          color: Colors.black.withValues(alpha: 0.05),
                           blurRadius: 20,
                           offset: const Offset(0, 10),
                         ),

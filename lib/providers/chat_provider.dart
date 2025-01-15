@@ -28,10 +28,6 @@ class ChatProvider with ChangeNotifier {
   }
 
   Future<void> addMessage(String message, String userId, String eventId) async {
-    try {
-      await _chatService.addMessage(message, userId, eventId);
-    } catch (error) {
-      print('Error adding message: $error');
-    }
+    await _chatService.addMessage(message, userId, eventId);
   }
 }

@@ -4,7 +4,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
-// Dein MapWidget
 class MapWidget extends StatefulWidget {
   final Function(LatLng) onTap;
   final LatLng? initialLocation;
@@ -12,10 +11,10 @@ class MapWidget extends StatefulWidget {
   const MapWidget({super.key, required this.onTap, this.initialLocation});
 
   @override
-  _MapWidgetState createState() => _MapWidgetState();
+  MapWidgetState createState() => MapWidgetState();
 }
 
-class _MapWidgetState extends State<MapWidget> {
+class MapWidgetState extends State<MapWidget> {
   LatLng? tappedCoordinates;
   LatLng? currentLocation;
   MapController mapController = MapController();
@@ -32,7 +31,7 @@ class _MapWidgetState extends State<MapWidget> {
       currentLocation =
           Provider.of<LocationProvider>(context, listen: false).currentLocation;
       mapController.move(currentLocation!,
-          13.0); // Karte auf den aktuellen Standort zentrieren
+          13.0);
     });
   }
 
@@ -40,21 +39,21 @@ class _MapWidgetState extends State<MapWidget> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Container(
+        SizedBox(
           width: double.infinity,
           height: 300,
           child: FlutterMap(
             mapController: mapController,
             options: MapOptions(
               initialCenter:
-                  widget.initialLocation ?? LatLng(49.4699765, 8.4819024),
+                  widget.initialLocation ?? const LatLng(49.4699765, 8.4819024),
               initialZoom: 13.0,
               onTap: (tapPosition, point) {
                 setState(() {
                   tappedCoordinates = point;
                 });
                 widget.onTap(
-                    point); // Callback zur Übertragung der ausgewählten Position
+                    point);
               },
             ),
             children: [
@@ -70,7 +69,7 @@ class _MapWidgetState extends State<MapWidget> {
                       point: tappedCoordinates!,
                       width: 50,
                       height: 50,
-                      child: Icon(
+                      child: const Icon(
                         Icons.location_on,
                         size: 50,
                         color: Colors.red,
@@ -86,7 +85,7 @@ class _MapWidgetState extends State<MapWidget> {
                       point: currentLocation!,
                       width: 50,
                       height: 50,
-                      child: Icon(
+                      child: const Icon(
                         Icons.my_location,
                         size: 50,
                         color: Colors.blue,
@@ -107,13 +106,13 @@ class LocationSelectPopover extends StatefulWidget {
   final LatLng? initValue;
   final Function(LatLng?) onChanged;
 
-  LocationSelectPopover({required this.onChanged, this.initValue});
+  const LocationSelectPopover({super.key, required this.onChanged, this.initValue});
 
   @override
-  _LocationSelectPopoverState createState() => _LocationSelectPopoverState();
+  LocationSelectPopoverState createState() => LocationSelectPopoverState();
 }
 
-class _LocationSelectPopoverState extends State<LocationSelectPopover> {
+class LocationSelectPopoverState extends State<LocationSelectPopover> {
   LatLng? _selectedLocation;
 
   @override
@@ -146,7 +145,7 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
             Align(
               alignment: Alignment.topLeft,
               child: IconButton(
-                icon: Icon(Icons.close),
+                icon: const Icon(Icons.close),
                 onPressed: () {
                   Navigator.pop(context); // PopOver schließen
                 },
@@ -162,11 +161,11 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
                     _updateLocation, // Methode zum Aktualisieren der Position
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // Submit Button
             ElevatedButton(
               onPressed: _submitLocation,
-              child: Text('Submit'),
+              child: const Text('Submit'),
             ),
           ],
         ),
@@ -178,20 +177,21 @@ class _LocationSelectPopoverState extends State<LocationSelectPopover> {
 // Haupt LocationSelect Widget
 class LocationSelect extends StatefulWidget {
   final String label;
-  final LatLng? initValue; // Initial ausgewählte Location
-  final Function(LatLng?) onChanged; // Callback für Änderungen
+  final LatLng? initValue;
+  final Function(LatLng?) onChanged;
 
-  LocationSelect({
+  const LocationSelect({
+    super.key,
     required this.label,
     this.initValue,
     required this.onChanged,
   });
 
   @override
-  _LocationSelectState createState() => _LocationSelectState();
+  LocationSelectState createState() => LocationSelectState();
 }
 
-class _LocationSelectState extends State<LocationSelect> {
+class LocationSelectState extends State<LocationSelect> {
   LatLng? _selectedLocation;
 
   @override
@@ -226,9 +226,9 @@ class _LocationSelectState extends State<LocationSelect> {
       children: [
         Text(
           widget.label,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         GestureDetector(
           onTap: _openLocationPopover,
           child: Container(
@@ -239,18 +239,18 @@ class _LocationSelectState extends State<LocationSelect> {
                 ? Center(
                     child: Text(
                       'Lat: ${_selectedLocation!.latitude}, Lng: ${_selectedLocation!.longitude}',
-                      style: TextStyle(fontSize: 16),
+                      style: const TextStyle(fontSize: 16),
                     ),
                   )
-                : Center(child: Text('Tap to select location')),
+                : const Center(child: Text('Tap to select location')),
           ),
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         if (_selectedLocation != null)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Selected Location:',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
@@ -258,12 +258,12 @@ class _LocationSelectState extends State<LocationSelect> {
                 label: Text(
                   'Lat: ${_selectedLocation!.latitude.toStringAsFixed(4)}, Lng: ${_selectedLocation!.longitude.toStringAsFixed(4)}',
                 ),
-                backgroundColor: Colors.blue.withOpacity(0.2),
+                backgroundColor: Colors.blue.withValues(alpha: 0.2),
               ),
             ],
           )
         else
-          Text(
+          const Text(
             'No Location Selected',
             style: TextStyle(color: Colors.grey, fontSize: 16),
           ),

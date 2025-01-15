@@ -1,9 +1,5 @@
 import 'package:eventure/providers/user_provider.dart';
 import 'package:eventure/screens/profile/user_profile.dart';
-import 'package:eventure/widgets/inputs/custom_input_line.dart';
-import 'package:eventure/widgets/widgets.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/user.dart';
@@ -11,10 +7,10 @@ import '../../models/user.dart';
 class AddFriendsScreen extends StatefulWidget {
   const AddFriendsScreen({super.key});
   @override
-  _AddFriendsScreenState createState() => _AddFriendsScreenState();
+  AddFriendsScreenState createState() => AddFriendsScreenState();
 }
 
-class _AddFriendsScreenState extends State<AddFriendsScreen> {
+class AddFriendsScreenState extends State<AddFriendsScreen> {
   @override
   void initState() {
     super.initState();
@@ -24,7 +20,7 @@ class _AddFriendsScreenState extends State<AddFriendsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.primary,
           title: const Text("User list"),
@@ -65,7 +61,7 @@ class _AddFriendsScreenState extends State<AddFriendsScreen> {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.02),
+                            color: Colors.black.withValues(alpha: 0.2),
                             offset: const Offset(0, 4),
                             blurRadius: 4,
                           ),

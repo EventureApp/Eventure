@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: Theme.of(context).colorScheme.tertiary,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -339,7 +339,7 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               IconButton(
                                 icon: const Icon(
-                                  CustomIcons.filteroptions,
+                                  CustomIcons.filterOptions,
                                   size: 24,
                                 ),
                                 onPressed: () {

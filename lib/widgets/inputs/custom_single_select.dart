@@ -9,20 +9,20 @@ class SingleSelectDropdown extends StatefulWidget {
   final bool editable;
 
   const SingleSelectDropdown({
-    Key? key,
+    super.key,
     required this.label,
     this.initValue,
     required this.data,
     required this.onChanged,
     required this.required,
     required this.editable,
-  }) : super(key: key);
+  });
 
   @override
-  _SingleSelectDropdownState createState() => _SingleSelectDropdownState();
+  SingleSelectDropdownState createState() => SingleSelectDropdownState();
 }
 
-class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
+class SingleSelectDropdownState extends State<SingleSelectDropdown> {
   String? _selectedValue;
   bool _isFieldEmpty = false; // Similar to CustomInputLine
   late FocusNode _focusNode;
@@ -127,7 +127,7 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withValues(alpha: 0.2),
                 width: 1.5,
               ),
             ),
@@ -135,7 +135,7 @@ class _SingleSelectDropdownState extends State<SingleSelectDropdown> {
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
                 color:
-                    _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2),
+                    _isFieldEmpty ? Colors.red : Colors.black.withValues(alpha: 0.2),
                 width: 1.5,
               ),
             ),

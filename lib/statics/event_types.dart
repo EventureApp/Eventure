@@ -25,6 +25,6 @@ Map<EventType, IconData> eventTypesWithIcon = {
   EventType.study: Icons.book,
   EventType.connect: Icons.diversity_3,
   EventType.other: Icons.question_mark,
-  EventType.gaming: CustomIcons.gamingcontroller,
+  EventType.gaming: CustomIcons.gamingController,
   EventType.sport: Icons.sports_basketball_outlined
 };

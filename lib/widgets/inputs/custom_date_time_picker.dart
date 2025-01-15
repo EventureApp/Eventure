@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../../utils/string_parser.dart';
 
@@ -11,20 +10,20 @@ class CustomDateAndTimePicker extends StatefulWidget {
   final bool editable;
 
   const CustomDateAndTimePicker({
-    Key? key,
+    super.key,
     required this.label,
     this.initValue,
     required this.required,
     required this.editable,
     required this.onDateChanged,
-  }) : super(key: key);
+  });
 
   @override
-  _CustomDateAndTimePickerState createState() =>
-      _CustomDateAndTimePickerState();
+  CustomDateAndTimePickerState createState() =>
+      CustomDateAndTimePickerState();
 }
 
-class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
+class CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
   late TextEditingController _dateController;
   late FocusNode _focusNode;
   bool _isFieldEmpty = false;
@@ -69,6 +68,8 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
         return child!;
       },
     );
+    await Future.delayed(const Duration(seconds: 1));
+    if (!mounted) return;
 
     if (pickedDate != null) {
       TimeOfDay? pickedTime = await showTimePicker(
@@ -148,7 +149,7 @@ class _CustomDateAndTimePickerState extends State<CustomDateAndTimePicker> {
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: isError ? Colors.red : Colors.black.withOpacity(0.2),
+                color: isError ? Colors.red : Colors.black.withValues(alpha: 0.2),
                 width: 1.5,
               ),
             ),

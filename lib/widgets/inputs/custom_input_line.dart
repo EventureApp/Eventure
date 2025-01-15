@@ -10,7 +10,7 @@ class CustomInputLine extends StatefulWidget {
   final String? hintText;
 
   const CustomInputLine({
-    Key? key,
+    super.key,
     required this.label,
     this.initValue,
     required this.required,
@@ -18,13 +18,13 @@ class CustomInputLine extends StatefulWidget {
     required this.onChanged,
     this.prefixIcon,
     this.hintText,
-  }) : super(key: key);
+  });
 
   @override
-  _CustomInputLineState createState() => _CustomInputLineState();
+  CustomInputLineState createState() => CustomInputLineState();
 }
 
-class _CustomInputLineState extends State<CustomInputLine> {
+class CustomInputLineState extends State<CustomInputLine> {
   late TextEditingController _textController;
   late FocusNode _focusNode;
   bool _isFieldEmpty = false;
@@ -56,7 +56,6 @@ class _CustomInputLineState extends State<CustomInputLine> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     const primaryColor = Color(0xFF1976D2);
 
     return Column(
@@ -84,7 +83,7 @@ class _CustomInputLineState extends State<CustomInputLine> {
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withValues(alpha: 0.2),
                 width: 1.5,
               ),
             ),
@@ -92,7 +91,7 @@ class _CustomInputLineState extends State<CustomInputLine> {
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
                 color:
-                _isFieldEmpty ? Colors.red : Colors.black.withOpacity(0.2),
+                _isFieldEmpty ? Colors.red : Colors.black.withValues(alpha: 0.2),
                 width: 1.5,
               ),
             ),

@@ -40,10 +40,10 @@ Eventure offers a convenient way for students to:
 
 3. **Install Dependencies**
    Navigate into the project directory and install the required packages from the pubspec.yaml file:
-  ```bash
+   ```bash
     cd Eventure
     flutter pub get   
-  ```
+   ```
 4. **Run the App**
    To launch Eventure on an emulator or physical device, run:
     ```bash

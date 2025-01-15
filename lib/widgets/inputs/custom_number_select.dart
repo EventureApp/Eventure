@@ -10,7 +10,7 @@ class CustomNumberInput extends StatefulWidget {
   final Function(int?) onChanged;
 
   const CustomNumberInput({
-    Key? key,
+    super.key,
     required this.label,
     this.hint,
     this.isMandatory = false,
@@ -18,13 +18,13 @@ class CustomNumberInput extends StatefulWidget {
     this.maxValue,
     this.initValue,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
-  _CustomNumberInputState createState() => _CustomNumberInputState();
+  CustomNumberInputState createState() => CustomNumberInputState();
 }
 
-class _CustomNumberInputState extends State<CustomNumberInput> {
+class CustomNumberInputState extends State<CustomNumberInput> {
   String _errorMessage = "";
   late TextEditingController _controller;
   late FocusNode _focusNode;
@@ -91,7 +91,6 @@ class _CustomNumberInputState extends State<CustomNumberInput> {
 
   @override
   Widget build(BuildContext context) {
-    final isFocused = _focusNode.hasFocus;
     final isInvalid = _errorMessage.isNotEmpty;
 
     return Column(
@@ -122,7 +121,7 @@ class _CustomNumberInputState extends State<CustomNumberInput> {
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: isInvalid ? Colors.red : Colors.black.withOpacity(0.2),
+                color: isInvalid ? Colors.red : Colors.black.withValues(alpha: 0.2),
                 width: 1.5,
               ),
             ),

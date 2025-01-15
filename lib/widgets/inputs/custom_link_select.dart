@@ -8,18 +8,18 @@ class CustomLinkInput extends StatefulWidget {
   final Function(String?) onChanged;
 
   const CustomLinkInput({
-    Key? key,
+    super.key,
     required this.label,
     this.hint,
     this.isMandatory = false,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
-  _CustomLinkInputState createState() => _CustomLinkInputState();
+  CustomLinkInputState createState() => CustomLinkInputState();
 }
 
-class _CustomLinkInputState extends State<CustomLinkInput> {
+class CustomLinkInputState extends State<CustomLinkInput> {
   String _errorMessage = "";
   late TextEditingController _controller;
   late FocusNode _focusNode;
@@ -71,9 +71,12 @@ class _CustomLinkInputState extends State<CustomLinkInput> {
   }
 
   Future<void> _openLink() async {
-    final url = _controller.text.trim();
-    if (await canLaunch(url)) {
-      await launch(url);
+    final urlText = _controller.text.trim();
+    final Uri url = Uri.parse(urlText);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(
+        url,
+      );
     } else {
       setState(() {
         _errorMessage = 'Could not launch $url';
@@ -83,7 +86,6 @@ class _CustomLinkInputState extends State<CustomLinkInput> {
 
   @override
   Widget build(BuildContext context) {
-    final isFocused = _focusNode.hasFocus;
     final isError = _hasError;
 
     // Determine hint text: If user provided a hint, use it, otherwise show Mandatory/Optional
@@ -116,7 +118,7 @@ class _CustomLinkInputState extends State<CustomLinkInput> {
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: isError ? Colors.red : Colors.black.withOpacity(0.2),
+                color: isError ? Colors.red : Colors.black.withValues(alpha: 0.2),
                 width: 1.5,
               ),
             ),

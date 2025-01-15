@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:eventure/providers/theme_provider.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+  const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class SettingsScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: Container(
-        color: Theme.of(context).colorScheme.background,
+        color: Theme.of(context).colorScheme.tertiary,
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
