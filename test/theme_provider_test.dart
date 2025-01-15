@@ -11,33 +11,25 @@ void main() {
     });
 
     test('Should retrieve the initial theme mode', () {
-      // Assert
       expect(mockThemeProvider.isDarkMode, true);
     });
 
     test('Should toggle theme mode', () {
-      // Act
       mockThemeProvider.toggleTheme();
 
-      // Assert
       expect(mockThemeProvider.isDarkMode, false);
 
-      // Toggle back
       mockThemeProvider.toggleTheme();
       expect(mockThemeProvider.isDarkMode, true);
     });
 
     test('Should set and retrieve custom theme mode', () {
-      // Arrange
       mockThemeProvider.setMockIsDarkMode(false);
 
-      // Assert
       expect(mockThemeProvider.isDarkMode, false);
 
-      // Arrange
       mockThemeProvider.setMockIsDarkMode(true);
 
-      // Assert
       expect(mockThemeProvider.isDarkMode, true);
     });
   });

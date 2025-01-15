@@ -16,22 +16,17 @@ void main() {
     });
 
     test('Should call startListeningToChatMessages', () {
-      // Act
       mockChatProvider.startListeningToChatMessages('testEventId');
 
-      // Assert
       verify(mockChatProvider.startListeningToChatMessages('testEventId')).called(1);
     });
 
     test('Should add a message', () async {
-      // Arrange
       when(mockChatProvider.addMessage('Hello', 'user123', 'event456'))
           .thenAnswer((_) async => Future.value());
 
-      // Act
       await mockChatProvider.addMessage('Hello', 'user123', 'event456');
 
-      // Assert
       verify(mockChatProvider.addMessage('Hello', 'user123', 'event456')).called(1);
     });
   });
