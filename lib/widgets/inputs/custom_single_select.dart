@@ -77,6 +77,9 @@ class SingleSelectDropdownState extends State<SingleSelectDropdown> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
+                setState(() {
+                  _isFieldEmpty = widget.required && (_selectedValue == null || _selectedValue!.isEmpty);
+                });
                 Navigator.of(context).pop();
               },
               child: Text(

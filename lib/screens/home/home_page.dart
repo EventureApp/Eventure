@@ -15,10 +15,10 @@ class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> {
   bool isMapSelected = true;
 
   bool areFiltersApplied(EventFilter filter) {
@@ -166,130 +166,136 @@ class _HomePageState extends State<HomePage> {
               Consumer<EventProvider>(
                 builder: (context, eventProvider, child) {
                   return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          EventFilter newFilter = eventProvider.filter;
-                          if (eventProvider.filter.startDate !=
-                                  DateTime(
-                                    DateTime.now().year,
-                                    DateTime.now().month,
-                                    DateTime.now().day,
-                                  ) &&
-                              eventProvider.filter.endDate !=
-                                  DateTime(
-                                    DateTime.now().year,
-                                    DateTime.now().month,
-                                    DateTime.now().day + 1,
-                                  )) {
-                            newFilter.startDate = DateTime(
-                              DateTime.now().year,
-                              DateTime.now().month,
-                              DateTime.now().day,
-                            );
-                            newFilter.endDate = DateTime(
-                              DateTime.now().year,
-                              DateTime.now().month,
-                              DateTime.now().day + 1,
-                            );
-                            eventProvider.setFilter(newFilter);
-                          } else {
-                            newFilter.startDate = null;
-                            newFilter.endDate = null;
-                            eventProvider.setFilter(newFilter);
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Theme.of(context).colorScheme.secondary, // Text color
-                          backgroundColor: Theme.of(context).colorScheme.surface, // Button background color
-                          textStyle: const TextStyle(
-                            fontSize: 16,
+                      Flexible(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            EventFilter newFilter = eventProvider.filter;
+                            if (eventProvider.filter.startDate !=
+                                DateTime(
+                                  DateTime.now().year,
+                                  DateTime.now().month,
+                                  DateTime.now().day,
+                                ) &&
+                                eventProvider.filter.endDate !=
+                                    DateTime(
+                                      DateTime.now().year,
+                                      DateTime.now().month,
+                                      DateTime.now().day + 1,
+                                    )) {
+                              newFilter.startDate = DateTime(
+                                DateTime.now().year,
+                                DateTime.now().month,
+                                DateTime.now().day,
+                              );
+                              newFilter.endDate = DateTime(
+                                DateTime.now().year,
+                                DateTime.now().month,
+                                DateTime.now().day + 1,
+                              );
+                              eventProvider.setFilter(newFilter);
+                            } else {
+                              newFilter.startDate = null;
+                              newFilter.endDate = null;
+                              eventProvider.setFilter(newFilter);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Theme.of(context).colorScheme.secondary,
+                            backgroundColor: Theme.of(context).colorScheme.surface,
+                            textStyle: const TextStyle(
+                              fontSize: 12,
+                            ),
                           ),
+                          child: const Text('Today'),
                         ),
-                        child: const Text('Today'),
                       ),
-                      ElevatedButton(
-                        onPressed: () {
-                          EventFilter newFilter = eventProvider.filter;
-                          if (eventProvider.filter.startDate !=
-                                  DateTime(
-                                    DateTime.now().year,
-                                    DateTime.now().month,
-                                    DateTime.now().day + 1,
-                                  ) &&
-                              eventProvider.filter.endDate !=
-                                  DateTime(
-                                    DateTime.now().year,
-                                    DateTime.now().month,
-                                    DateTime.now().day + 2,
-                                  )) {
-                            newFilter.startDate = DateTime(
-                              DateTime.now().year,
-                              DateTime.now().month,
-                              DateTime.now().day + 1,
-                            );
-                            newFilter.endDate = DateTime(
-                              DateTime.now().year,
-                              DateTime.now().month,
-                              DateTime.now().day + 2,
-                            );
-                            eventProvider.setFilter(newFilter);
-                          } else {
-                            newFilter.startDate = null;
-                            newFilter.endDate = null;
-                            eventProvider.setFilter(newFilter);
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Theme.of(context).colorScheme.secondary, // Text color
-                          backgroundColor: Theme.of(context).colorScheme.surface, // Button background color
-                          textStyle: const TextStyle(
-                            fontSize: 16,
+                      Flexible(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            EventFilter newFilter = eventProvider.filter;
+                            if (eventProvider.filter.startDate !=
+                                DateTime(
+                                  DateTime.now().year,
+                                  DateTime.now().month,
+                                  DateTime.now().day + 1,
+                                ) &&
+                                eventProvider.filter.endDate !=
+                                    DateTime(
+                                      DateTime.now().year,
+                                      DateTime.now().month,
+                                      DateTime.now().day + 2,
+                                    )) {
+                              newFilter.startDate = DateTime(
+                                DateTime.now().year,
+                                DateTime.now().month,
+                                DateTime.now().day + 1,
+                              );
+                              newFilter.endDate = DateTime(
+                                DateTime.now().year,
+                                DateTime.now().month,
+                                DateTime.now().day + 2,
+                              );
+                              eventProvider.setFilter(newFilter);
+                            } else {
+                              newFilter.startDate = null;
+                              newFilter.endDate = null;
+                              eventProvider.setFilter(newFilter);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Theme.of(context).colorScheme.secondary,
+                            backgroundColor: Theme.of(context).colorScheme.surface,
+                            textStyle: const TextStyle(
+                              fontSize: 12,
+                            ),
                           ),
+                          child: const Text('Tomorrow'),
                         ),
-                        child: const Text('Tomorrow'),
                       ),
-                      ElevatedButton(
-                        onPressed: () {
-                          EventFilter newFilter = eventProvider.filter;
-                          if (eventProvider.filter.startDate !=
-                                  DateTime(
-                                    DateTime.now().year,
-                                    DateTime.now().month,
-                                    DateTime.now().day,
-                                  ) &&
-                              eventProvider.filter.endDate !=
-                                  DateTime(
-                                    DateTime.now().year,
-                                    DateTime.now().month,
-                                    DateTime.now().day + 7,
-                                  )) {
-                            newFilter.startDate = DateTime(
-                              DateTime.now().year,
-                              DateTime.now().month,
-                              DateTime.now().day,
-                            );
-                            newFilter.endDate = DateTime(
-                              DateTime.now().year,
-                              DateTime.now().month,
-                              DateTime.now().day + 7,
-                            );
-                            eventProvider.setFilter(newFilter);
-                          } else {
-                            newFilter.startDate = null;
-                            newFilter.endDate = null;
-                            eventProvider.setFilter(newFilter);
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Theme.of(context).colorScheme.secondary, // Text color
-                          backgroundColor: Theme.of(context).colorScheme.surface, // Button background color
-                          textStyle: const TextStyle(
-                            fontSize: 16,
+                      Flexible(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            EventFilter newFilter = eventProvider.filter;
+                            if (eventProvider.filter.startDate !=
+                                DateTime(
+                                  DateTime.now().year,
+                                  DateTime.now().month,
+                                  DateTime.now().day,
+                                ) &&
+                                eventProvider.filter.endDate !=
+                                    DateTime(
+                                      DateTime.now().year,
+                                      DateTime.now().month,
+                                      DateTime.now().day + 7,
+                                    )) {
+                              newFilter.startDate = DateTime(
+                                DateTime.now().year,
+                                DateTime.now().month,
+                                DateTime.now().day,
+                              );
+                              newFilter.endDate = DateTime(
+                                DateTime.now().year,
+                                DateTime.now().month,
+                                DateTime.now().day + 7,
+                              );
+                              eventProvider.setFilter(newFilter);
+                            } else {
+                              newFilter.startDate = null;
+                              newFilter.endDate = null;
+                              eventProvider.setFilter(newFilter);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Theme.of(context).colorScheme.secondary,
+                            backgroundColor: Theme.of(context).colorScheme.surface,
+                            textStyle: const TextStyle(
+                              fontSize: 12,
+                            ),
                           ),
+                          child: const Text('One Week'),
                         ),
-                        child: const Text('One Week'),
                       ),
                     ],
                   );

@@ -66,8 +66,8 @@ class _ChatState extends State<Chat> {
 
   Widget _buildInputArea(BuildContext context, String eventId) {
     return Container(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom + 16.0,
+      padding: const EdgeInsets.only(
+        bottom: 25.0,
         left: 8.0,
         right: 8.0,
         top: 4.0,
@@ -132,12 +132,13 @@ class _ChatState extends State<Chat> {
         backgroundColor: Theme.of(context).colorScheme.tertiary,
         title: Text(eventName),
       ),
+      resizeToAvoidBottomInset: true,
       body: Column(
         children: [
           Container(
             color: Theme.of(context).colorScheme.surface,
             width: double.infinity,
-            height: 100,
+            // height: 100,
             padding: const EdgeInsets.symmetric(vertical: 13),
             child: Center(
               child: Container(
