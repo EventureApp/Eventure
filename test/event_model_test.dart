@@ -36,7 +36,7 @@ void main() {
       expect(event.startDate, DateTime(2025, 1, 15, 10, 0));
       expect(event.endDate, DateTime(2025, 1, 15, 12, 0));
       expect(event.address, '123 Test Street');
-      expect(event.location, LatLng(52.52, 13.405));
+      expect(event.location, const LatLng(52.52, 13.405));
       expect(event.icon, Icons.event);
       expect(event.eventType, EventType.study);
       expect(event.visibility, EventVisability.private);

@@ -7,8 +7,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:mockito/mockito.dart';
 import 'package:eventure/models/user.dart';
 import 'package:eventure/models/event.dart';
-import 'package:eventure/providers/user_provider.dart';
-import 'package:eventure/providers/event_provider.dart';
 import './mocks/mock_database.mocks.dart';
 
 void main() {
