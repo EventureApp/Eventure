@@ -59,6 +59,17 @@ class EventProvider with ChangeNotifier {
     _fetchEventsByLocation();
     notifyListeners();
   }
+  Future<void> updateEvent(Event updatedEvent) async {
+    if (_isDisposed) return;
+    await _eventService.update(updatedEvent);
+    final index = _events.indexWhere((event) => event.id == updatedEvent.id);
+    if (index != -1) {
+      _events[index] = updatedEvent;
+      resetFilter();
+      _applyFilter();
+      notifyListeners();
+    }
+  }
 
   void setSearchString(String searchString) {
     _filter.searchInput = searchString;
