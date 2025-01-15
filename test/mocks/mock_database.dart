@@ -1,6 +1,5 @@
 // test/mocks/mock_services.dart
 import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:eventure/providers/user_provider.dart';
 import 'package:eventure/providers/event_provider.dart';
 

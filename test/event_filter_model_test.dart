@@ -10,7 +10,7 @@ void main() {
       final eventFilter = EventFilter(
         searchInput: 'test event',
         range: 10.0,
-        location: LatLng(52.52, 13.405),
+        location: const LatLng(52.52, 13.405),
         startDate: DateTime(2025, 01, 01),
         endDate: DateTime(2025, 12, 31),
         eventType: [EventType.study, EventType.sport],
@@ -29,7 +29,7 @@ void main() {
       final eventFilter = EventFilter(
         searchInput: 'test event',
         range: 10.0,
-        location: LatLng(52.52, 13.405),
+        location: const LatLng(52.52, 13.405),
         startDate: DateTime(2025, 01, 01),
         endDate: DateTime(2025, 12, 31),
         eventType: [EventType.study, EventType.sport],
@@ -49,7 +49,7 @@ void main() {
       final eventFilter = EventFilter(
         searchInput: null,
         range: 10.0,
-        location: LatLng(52.52, 13.405),
+        location: const LatLng(52.52, 13.405),
         startDate: null,
         endDate: null,
         eventType: null,
