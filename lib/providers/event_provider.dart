@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
-
 import '../models/event.dart';
 import '../models/event_filter.dart';
 import '../services/db/event_service.dart';

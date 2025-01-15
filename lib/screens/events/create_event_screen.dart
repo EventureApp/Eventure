@@ -1,6 +1,7 @@
 import 'package:eventure/models/event.dart';
 import 'package:eventure/providers/location_provider.dart';
 import 'package:eventure/widgets/inputs/custom_number_select.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
@@ -102,7 +103,7 @@ class EventScreenState extends State<EventScreen> {
         eventLink: _link,
         maxParticipants: _maxParticipants,
         description: _description,
-        organizer: 'Current User',
+        organizer: widget.event?.organizer ?? FirebaseAuth.instance.currentUser!.uid,
       );
 
       // Event über den Provider speichern oder aktualisieren
